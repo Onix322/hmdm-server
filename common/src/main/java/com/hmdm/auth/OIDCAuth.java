@@ -31,6 +31,7 @@ public class OIDCAuth implements HmdmAuthInterface {
 
     @Override
     public boolean authenticate(User user, String password) {
+        System.out.println("[!!!!!! DEBUG TEMPORARY !!!!!] Using OIDCAuth.class");
         boolean match = PasswordUtil.passwordMatch(password, user.getPassword());
         if (!match) {
             userDAO.setUserLoginFailTime(user, System.currentTimeMillis());

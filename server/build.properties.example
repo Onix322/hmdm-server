@@ -71,3 +71,23 @@ smtp.from=noreply@example.com
 jwt.secretkey=20c68f0d9185b1d18cf6add1e8b491fd89529a44
 jwt.validity=86400
 jwt.validityrememberme=2592000
+
+
+# Auth / OIDC settings
+# in auth.class use 'OIDC' if you have a oAuth2 / OIDC provider
+auth.class=Local 
+oidc.jwks.url=
+oidc.issuer=
+oidc.token.url=
+oidc.user.info=
+oidc.client.id=
+oidc.audience=
+oidc.redirect.url=
+oidc.scope=openid+email+profile
+
+# OIDC security & anti-CSRF
+oidc.state=random_key
+
+# Use oidc.secret if oidc.pkce is false. If true, backend skips oidc.secret during token exchange.
+oidc.pkce=true
+oidc.secret=

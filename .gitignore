@@ -1,5 +1,9 @@
+<<<<<<< HEAD
  Created by https://www.toptal.com/developers/gitignore/api/java,maven,eclipse,jetbrains
 # Edit at https://www.toptal.com/developers/gitignore?templates=java,maven,eclipse,jetbrains
+=======
+# Edit at https://www.toptal.com/developers/gitignore?templates=eclipse
+>>>>>>> e91c4ce (Added some files in .gitignore)
 
 ### Eclipse ###
 .metadata
@@ -20,9 +24,27 @@ local.properties
 # Locally stored "Eclipse launch configurations"
 *.launch
 
+<<<<<<< HEAD
 # Java annotation processor (APT)
 .factorypath
 
+=======
+# PyDev specific (Python IDE for Eclipse)
+*.pydevproject
+
+# CDT-specific (C/C++ Development Tooling)
+.cproject
+
+# CDT- autotools
+.autotools
+
+# Java annotation processor (APT)
+.factorypath
+
+# PDT-specific (PHP Development Tools)
+.buildpath
+
+>>>>>>> e91c4ce (Added some files in .gitignore)
 # sbteclipse plugin
 .target
 
@@ -55,6 +77,7 @@ local.properties
 # Spring Boot Tooling
 .sts4-cache/
 
+<<<<<<< HEAD
 ### Java ###
 # Compiled class file
 *.class
@@ -209,6 +232,9 @@ buildNumber.properties
 .classpath
 
 # End of https://www.toptal.com/developers/gitignore/api/java,maven,eclipse,jetbrains
+=======
+# End of https://www.toptal.com/developers/gitignore/api/eclipse
+>>>>>>> e91c4ce (Added some files in .gitignore)
 
 # maven target dir
 target
