@@ -1,32 +1,32 @@
 package com.hmdm.auth;
 
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import com.hmdm.persistence.UnsecureDAO;
 import com.hmdm.persistence.domain.User;
 import com.hmdm.util.PasswordUtil;
 
-import javax.inject.Singleton;
-
 /**
- * LocalAuth
+ * Authenticates a user using an OIDC ID token.
  *
- * <p>implementation of {@link HmdmAuthInterface} backend logic of local auth panel
- *
- * <p>the methods are called in AuthResource in server module -- AuthResource
+ * @param user The user attempting to authenticate
+ * @param tokenOrPassword The raw password string for local auth, or a JWT string for OIDC auth
+ * @return {@code true} if authentication succeeds, {@code false} otherwise
  */
 @Singleton
-public class LocalAuth implements HmdmAuthInterface {
+public class OIDCAuth implements HmdmAuthInterface {
 
     private UnsecureDAO userDAO;
 
     @Inject
-    public LocalAuth(UnsecureDAO userDAO) {
+    public OIDCAuth(UnsecureDAO userDAO) {
         this.userDAO = userDAO;
     }
 
     @Override
     public User findUser(String login) {
-        return userDAO.findByLoginOrEmail(login);
+        User user = userDAO.findByLogin(login);
+        return user;
     }
 
     @Override

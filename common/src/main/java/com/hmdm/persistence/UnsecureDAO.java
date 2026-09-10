@@ -29,26 +29,25 @@ import com.hmdm.event.EventService;
 import com.hmdm.persistence.domain.*;
 import com.hmdm.persistence.mapper.*;
 import com.hmdm.rest.json.DeviceCreateOptions;
-import com.hmdm.rest.json.DeviceListHook;
 import com.hmdm.rest.json.LookupItem;
-import com.hmdm.rest.json.PaginatedData;
 import com.hmdm.security.SecurityContext;
-import com.hmdm.security.SecurityException;
 import com.hmdm.util.CryptoUtil;
 import com.hmdm.util.PasswordUtil;
+
 import org.mybatis.guice.transactional.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.inject.Named;
 import java.io.File;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import javax.inject.Named;
+
 /**
- * <p>A DAO which does not perform any security checks when accessing/updating data. It is intended for processing
- * requests from anonymous clients (for example, devices).</p>
+ * A DAO which does not perform any security checks when accessing/updating data. It is intended for
+ * processing requests from anonymous clients (for example, devices).
  *
  * @author isv
  */
@@ -77,27 +76,26 @@ public class UnsecureDAO {
 
     private static final int DEFAULT_CUSTOMER_ID = 1;
 
-    /**
-     * <p>Constructs new <code>UnsecureDAO</code> instance. This implementation does nothing.</p>
-     */
+    /** Constructs new <code>UnsecureDAO</code> instance. This implementation does nothing. */
     @Inject
-    public UnsecureDAO(DeviceMapper deviceMapper,
-                       UserMapper userMapper,
-                       ConfigurationMapper configurationMapper,
-                       CommonMapper settingsMapper,
-                       ApplicationMapper applicationMapper,
-                       UploadedFileMapper uploadedFileMapper,
-                       ApplicationDAO applicationDAO,
-                       ApplicationSettingDAO applicationSettingDAO,
-                       UserDAO userDAO,
-                       CommonDAO settingDAO,
-                       CustomerDAO customerDAO,
-                       ConfigurationFileMapper configurationFileMapper,
-                       CustomerMapper customerMapper,
-                       EventService eventService,
-                       @Named("files.directory") String filesDirectory,
-                       @Named("role.orgadmin.id") int orgAdminRoleId,
-                       @Named("launcher.package") String defaultLauncherPackage) {
+    public UnsecureDAO(
+            DeviceMapper deviceMapper,
+            UserMapper userMapper,
+            ConfigurationMapper configurationMapper,
+            CommonMapper settingsMapper,
+            ApplicationMapper applicationMapper,
+            UploadedFileMapper uploadedFileMapper,
+            ApplicationDAO applicationDAO,
+            ApplicationSettingDAO applicationSettingDAO,
+            UserDAO userDAO,
+            CommonDAO settingDAO,
+            CustomerDAO customerDAO,
+            ConfigurationFileMapper configurationFileMapper,
+            CustomerMapper customerMapper,
+            EventService eventService,
+            @Named("files.directory") String filesDirectory,
+            @Named("role.orgadmin.id") int orgAdminRoleId,
+            @Named("launcher.package") String defaultLauncherPackage) {
         this.deviceMapper = deviceMapper;
         this.userMapper = userMapper;
         this.configurationMapper = configurationMapper;
@@ -133,7 +131,7 @@ public class UnsecureDAO {
         return userMapper.findByEmail(email);
     }
 
-    public User findByPasswordResetToken( String token ) {
+    public User findByPasswordResetToken(String token) {
         return userMapper.findByPasswordResetToken(token);
     }
 
@@ -149,7 +147,7 @@ public class UnsecureDAO {
         }
     }
 
-    public void setUserNewPasswordUnsecure(User user ) {
+    public void setUserNewPasswordUnsecure(User user) {
         userMapper.setNewPassword(user);
     }
 
@@ -175,8 +173,8 @@ public class UnsecureDAO {
     }
 
     public List<ApplicationSetting> getDeviceAppSettings(int deviceId) {
-        final List<ApplicationSetting> appSettings
-                = this.applicationSettingDAO.getApplicationSettingsByDeviceId(deviceId);
+        final List<ApplicationSetting> appSettings =
+                this.applicationSettingDAO.getApplicationSettingsByDeviceId(deviceId);
         return appSettings;
     }
 
@@ -185,7 +183,8 @@ public class UnsecureDAO {
     }
 
     public void updateDeviceCustomProperties(Integer id, Device device) {
-        this.deviceMapper.updateDeviceCustomProperties(id, device.getCustom1(), device.getCustom2(), device.getCustom3());
+        this.deviceMapper.updateDeviceCustomProperties(
+                id, device.getCustom1(), device.getCustom2(), device.getCustom3());
     }
 
     public void completeDeviceMigration(Integer id) {
@@ -199,8 +198,10 @@ public class UnsecureDAO {
         this.deviceMapper.insertDevice(device);
         if (device.getGroups() != null && !device.getGroups().isEmpty()) {
             this.deviceMapper.insertDeviceGroups(
-                    device.getId(), device.getGroups().stream().map(LookupItem::getId).collect(Collectors.toList())
-            );
+                    device.getId(),
+                    device.getGroups().stream()
+                            .map(LookupItem::getId)
+                            .collect(Collectors.toList()));
         }
     }
 
@@ -219,7 +220,9 @@ public class UnsecureDAO {
     public Configuration getConfigurationByIdWithAppSettings(Integer id) {
         final Configuration dbConfiguration = this.configurationMapper.getConfigurationById(id);
         if (dbConfiguration != null) {
-            final List<ApplicationSetting> appSettings = this.applicationSettingDAO.getApplicationSettingsByConfigurationId(dbConfiguration.getId());
+            final List<ApplicationSetting> appSettings =
+                    this.applicationSettingDAO.getApplicationSettingsByConfigurationId(
+                            dbConfiguration.getId());
             dbConfiguration.setApplicationSettings(appSettings);
         }
 
@@ -234,33 +237,44 @@ public class UnsecureDAO {
         return this.settingsMapper.getSettings(DEFAULT_CUSTOMER_ID);
     }
 
-    public List<Application> findByPackageIdAndVersion(Integer customerId, String pkg, String version) {
+    public List<Application> findByPackageIdAndVersion(
+            Integer customerId, String pkg, String version) {
         return this.applicationMapper.findByPackageIdAndVersion(customerId, pkg, version);
     }
 
     /**
-     * <p>Builds the lookup map from application package ID to application ID for specified packages and customer
-     * account.</p>
+     * Builds the lookup map from application package ID to application ID for specified packages
+     * and customer account.
      *
      * @param customerId an ID of a customer record.
      * @param appPackages a collection of application package IDs to build mapping for.
      * @return a mapping from application package ID to application ID.
      */
-    public Map<String, Integer> buildPackageIdMapping(Integer customerId, Collection<String> appPackages) {
+    public Map<String, Integer> buildPackageIdMapping(
+            Integer customerId, Collection<String> appPackages) {
         if (appPackages == null || appPackages.isEmpty()) {
             return new HashMap<>();
         }
 
-        List<LookupItem> ddd = this.applicationMapper.resolveAppsByPackageId(customerId, appPackages);
-        return ddd.stream().collect(Collectors.toMap(LookupItem::getName, LookupItem::getId, (r1, r2) -> r1));
+        List<LookupItem> ddd =
+                this.applicationMapper.resolveAppsByPackageId(customerId, appPackages);
+        return ddd.stream()
+                .collect(Collectors.toMap(LookupItem::getName, LookupItem::getId, (r1, r2) -> r1));
     }
 
     public void insertApplication(Application application) {
         final List<User> users = this.userMapper.findAll(application.getCustomerId());
         if (!users.isEmpty()) {
-            final User user = users.stream().filter(u -> !u.getUserRole().isSuperAdmin()).findAny().orElse(users.get(0));
-            logger.info("Using user account '{}' for setting up the security context when uploading application {} " +
-                    "from mobile device", user.getLogin(), application);
+            final User user =
+                    users.stream()
+                            .filter(u -> !u.getUserRole().isSuperAdmin())
+                            .findAny()
+                            .orElse(users.get(0));
+            logger.info(
+                    "Using user account '{}' for setting up the security context when uploading"
+                        + " application {} from mobile device",
+                    user.getLogin(),
+                    application);
 
             SecurityContext.init(user);
             try {
@@ -269,8 +283,9 @@ public class UnsecureDAO {
                 SecurityContext.release();
             }
         } else {
-            throw new DAOException("No user accounts have been found mapped to requested customer account: #"
-                    + application.getCustomerId());
+            throw new DAOException(
+                    "No user accounts have been found mapped to requested customer account: #"
+                            + application.getCustomerId());
         }
     }
 
@@ -284,78 +299,91 @@ public class UnsecureDAO {
         return app;
     }
 
-
     public Configuration getConfigurationByQRCodeKey(String id) {
         return this.configurationMapper.getConfigurationByQRCodeKey(id);
     }
 
-    private static final Function<ApplicationSetting, String> appSettingMapKeyGenerator = (s) -> s.getApplicationPkg() + "," + s.getName();
-
+    private static final Function<ApplicationSetting, String> appSettingMapKeyGenerator =
+            (s) -> s.getApplicationPkg() + "," + s.getName();
 
     @Transactional
-    public void saveDeviceApplicationSettings(Device dbDevice,
-                                              List<ApplicationSetting> applicationSettings) {
+    public void saveDeviceApplicationSettings(
+            Device dbDevice, List<ApplicationSetting> applicationSettings) {
 
-        final Map<String, ApplicationSetting> dbDeviceAppSettingsMapping
-                = this.applicationSettingDAO.getApplicationSettingsByDeviceId(dbDevice.getId())
-                .stream()
-                .collect(Collectors.toMap(appSettingMapKeyGenerator, s -> s, (r1, r2) -> r1));
+        final Map<String, ApplicationSetting> dbDeviceAppSettingsMapping =
+                this.applicationSettingDAO
+                        .getApplicationSettingsByDeviceId(dbDevice.getId())
+                        .stream()
+                        .collect(
+                                Collectors.toMap(
+                                        appSettingMapKeyGenerator, s -> s, (r1, r2) -> r1));
 
-        final Map<String, ApplicationSetting> appSettingsMapping
-                = applicationSettings
-                .stream()
-                .filter(s -> s.getValue() != null && !s.getValue().trim().isEmpty())
-                .collect(Collectors.toMap(appSettingMapKeyGenerator, s -> s, (r1, r2) -> r1));
+        final Map<String, ApplicationSetting> appSettingsMapping =
+                applicationSettings.stream()
+                        .filter(s -> s.getValue() != null && !s.getValue().trim().isEmpty())
+                        .collect(
+                                Collectors.toMap(
+                                        appSettingMapKeyGenerator, s -> s, (r1, r2) -> r1));
 
         List<ApplicationSetting> mergedApplicationSettings = new ArrayList<>();
 
-        dbDeviceAppSettingsMapping.values().forEach(dbSetting -> {
-            final String dbSettingKey = appSettingMapKeyGenerator.apply(dbSetting);
-            if (appSettingsMapping.containsKey(dbSettingKey)) {
-                final ApplicationSetting appSetting = appSettingsMapping.get(dbSettingKey);
-                if (appSetting.getLastUpdate() < dbSetting.getLastUpdate()) {
-                    mergedApplicationSettings.add(dbSetting);
-                } else {
-                    mergedApplicationSettings.add(appSetting);
-                }
-            } else {
-                mergedApplicationSettings.add(dbSetting);
-            }
-        });
+        dbDeviceAppSettingsMapping
+                .values()
+                .forEach(
+                        dbSetting -> {
+                            final String dbSettingKey = appSettingMapKeyGenerator.apply(dbSetting);
+                            if (appSettingsMapping.containsKey(dbSettingKey)) {
+                                final ApplicationSetting appSetting =
+                                        appSettingsMapping.get(dbSettingKey);
+                                if (appSetting.getLastUpdate() < dbSetting.getLastUpdate()) {
+                                    mergedApplicationSettings.add(dbSetting);
+                                } else {
+                                    mergedApplicationSettings.add(appSetting);
+                                }
+                            } else {
+                                mergedApplicationSettings.add(dbSetting);
+                            }
+                        });
 
-        final Map<String, Application> appsMapping = this.applicationMapper.getAllApplications(dbDevice.getCustomerId())
-                .stream()
-                .collect(Collectors.toMap(Application::getPkg, a -> a, (r1, r2) -> r1));
+        final Map<String, Application> appsMapping =
+                this.applicationMapper.getAllApplications(dbDevice.getCustomerId()).stream()
+                        .collect(Collectors.toMap(Application::getPkg, a -> a, (r1, r2) -> r1));
 
-        appSettingsMapping.values().forEach(appSetting -> {
-            final String appSettingKey = appSettingMapKeyGenerator.apply(appSetting);
-            if (!dbDeviceAppSettingsMapping.containsKey(appSettingKey)) {
-                mergedApplicationSettings.add(appSetting);
-            }
-        });
+        appSettingsMapping
+                .values()
+                .forEach(
+                        appSetting -> {
+                            final String appSettingKey =
+                                    appSettingMapKeyGenerator.apply(appSetting);
+                            if (!dbDeviceAppSettingsMapping.containsKey(appSettingKey)) {
+                                mergedApplicationSettings.add(appSetting);
+                            }
+                        });
 
-        mergedApplicationSettings.forEach(appSetting -> {
-            if (appSetting.getApplicationId() == null) {
-                if (appsMapping.containsKey(appSetting.getApplicationPkg())) {
-                    appSetting.setApplicationId(appsMapping.get(appSetting.getApplicationPkg()).getId());
-                } else {
-                    // TODO : Log a warning on unknown package ID
-                }
-            }
-        });
+        mergedApplicationSettings.forEach(
+                appSetting -> {
+                    if (appSetting.getApplicationId() == null) {
+                        if (appsMapping.containsKey(appSetting.getApplicationPkg())) {
+                            appSetting.setApplicationId(
+                                    appsMapping.get(appSetting.getApplicationPkg()).getId());
+                        } else {
+                            // TODO : Log a warning on unknown package ID
+                        }
+                    }
+                });
 
         this.deviceMapper.deleteDeviceApplicationSettings(dbDevice.getId());
         if (!mergedApplicationSettings.isEmpty()) {
-            final List<ApplicationSetting> validSettings = mergedApplicationSettings
-                    .stream()
-                    .filter(appSetting -> appSetting.getApplicationId() != null)
-                    .collect(Collectors.toList());
+            final List<ApplicationSetting> validSettings =
+                    mergedApplicationSettings.stream()
+                            .filter(appSetting -> appSetting.getApplicationId() != null)
+                            .collect(Collectors.toList());
             this.deviceMapper.insertDeviceApplicationSettings(dbDevice.getId(), validSettings);
         }
     }
 
     /**
-     * <p>Saves the hash value for APK-file associated with the specified aplication version.</p>
+     * Saves the hash value for APK-file associated with the specified aplication version.
      *
      * @param appVersionId an application version ID to save the hash value for APK file for.
      * @param hashValue a hash-value to be saved.
@@ -364,9 +392,7 @@ public class UnsecureDAO {
         this.applicationMapper.saveApkFileHash(appVersionId, hashValue);
     }
 
-    /**
-     * To use in impersonated background services only
-     */
+    /** To use in impersonated background services only */
     public List<Device> getAllGroupDevices(int groupId, int customerId) {
         return this.deviceMapper.getAllGroupDevices(groupId, customerId);
     }
@@ -380,17 +406,18 @@ public class UnsecureDAO {
     }
 
     /**
-     * <p>Gets the device referenced by the specified ID.</p>
+     * Gets the device referenced by the specified ID.
      *
      * @param id an ID of a device.
-     * @return a device referenced by the specified ID or <code>null</code> if there is no such device found.
+     * @return a device referenced by the specified ID or <code>null</code> if there is no such
+     *     device found.
      */
     public Device getDeviceById(Integer id) {
         return this.deviceMapper.getDeviceById(id);
     }
 
     /**
-     * <p>Gets the list of configuration files to be used on device.</p>
+     * Gets the list of configuration files to be used on device.
      *
      * @param device a device to get the configuration files for.
      * @return a list of configuration files to be used on device.
@@ -399,18 +426,18 @@ public class UnsecureDAO {
         return this.configurationFileMapper.getConfigurationFiles(device.getConfigurationId());
     }
 
-//    /**
-//     * <p>Gets the settings for the customer account mapped to specified device.</p>
-//     *
-//     * @param deviceId a device number identifying the device.
-//     * @return the settings for related customer account.
-//     */
-//    public Settings getSettingsByDeviceId(String deviceId) {
-//        return this.settingsMapper.getSettingsByDeviceId(deviceId);
-//    }
+    //    /**
+    //     * <p>Gets the settings for the customer account mapped to specified device.</p>
+    //     *
+    //     * @param deviceId a device number identifying the device.
+    //     * @return the settings for related customer account.
+    //     */
+    //    public Settings getSettingsByDeviceId(String deviceId) {
+    //        return this.settingsMapper.getSettingsByDeviceId(deviceId);
+    //    }
 
     /**
-     * <p>Tests if the current installation is single-customer</p>
+     * Tests if the current installation is single-customer
      *
      * @return true if single-customer, false otherwise
      */
@@ -443,7 +470,8 @@ public class UnsecureDAO {
         return customerMapper.findCustomerById(id);
     }
 
-    public void signupCustomerUnsecure(Customer customer, String passwordMD5, boolean copySettings) {
+    public void signupCustomerUnsecure(
+            Customer customer, String passwordMD5, boolean copySettings) {
 
         logger.debug("Registering customer account: {}", customer);
 
@@ -485,7 +513,8 @@ public class UnsecureDAO {
                 customerSettings.setBackgroundColor(masterSettings.getBackgroundColor());
                 customerSettings.setBackgroundImageUrl(masterSettings.getBackgroundImageUrl());
                 customerSettings.setDesktopHeader(masterSettings.getDesktopHeader());
-                customerSettings.setDesktopHeaderTemplate(masterSettings.getDesktopHeaderTemplate());
+                customerSettings.setDesktopHeaderTemplate(
+                        masterSettings.getDesktopHeaderTemplate());
                 customerSettings.setIconSize(masterSettings.getIconSize());
                 customerSettings.setTextColor(masterSettings.getTextColor());
                 customerSettings.setCustomerId(customer.getId());
@@ -495,15 +524,19 @@ public class UnsecureDAO {
 
             // Copy configurations if required
             Map<Integer, Integer> configIdsMapping = new HashMap<>();
-            if (customer.getConfigurationIds() != null && customer.getConfigurationIds().length > 0) {
-                for (Integer configurationId: customer.getConfigurationIds()) {
-                    final Integer copyId = customerDAO.copyConfigurationForCustomer(customer, DEFAULT_CUSTOMER_ID, configurationId);
+            if (customer.getConfigurationIds() != null
+                    && customer.getConfigurationIds().length > 0) {
+                for (Integer configurationId : customer.getConfigurationIds()) {
+                    final Integer copyId =
+                            customerDAO.copyConfigurationForCustomer(
+                                    customer, DEFAULT_CUSTOMER_ID, configurationId);
                     configIdsMapping.put(configurationId, copyId);
                 }
             }
             logger.debug("Mapping for original and copied configurations: {}", configIdsMapping);
 
-            // Notify plugins about new customer so they could set up default settings for this customer
+            // Notify plugins about new customer so they could set up default settings for this
+            // customer
             eventService.fireEvent(new CustomerCreatedEvent(customer));
 
             // Generate three default devices
@@ -512,7 +545,8 @@ public class UnsecureDAO {
                 Device newDevice = new Device();
                 newDevice.setLastUpdate(0L);
                 newDevice.setNumber(deviceNumber);
-                newDevice.setConfigurationId(configIdsMapping.get(customer.getDeviceConfigurationId()));
+                newDevice.setConfigurationId(
+                        configIdsMapping.get(customer.getDeviceConfigurationId()));
                 newDevice.setCustomerId(customer.getId());
 
                 deviceMapper.insertDevice(newDevice);
@@ -543,13 +577,13 @@ public class UnsecureDAO {
     }
 
     public Application getDefaultLauncher() {
-        List<Application> apps = this.applicationMapper.findByPackageId(DEFAULT_CUSTOMER_ID, defaultLauncherPackage);
+        List<Application> apps =
+                this.applicationMapper.findByPackageId(DEFAULT_CUSTOMER_ID, defaultLauncherPackage);
         if (apps.size() == 0) {
             return null;
         }
         return apps.get(0);
     }
-
 
     public Device createNewDeviceOnDemand(String deviceId) {
 
@@ -589,7 +623,10 @@ public class UnsecureDAO {
             if (customer != null) {
                 customerId = customer.getId();
             } else {
-                logger.warn("Failed to get a customer by name '" + createOptions.getCustomer() + "', device not created");
+                logger.warn(
+                        "Failed to get a customer by name '"
+                                + createOptions.getCustomer()
+                                + "', device not created");
                 return null;
             }
             deviceLimit = customer.getDeviceLimit();
@@ -600,7 +637,12 @@ public class UnsecureDAO {
         }
 
         if (deviceLimit != 0 && deviceCount >= deviceLimit) {
-            logger.warn("New device " + deviceId + " not created by customer " + customerId + ": license limit");
+            logger.warn(
+                    "New device "
+                            + deviceId
+                            + " not created by customer "
+                            + customerId
+                            + ": license limit");
             return null;
         }
 
@@ -608,21 +650,32 @@ public class UnsecureDAO {
         Device newDevice = new Device();
         newDevice.setCustomerId(customerId);
 
-        // If the configuration is specified, we want to create a new device, so don't check the legacy setting
+        // If the configuration is specified, we want to create a new device, so don't check the
+        // legacy setting
         if (createOptions.getConfiguration() != null) {
-            Configuration configuration = configurationMapper.getConfigurationByQRCodeKey(createOptions.getConfiguration());
+            Configuration configuration =
+                    configurationMapper.getConfigurationByQRCodeKey(
+                            createOptions.getConfiguration());
             if (configuration == null) {
-                logger.warn("Failed to get a configuration by key " + createOptions.getConfiguration() + ", device not created");
+                logger.warn(
+                        "Failed to get a configuration by key "
+                                + createOptions.getConfiguration()
+                                + ", device not created");
                 return null;
             } else if (configuration.getCustomerId() != customerId) {
-                logger.warn("Configuration with key " + createOptions.getConfiguration() + " doesn't belong to customer " +
-                        customerId + ", device not created");
+                logger.warn(
+                        "Configuration with key "
+                                + createOptions.getConfiguration()
+                                + " doesn't belong to customer "
+                                + customerId
+                                + ", device not created");
                 return null;
             } else {
                 newDevice.setConfigurationId(configuration.getId());
             }
         } else if (settings != null && settings.isCreateNewDevices()) {
-            // Configuration not specified, we will add a device only if a legacy setting "Create new devices" is set
+            // Configuration not specified, we will add a device only if a legacy setting "Create
+            // new devices" is set
             newDevice.setConfigurationId(settings.getNewDeviceConfigurationId());
         } else {
             logger.warn("Creating new devices disabled by settings, configuration ID not set");
@@ -643,7 +696,12 @@ public class UnsecureDAO {
                 if (group == null) {
                     logger.warn("Failed to find group by id: " + s + ", group ignored");
                 } else if (group.getCustomerId() != customerId) {
-                    logger.warn("Group id " + s + " doesn't belong to customer " + customerId + ", group ignored");
+                    logger.warn(
+                            "Group id "
+                                    + s
+                                    + " doesn't belong to customer "
+                                    + customerId
+                                    + ", group ignored");
                 } else {
                     groups.add(new LookupItem(group.getId(), ""));
                 }
@@ -687,5 +745,4 @@ public class UnsecureDAO {
     public void updateUploadedFile(UploadedFile uploadedFile) {
         uploadedFileMapper.update(uploadedFile);
     }
-
 }

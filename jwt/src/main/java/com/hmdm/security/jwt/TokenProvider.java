@@ -21,13 +21,12 @@
 
 package com.hmdm.security.jwt;
 
-import java.io.IOException;
-import java.util.Date;
-
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.hmdm.persistence.domain.User;
 import com.hmdm.util.CryptoUtil;
 import com.hmdm.util.StringUtil;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -35,50 +34,43 @@ import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.SignatureException;
 import io.jsonwebtoken.UnsupportedJwtException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.hmdm.persistence.domain.User;
+
+import java.io.IOException;
+import java.util.Date;
 
 import javax.inject.Named;
 
 /**
- * <p>A provider for JWT tokens.</p>
+ * A provider for JWT tokens.
  *
  * @author isv
  */
 @Singleton
 public class TokenProvider {
 
-    /**
-     * <p>A logger used for logging various events encountered during the lifecycle.</p>
-     */
+    /** A logger used for logging various events encountered during the lifecycle. */
     private final Logger log = LoggerFactory.getLogger("JWTAuth");
 
     private static final String TOKEN_KEY = "token";
 
-    /**
-     * <p>A secret key (configurable) which is used for JWT tokens generation.</p>
-     */
+    /** A secret key (configurable) which is used for JWT tokens generation. */
     private final String secretKey;
 
-    /**
-     * <p>A period validity of tokens.</p>
-     */
+    /** A period validity of tokens. */
     private final long tokenValidityInMilliseconds;
 
-    /**
-     * <p>A period validity of tokens with "Remember Me" option enabled..</p>
-     */
+    /** A period validity of tokens with "Remember Me" option enabled.. */
     private final long tokenValidityInMillisecondsForRememberMe;
 
-    /**
-     * <p>Constructs new <code>TokenProvider</code> instance with specified configuration.</p>
-     */
+    /** Constructs new <code>TokenProvider</code> instance with specified configuration. */
     @Inject
-    public TokenProvider(@Named("jwt.secretkey") String jwtSecretKey,
-                         @Named("jwt.validity") String jwtValidity,
-                         @Named("jwt.validityrememberme") String jwtValidityForRememberMe) {
+    public TokenProvider(
+            @Named("jwt.secretkey") String jwtSecretKey,
+            @Named("jwt.validity") String jwtValidity,
+            @Named("jwt.validityrememberme") String jwtValidityForRememberMe) {
         long defaultValidity = 86400; // 24 hours
         long defaultValidityForRememberMe = 2592000; // 30 days
         String defaultSecretKey = CryptoUtil.randomHexString(40);
@@ -99,11 +91,12 @@ public class TokenProvider {
     }
 
     /**
-     * <p>Generates new JWT token for the specified authenticated principal.</p>
+     * Generates new JWT token for the specified authenticated principal.
      *
      * @param user a representation of authenticated principal.
      * @param rememberMe an optional flag indicating if <code>Remember Me</code> option is enabled.
-     * @return a generated JWT token which can be used for further authentications of the specified principal.
+     * @return a generated JWT token which can be used for further authentications of the specified
+     *     principal.
      */
     public String createToken(User user, Boolean rememberMe) throws IOException {
         long now = (new Date()).getTime();
@@ -115,24 +108,22 @@ public class TokenProvider {
         }
 
         return Jwts.builder()
-            .setSubject(user.getLogin())
-            .claim(TOKEN_KEY, user.getAuthToken())
-            .signWith(SignatureAlgorithm.HS512, secretKey)
-            .setExpiration(validity)
-            .compact();
+                .setSubject(user.getLogin())
+                .claim(TOKEN_KEY, user.getAuthToken())
+                .signWith(SignatureAlgorithm.HS512, secretKey)
+                .setExpiration(validity)
+                .compact();
     }
 
     /**
-     * <p>Parses the specified JWT token into authenticated principal.</p>
+     * Parses the specified JWT token into authenticated principal.
      *
      * @param jwtToken a JWT token to be parsed.
-     * @return an authenticated principal presentation constructed from the data provided by specified token.
+     * @return an authenticated principal presentation constructed from the data provided by
+     *     specified token.
      */
     User getAuthentication(String jwtToken) throws IOException {
-        Claims claims = Jwts.parser()
-            .setSigningKey(secretKey)
-            .parseClaimsJws(jwtToken)
-            .getBody();
+        Claims claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(jwtToken).getBody();
 
         String login = claims.getSubject();
         String authToken = claims.get(TOKEN_KEY).toString();
@@ -144,7 +135,7 @@ public class TokenProvider {
     }
 
     /**
-     * <p>Validates the specified authentication token provided by the client.</p>
+     * Validates the specified authentication token provided by the client.
      *
      * @param jwtToken a JWT authentication token to be validated.
      * @return <code>true</code> if specified token is valid; <code>false</code> otherwise.
