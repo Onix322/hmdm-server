@@ -99,17 +99,18 @@ public class ConfigureModule extends AbstractModule {
     private final String jwtValidity = "jwt.validity";
     private final String jwtValidityForRememberMe = "jwt.validityrememberme";
     // OIDC Integration Keys
-    private final String oidcJwksUrlKey = "oidc.jwks.url";
-    private final String oidcIssuerKey = "oidc.issuer";
-    private final String oidcAudienceKey = "oidc.audience";
-    private final String oidcTokenUrlKey = "oidc.token.url";
-    private final String oidcUserInfoKey = "oidc.user.info";
-    private final String oidcClientIdKey = "oidc.client.id";
-    private final String oidcRedirectUrlKey = "oidc.redirect.url";
-    private final String oidcScopeKey = "oidc.scope";
-    private final String oidcStateKey = "oidc.state";
-    private final String oidcPkceKey = "oidc.pkce";
+    private final String oidcJwksUrl = "oidc.jwks.url";
+    private final String oidcIssuer = "oidc.issuer";
+    private final String oidcAudience = "oidc.audience";
+    private final String oidcTokenUrl = "oidc.token.url";
+    private final String oidcUserInfo = "oidc.user.info";
+    private final String oidcClientId = "oidc.client.id";
+    private final String oidcRedirectUrl = "oidc.redirect.url";
+    private final String oidcScope = "oidc.scope";
+    private final String oidcPkce = "oidc.pkce";
     private final String oidcSecretKey = "oidc.secret";
+    private final String oidcAuthorizeUrl = "oidc.authorize.url";
+    private final String oidcResponseType = "oidc.response.type";
     private final ServletContext context;
 
     public ConfigureModule(ServletContext context) {
@@ -383,37 +384,42 @@ public class ConfigureModule extends AbstractModule {
                 .to(opt != null ? opt : "");
 
         // --- OIDC BINDINGS ---
-        opt = this.context.getInitParameter(oidcJwksUrlKey);
-        this.bindConstant().annotatedWith(Names.named(oidcJwksUrlKey)).to(opt != null ? opt : "");
+        opt = this.context.getInitParameter(oidcJwksUrl);
+        this.bindConstant().annotatedWith(Names.named(oidcJwksUrl)).to(opt != null ? opt : "");
 
-        opt = this.context.getInitParameter(oidcIssuerKey);
-        this.bindConstant().annotatedWith(Names.named(oidcIssuerKey)).to(opt != null ? opt : "");
+        opt = this.context.getInitParameter(oidcIssuer);
+        this.bindConstant().annotatedWith(Names.named(oidcIssuer)).to(opt != null ? opt : "");
 
-        opt = this.context.getInitParameter(oidcAudienceKey);
-        this.bindConstant().annotatedWith(Names.named(oidcAudienceKey)).to(opt != null ? opt : "");
+        opt = this.context.getInitParameter(oidcAudience);
+        this.bindConstant().annotatedWith(Names.named(oidcAudience)).to(opt != null ? opt : "");
 
-        opt = this.context.getInitParameter(oidcTokenUrlKey);
-        this.bindConstant().annotatedWith(Names.named(oidcTokenUrlKey)).to(opt != null ? opt : "");
+        opt = this.context.getInitParameter(oidcTokenUrl);
+        this.bindConstant().annotatedWith(Names.named(oidcTokenUrl)).to(opt != null ? opt : "");
 
-        opt = this.context.getInitParameter(oidcUserInfoKey);
-        this.bindConstant().annotatedWith(Names.named(oidcUserInfoKey)).to(opt != null ? opt : "");
+        opt = this.context.getInitParameter(oidcUserInfo);
+        this.bindConstant().annotatedWith(Names.named(oidcUserInfo)).to(opt != null ? opt : "");
 
-        opt = this.context.getInitParameter(oidcClientIdKey);
-        this.bindConstant().annotatedWith(Names.named(oidcClientIdKey)).to(opt != null ? opt : "");
+        opt = this.context.getInitParameter(oidcClientId);
+        this.bindConstant().annotatedWith(Names.named(oidcClientId)).to(opt != null ? opt : "");
 
-        opt = this.context.getInitParameter(oidcRedirectUrlKey);
+        opt = this.context.getInitParameter(oidcRedirectUrl);
+        this.bindConstant().annotatedWith(Names.named(oidcRedirectUrl)).to(opt != null ? opt : "");
+
+        opt = this.context.getInitParameter(oidcScope);
         this.bindConstant()
-                .annotatedWith(Names.named(oidcRedirectUrlKey))
-                .to(opt != null ? opt : "");
+                .annotatedWith(Names.named(oidcScope))
+                .to(opt != null ? opt : "openid profile email");
 
-        opt = this.context.getInitParameter(oidcScopeKey);
-        this.bindConstant().annotatedWith(Names.named(oidcScopeKey)).to(opt != null ? opt : "");
+        opt = this.context.getInitParameter(oidcAuthorizeUrl);
+        this.bindConstant().annotatedWith(Names.named(oidcAuthorizeUrl)).to(opt != null ? opt : "");
 
-        opt = this.context.getInitParameter(oidcStateKey);
-        this.bindConstant().annotatedWith(Names.named(oidcStateKey)).to(opt != null ? opt : "");
+        opt = this.context.getInitParameter(oidcResponseType);
+        this.bindConstant()
+                .annotatedWith(Names.named(oidcResponseType))
+                .to(opt != null ? opt : "code");
 
-        opt = this.context.getInitParameter(oidcPkceKey);
-        this.bindConstant().annotatedWith(Names.named(oidcPkceKey)).to(opt != null ? opt : "false");
+        opt = this.context.getInitParameter(oidcPkce);
+        this.bindConstant().annotatedWith(Names.named(oidcPkce)).to(opt != null ? opt : "false");
 
         opt = this.context.getInitParameter(oidcSecretKey);
         this.bindConstant().annotatedWith(Names.named(oidcSecretKey)).to(opt != null ? opt : "");

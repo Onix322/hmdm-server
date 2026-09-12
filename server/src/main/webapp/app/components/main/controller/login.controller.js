@@ -70,7 +70,12 @@ angular
           encrypt.setPublicKey($scope.publicKey);
           password = encrypt.encrypt($scope.login.password);
         }
-        authService.login($scope.login.username, password, loginHandler);
+        authService.loginLocal($scope.login.username, password, loginHandler);
+      };
+
+      // OIDC login
+      $scope.loginOIDC = function () {
+        authService.loginOIDC();
       };
 
       $scope.recoverPassword = function () {

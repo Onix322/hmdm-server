@@ -38,16 +38,21 @@ import com.hmdm.rest.filter.AuthFilter;
 import com.hmdm.rest.json.AuthOptionsResponse;
 import com.hmdm.rest.json.Response;
 import com.hmdm.rest.json.UserCredentials;
+import com.hmdm.rest.json.view.user.OIDCDetailsView;
 import com.hmdm.rest.json.view.user.UserView;
 import com.hmdm.service.EmailService;
 import com.hmdm.service.RsaKeyService;
 import com.hmdm.util.BackgroundTaskRunnerService;
 import com.hmdm.util.PasswordUtil;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.security.PublicKey;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.util.Base64;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -68,6 +73,8 @@ import javax.ws.rs.core.MediaType;
 @Path("/public/auth")
 public class AuthResource {
 
+    private static final Logger logger = LoggerFactory.getLogger(AuthResource.class);
+
     private UnsecureDAO userDAO;
     private CustomerDAO customerDAO;
     private UnsecureDAO settingsDAO;
@@ -79,14 +86,19 @@ public class AuthResource {
     private HmdmAuthInterface authEngine;
 
     // Replace with your actual OIDC Provider realm/application values or load via configuration
-    private String JWKS_URL;
-    private String ISSUER;
-    private String AUDIENCE;
+    private String oidcJwksUrl;
+    private String oidcIssuer;
+    private String oidcAudience;
+    private String oidcScope;
+    private String oidcClientId;
+    private String oidcRedirectUrl;
+    private String oidcAuthorizeUrl;
+    private String oidcResponseType;
 
     /** A constructor required by Swagger. */
     public AuthResource() {}
 
-    /** Constructs new <code>AuthResource</code> instance. This implementation does nothing. */
+    /** Constructs new <code>AuthResource</code> instance. */
     @Inject
     public AuthResource(
             UnsecureDAO userDAO,
@@ -101,7 +113,12 @@ public class AuthResource {
             @Named("auth.class") HmdmAuthInterface authEngine,
             @Named("oidc.jwks.url") String jwksUrl,
             @Named("oidc.issuer") String issuer,
-            @Named("oidc.audience") String audience) {
+            @Named("oidc.authorize.url") String authorizeUrl,
+            @Named("oidc.audience") String audience,
+            @Named("oidc.scope") String scope,
+            @Named("oidc.client.id") String clientId,
+            @Named("oidc.redirect.url") String redirectUrl,
+            @Named("oidc.response.type") String responseType) {
         this.userDAO = userDAO;
         this.customerDAO = customerDAO;
         this.settingsDAO = settingsDAO;
@@ -111,11 +128,20 @@ public class AuthResource {
         this.customerSignup = customerSignup;
         this.transmitPassword = transmitPassword;
         this.authEngine = authEngine;
-        this.JWKS_URL = jwksUrl;
-        this.ISSUER = issuer;
-        this.AUDIENCE = audience;
+        this.oidcJwksUrl = jwksUrl;
+        this.oidcIssuer = issuer;
+        this.oidcAuthorizeUrl = authorizeUrl;
+        this.oidcAudience = audience;
+        this.oidcScope = scope;
+        this.oidcClientId = clientId;
+        this.oidcRedirectUrl = redirectUrl;
+        this.oidcResponseType = responseType;
     }
 
+    ////////////////////////////////////////////////
+    ////////////////////////////////////////////////
+    ////////////////////////////////////////////////
+    ////////////////////////////////////////////////
     /**
      * Authenticates the user based on provided credentials and responds with the user account
      * details in case of successful authentication.
@@ -143,7 +169,7 @@ public class AuthResource {
 
             // decode jwt
             JwkProvider provider =
-                    new JwkProviderBuilder(JWKS_URL)
+                    new JwkProviderBuilder(oidcJwksUrl)
                             .cached(10, 24, TimeUnit.HOURS)
                             .rateLimited(10, 1, TimeUnit.MINUTES)
                             .build();
@@ -174,7 +200,10 @@ public class AuthResource {
 
             Algorithm algorithm = Algorithm.RSA256(keyProvider);
             JWTVerifier verifier =
-                    JWT.require(algorithm).withIssuer(ISSUER).withAnyOfAudience(AUDIENCE).build();
+                    JWT.require(algorithm)
+                            .withIssuer(oidcIssuer)
+                            .withAnyOfAudience(oidcAudience)
+                            .build();
 
             DecodedJWT decodedJWT = verifier.verify(token);
 
@@ -197,6 +226,36 @@ public class AuthResource {
         }
     }
 
+    @GET
+    @Path("/oidc-details")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getOidcDetails(@Context HttpServletRequest request) {
+        // Unic state (anti-CSRF)
+        String state = UUID.randomUUID().toString();
+        request.getSession().setAttribute("oidc_state", state);
+
+        logger.debug(
+                "[OIDC] -> clientId: '{}', authorizeUrl: '{}', redirectUrl: '{}'",
+                this.oidcClientId,
+                this.oidcAuthorizeUrl,
+                this.oidcRedirectUrl);
+
+        OIDCDetailsView details =
+                new OIDCDetailsView(
+                        this.oidcClientId,
+                        this.oidcRedirectUrl,
+                        this.oidcAuthorizeUrl,
+                        this.oidcScope,
+                        state,
+                        this.oidcResponseType);
+
+        return Response.OK(details);
+    }
+
+    ////////////////////////////////////////////////
+    ////////////////////////////////////////////////
+    ////////////////////////////////////////////////
+    ////////////////////////////////////////////////
     public Response loginLocal(UserCredentials credentials, @Context HttpServletRequest req)
             throws InterruptedException {
         if (credentials.getLogin() == null || credentials.getPassword() == null) {
