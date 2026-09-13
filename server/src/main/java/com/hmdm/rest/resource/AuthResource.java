@@ -21,14 +21,10 @@
 
 package com.hmdm.rest.resource;
 
-import com.auth0.jwk.JwkProvider;
-import com.auth0.jwk.JwkProviderBuilder;
 import com.auth0.jwt.JWT;
-import com.auth0.jwt.JWTVerifier;
-import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.auth0.jwt.interfaces.RSAKeyProvider;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hmdm.auth.HmdmAuthInterface;
 import com.hmdm.persistence.CustomerDAO;
 import com.hmdm.persistence.UnsecureDAO;
@@ -38,22 +34,26 @@ import com.hmdm.rest.filter.AuthFilter;
 import com.hmdm.rest.json.AuthOptionsResponse;
 import com.hmdm.rest.json.Response;
 import com.hmdm.rest.json.UserCredentials;
-import com.hmdm.rest.json.view.user.OIDCDetailsView;
 import com.hmdm.rest.json.view.user.UserView;
 import com.hmdm.service.EmailService;
 import com.hmdm.service.RsaKeyService;
 import com.hmdm.util.BackgroundTaskRunnerService;
+import com.hmdm.util.OidcUtil;
 import com.hmdm.util.PasswordUtil;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
-import java.security.interfaces.RSAPrivateKey;
-import java.security.interfaces.RSAPublicKey;
 import java.util.Base64;
-import java.util.UUID;
-import java.util.concurrent.TimeUnit;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -94,6 +94,9 @@ public class AuthResource {
     private String oidcRedirectUrl;
     private String oidcAuthorizeUrl;
     private String oidcResponseType;
+    private String oidcTokenUrl;
+    private String oidcSecret;
+    private Boolean oidcPkce;
 
     /** A constructor required by Swagger. */
     public AuthResource() {}
@@ -118,7 +121,10 @@ public class AuthResource {
             @Named("oidc.scope") String scope,
             @Named("oidc.client.id") String clientId,
             @Named("oidc.redirect.url") String redirectUrl,
-            @Named("oidc.response.type") String responseType) {
+            @Named("oidc.response.type") String responseType,
+            @Named("oidc.token.url") String tokenUrl,
+            @Named("oidc.secret") String secret,
+            @Named("oidc.pkce") String pkce) {
         this.userDAO = userDAO;
         this.customerDAO = customerDAO;
         this.settingsDAO = settingsDAO;
@@ -136,12 +142,140 @@ public class AuthResource {
         this.oidcClientId = clientId;
         this.oidcRedirectUrl = redirectUrl;
         this.oidcResponseType = responseType;
+        this.oidcTokenUrl = tokenUrl;
+        this.oidcPkce = Boolean.parseBoolean(pkce);
+        this.oidcSecret = secret;
     }
 
     ////////////////////////////////////////////////
     ////////////////////////////////////////////////
     ////////////////////////////////////////////////
     ////////////////////////////////////////////////
+
+    @GET
+    @Path("/login-oidc")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response loginOidc(@Context HttpServletRequest request)
+            throws InterruptedException, NoSuchAlgorithmException {
+        // 1. gets the request
+
+        // 2. generate state and code_challager
+        String state = OidcUtil.generateState();
+
+        // 2.1 generate code_verifier and save it in session
+        String codeVerifier = OidcUtil.generateCodeVerifier();
+
+        // 2.2 generate code_challange
+        String codeChallange = OidcUtil.generateCodeChallenge(codeVerifier);
+
+        // 2.3 save in session
+        HttpSession session = request.getSession(true);
+        session.setAttribute("OIDC_VERIFIER", codeVerifier);
+        session.setAttribute("OIDC_STATE", state);
+
+        // 3. create redirectUrl
+        String redirectUrl =
+                OidcUtil.buildAuthorizeUrl(
+                        this.oidcAuthorizeUrl,
+                        this.oidcClientId,
+                        this.oidcResponseType,
+                        this.oidcRedirectUrl,
+                        this.oidcScope,
+                        state,
+                        codeChallange);
+
+        // 4. send the url to frontend
+        Map<String, Object> innerData = new HashMap<>();
+        innerData.put("redirectUrl", redirectUrl);
+
+        return Response.OK(innerData);
+    }
+
+    @POST
+    @Path("/callback-oidc")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response callbackOidc(
+            @Context HttpServletRequest request,
+            @QueryParam("code") String code,
+            @QueryParam("state") String state)
+            throws InterruptedException, IOException {
+
+        // rapid pre-reqesite
+        HttpSession session = request.getSession(false);
+        if (session == null) {
+            return Response.ERROR("Session expired or invalid");
+        }
+
+        String oidcState = (String) session.getAttribute("OIDC_STATE");
+        String oidcVerifier = (String) session.getAttribute("OIDC_VERIFIER");
+
+        // verificare sa vedem daca state este acelasi cu cel primit
+        if (state == null || !state.equals(oidcState) || oidcVerifier == null) {
+            session.invalidate();
+            return Response.ERROR("Session is compromised");
+        }
+
+        // creare url
+        String requestBody =
+                OidcUtil.buildRequestBody(
+                        code, this.oidcRedirectUrl, this.oidcClientId, oidcVerifier);
+
+        // exchange for access / id token
+        HttpClient client = HttpClient.newHttpClient();
+
+        HttpRequest exchangeRequest =
+                HttpRequest.newBuilder()
+                        .uri(URI.create(this.oidcTokenUrl))
+                        .header("Content-Type", "application/x-www-form-urlencoded")
+                        .POST(HttpRequest.BodyPublishers.ofString(requestBody.toString()))
+                        .build();
+
+        HttpResponse<String> providerResponse =
+                client.send(exchangeRequest, HttpResponse.BodyHandlers.ofString());
+
+        if (providerResponse.statusCode() != 200) {
+            return Response.ERROR(
+                    "Provider rejected token exchange. Error: " + providerResponse.body());
+        }
+
+        String rawJson = providerResponse.body();
+
+        // 6. delete temporary keys
+        session.removeAttribute("OIDC_STATE");
+        session.removeAttribute("OIDC_VERIFIER");
+
+        // 7. Aici urmează pasul unde vei parsa rawJson ca să scoți datele userului în UserView
+        // UserView userView = OidcUtil.parseIdTokenToUserView(rawJson);
+        // session.setAttribute("CURRENT_USER", userView);
+
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode jsonNode = mapper.readTree(rawJson);
+        String idTokenString = jsonNode.path("id_token").asText();
+        DecodedJWT jwt = JWT.decode(idTokenString);
+
+        // 3. Extragere directă a claim-urilor din id_token
+        String email = jwt.getClaim("email").asString();
+
+        if (email == null || email.trim().isEmpty()) {
+            return Response.ERROR("No email claim present in ID token");
+        }
+
+        // 4. Mapezi datele în obiectul tău UserView / User
+        User user = this.authEngine.findUser(email);
+
+        if (user == null) {
+            return Response.ERROR("No user found");
+        }
+
+        // Pentru moment returnăm succes cu JSON-ul brut ca să vezi ce a venit de la provider
+        return createUserView(user, request);
+    }
+
+    ////////////////////////////////////////////////
+    ////////////////////////////////////////////////
+    ////////////////////////////////////////////////
+    ////////////////////////////////////////////////
+
     /**
      * Authenticates the user based on provided credentials and responds with the user account
      * details in case of successful authentication.
@@ -154,108 +288,6 @@ public class AuthResource {
     @Path("/login")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response login(UserCredentials credentials, @Context HttpServletRequest req)
-            throws InterruptedException {
-        if (credentials.isToken()) {
-            return loginOIDC(credentials.getToken());
-        }
-
-        return loginLocal(credentials, req);
-    }
-
-    public Response loginOIDC(String token) throws InterruptedException {
-
-        try {
-
-            // decode jwt
-            JwkProvider provider =
-                    new JwkProviderBuilder(oidcJwksUrl)
-                            .cached(10, 24, TimeUnit.HOURS)
-                            .rateLimited(10, 1, TimeUnit.MINUTES)
-                            .build();
-
-            RSAKeyProvider keyProvider =
-                    new RSAKeyProvider() {
-                        @Override
-                        public RSAPublicKey getPublicKeyById(String kid) {
-                            try {
-                                // Fetch the JWK by ID and extract the RSA Public Key
-                                return (RSAPublicKey) provider.get(kid).getPublicKey();
-                            } catch (Exception e) {
-                                throw new RuntimeException(
-                                        "Failed to retrieve public key for kid: " + kid, e);
-                            }
-                        }
-
-                        @Override
-                        public RSAPrivateKey getPrivateKey() {
-                            return null; // Not needed for token verification
-                        }
-
-                        @Override
-                        public String getPrivateKeyId() {
-                            return null; // Not needed for token verification
-                        }
-                    };
-
-            Algorithm algorithm = Algorithm.RSA256(keyProvider);
-            JWTVerifier verifier =
-                    JWT.require(algorithm)
-                            .withIssuer(oidcIssuer)
-                            .withAnyOfAudience(oidcAudience)
-                            .build();
-
-            DecodedJWT decodedJWT = verifier.verify(token);
-
-            // verify existence of user
-
-            String sub = decodedJWT.getSubject();
-
-            User user = authEngine.findUser(sub);
-            if (user == null) {
-                Thread.sleep(1000);
-                return Response.ERROR("Inexistent user");
-            }
-
-            user.setPassword(null);
-
-            return Response.OK();
-
-        } catch (JWTVerificationException exception) {
-            return Response.ERROR(exception.getMessage());
-        }
-    }
-
-    @GET
-    @Path("/oidc-details")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getOidcDetails(@Context HttpServletRequest request) {
-        // Unic state (anti-CSRF)
-        String state = UUID.randomUUID().toString();
-        request.getSession().setAttribute("oidc_state", state);
-
-        logger.debug(
-                "[OIDC] -> clientId: '{}', authorizeUrl: '{}', redirectUrl: '{}'",
-                this.oidcClientId,
-                this.oidcAuthorizeUrl,
-                this.oidcRedirectUrl);
-
-        OIDCDetailsView details =
-                new OIDCDetailsView(
-                        this.oidcClientId,
-                        this.oidcRedirectUrl,
-                        this.oidcAuthorizeUrl,
-                        this.oidcScope,
-                        state,
-                        this.oidcResponseType);
-
-        return Response.OK(details);
-    }
-
-    ////////////////////////////////////////////////
-    ////////////////////////////////////////////////
-    ////////////////////////////////////////////////
-    ////////////////////////////////////////////////
     public Response loginLocal(UserCredentials credentials, @Context HttpServletRequest req)
             throws InterruptedException {
         if (credentials.getLogin() == null || credentials.getPassword() == null) {
@@ -287,6 +319,10 @@ public class AuthResource {
             return Response.ERROR();
         }
 
+        return createUserView(user, req);
+    }
+
+    public Response createUserView(User user, HttpServletRequest req) {
         try {
             this.taskRunner.submitTask(
                     () -> {
@@ -294,7 +330,7 @@ public class AuthResource {
                                 user.getCustomerId(), System.currentTimeMillis());
                     });
 
-            HttpSession userSession = req.getSession();
+            HttpSession userSession = req.getSession(true);
             userSession.setAttribute(AuthFilter.sessionCredentials, user);
 
             Settings settings = settingsDAO.getSettings(user.getCustomerId());
@@ -308,13 +344,13 @@ public class AuthResource {
 
             if (user.getAuthToken() == null || user.getAuthToken().length() == 0) {
                 user.setAuthToken(PasswordUtil.generateToken());
-                user.setNewPassword(
-                        user.getPassword()); // copy value for setUserNewPasswordUnsecure
+                user.setNewPassword(user.getPassword());
                 userDAO.setUserNewPasswordUnsecure(user);
             }
 
             user.setPassword(null);
 
+            // Aici se setează corect proprietatea singleCustomer
             user.setSingleCustomer(userDAO.isSingleCustomer());
 
             return Response.OK(new UserView(user));

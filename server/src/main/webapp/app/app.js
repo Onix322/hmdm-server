@@ -400,7 +400,7 @@ angular
         .state("callback", {
           url: "/callback",
           templateUrl: "app/components/main/view/callback.html",
-          controller: "CallbackController",
+          controller: "OidcCallbackController",
         });
     },
   )
@@ -411,6 +411,7 @@ angular
         responseError: function (rejection) {
           var $body = angular.element(document.body);
           var $rootScope = $body.scope().$root;
+          var $state = $injector.get("$state");
 
           if (rejection.status === 403) {
             $injector.get("authService").logout();
@@ -669,7 +670,9 @@ angular
           trans.to().name !== "signupComplete" &&
           trans.to().name !== "passwordReset" &&
           trans.to().name !== "qr" &&
-          trans.to().name !== "callback"
+          trans.to().name !== "callback" &&
+          trans.to().name !== "login" &&
+          trans.to().name !== ""
         ) {
           if (!authService.isLoggedIn() && trans.to().name !== "login") {
             hintService.onLogout();

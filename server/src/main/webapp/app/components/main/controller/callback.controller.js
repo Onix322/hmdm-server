@@ -1,15 +1,39 @@
+/* global angular */
+/* global angular */
 angular
   .module("headwind-kiosk")
-  .controller("CallbackController", function ($scope, $state, authService) {
-    // Reading natively from the URL before the '#' fragment
-    var urlParams = new URLSearchParams(window.location.search);
-    var authCode = urlParams.get("code");
-    var state = urlParams.get("state");
+  .controller(
+    "OidcCallbackController",
+    function ($scope, $state, $location, $window, authService) {
+      $scope.loading = true;
+      $scope.errorMessage = null;
 
-    if (authCode) {
-      console.log(authCode);
-      console.log("we have the code");
-    } else {
-      $scope.errorMessage = "Authorization code not found in URL.";
-    }
-  });
+      // Extragere cod din URL
+      var searchParams = new URLSearchParams($window.location.search);
+      var code = searchParams.get("code") || $location.search().code;
+      var state = searchParams.get("state") || $location.search().state;
+
+      if (code) {
+        authService.handleOidcCallback(
+          code,
+          state,
+          function (userView) {
+            var cleanUrl =
+              $window.location.origin + $window.location.pathname + "#/main";
+            $window.location.replace(cleanUrl);
+            $scope.successMessage = "Logged in";
+          },
+          function (error) {
+            $scope.loading = false;
+            $scope.errorMessage =
+              error && error.message
+                ? error.message
+                : "Autentificarea OIDC a eșuat sau sesiunea a expirat.";
+          },
+        );
+      } else {
+        $scope.loading = false;
+        $scope.errorMessage = "Codul de autorizare OIDC lipsește din URL.";
+      }
+    },
+  );

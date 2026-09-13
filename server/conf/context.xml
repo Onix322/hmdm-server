@@ -100,4 +100,6 @@
     <Parameter name="oidc.redirect.url" value="${oidc.redirect.url}"/>
     <Parameter name="oidc.scope" value="${oidc.scope}"/>
     <Parameter name="oidc.response.type" value="${oidc.response.type}"/>
+    <Parameter name="oidc.pkce" value="${oidc.pkce}"/>
+    <Parameter name="oidc.secret" value="${oidc.secret}"/>
 </Context>

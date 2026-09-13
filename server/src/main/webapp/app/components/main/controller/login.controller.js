@@ -75,7 +75,9 @@ angular
 
       // OIDC login
       $scope.loginOIDC = function () {
-        authService.loginOIDC();
+        authService.loginOIDC(function (response) {
+          window.location.href = response;
+        });
       };
 
       $scope.recoverPassword = function () {

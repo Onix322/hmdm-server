@@ -40,9 +40,6 @@ public class UserCredentials implements Serializable {
     @ApiModelProperty("A password to be used for authentication (MD5-hash)")
     private String password;
 
-    @ApiModelProperty("Token used for OIDC authentication")
-    private String token;
-
     @ApiModelProperty(hidden = true)
     @Deprecated
     private String email;
@@ -63,18 +60,6 @@ public class UserCredentials implements Serializable {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
-
-    public boolean isToken() {
-        return !(this.token == null || this.token.trim().isEmpty());
     }
 
     @Deprecated

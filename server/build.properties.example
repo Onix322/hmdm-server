@@ -75,7 +75,7 @@ jwt.validityrememberme=2592000
 
 # Auth / OIDC settings
 # in auth.class use 'OIDC' if you have a oAuth2 / OIDC provider
-auth.class=OIDC
+auth.class=Local
 oidc.authorize.url=
 oidc.jwks.url=
 oidc.issuer=
@@ -86,9 +86,6 @@ oidc.audience=
 oidc.redirect.url=
 oidc.scope=
 oidc.response.type=
-
-# OIDC security & anti-CSRF
-oidc.state=random_key
 
 # Use oidc.secret if oidc.pkce is false. If true, backend skips oidc.secret during token exchange.
 oidc.pkce=true
