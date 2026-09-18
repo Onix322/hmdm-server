@@ -1,10 +1,10 @@
-package com.hmdm.auth;
+package com.hmdm.auth.oidc;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.hmdm.auth.AuthStrategy;
 import com.hmdm.persistence.UnsecureDAO;
 import com.hmdm.persistence.domain.User;
-import com.hmdm.util.PasswordUtil;
 
 /**
  * Authenticates a user using an OIDC ID token.
@@ -14,12 +14,12 @@ import com.hmdm.util.PasswordUtil;
  * @return {@code true} if authentication succeeds, {@code false} otherwise
  */
 @Singleton
-public class OIDCAuth implements HmdmAuthInterface {
+public class OIDCAuthStrategy implements AuthStrategy<OidcAuthCredentials> {
 
     private UnsecureDAO userDAO;
 
     @Inject
-    public OIDCAuth(UnsecureDAO userDAO) {
+    public OIDCAuthStrategy(UnsecureDAO userDAO) {
         this.userDAO = userDAO;
     }
 
@@ -30,12 +30,8 @@ public class OIDCAuth implements HmdmAuthInterface {
     }
 
     @Override
-    public boolean authenticate(User user, String password) {
-        System.out.println("[!!!!!! DEBUG TEMPORARY !!!!!] Using OIDCAuth.class");
-        boolean match = PasswordUtil.passwordMatch(password, user.getPassword());
-        if (!match) {
-            userDAO.setUserLoginFailTime(user, System.currentTimeMillis());
-        }
-        return match;
+    public boolean authenticate(OidcAuthCredentials credentials) {
+        System.out.println("[!!!!!! DEBUG TEMPORARY !!!!!] Using OIDC provider");
+        return true;
     }
 }

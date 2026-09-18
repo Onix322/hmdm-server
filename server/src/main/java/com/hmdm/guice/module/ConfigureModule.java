@@ -23,8 +23,8 @@ package com.hmdm.guice.module;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.name.Names;
-import com.hmdm.auth.HmdmAuthInterface;
-import com.hmdm.auth.LocalAuth;
+import com.hmdm.auth.AuthStrategy;
+import com.hmdm.auth.local.LocalAuthStrategy;
 import com.hmdm.persistence.domain.Application;
 
 import javax.servlet.ServletContext;
@@ -179,8 +179,10 @@ public class ConfigureModule extends AbstractModule {
         opt = this.context.getInitParameter(authClassParameter);
         try {
             Class authImpl =
-                    opt != null ? Class.forName("com.hmdm.auth." + opt + "Auth") : LocalAuth.class;
-            this.bind(HmdmAuthInterface.class)
+                    opt != null
+                            ? Class.forName("com.hmdm.auth." + opt + "Auth")
+                            : LocalAuthStrategy.class;
+            this.bind(AuthStrategy.class)
                     .annotatedWith(Names.named(authClassParameter))
                     .to(authImpl);
         } catch (Exception e) {

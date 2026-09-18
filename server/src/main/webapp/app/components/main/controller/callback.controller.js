@@ -4,7 +4,7 @@ angular
   .module("headwind-kiosk")
   .controller(
     "OidcCallbackController",
-    function ($scope, $state, $location, $window, authService) {
+    function ($scope, $location, $window, authService, $timeout) {
       $scope.loading = true;
       $scope.errorMessage = null;
 
@@ -17,23 +17,24 @@ angular
         authService.handleOidcCallback(
           code,
           state,
-          function (userView) {
-            var cleanUrl =
-              $window.location.origin + $window.location.pathname + "#/main";
-            $window.location.replace(cleanUrl);
-            $scope.successMessage = "Logged in";
+          function () {
+            $timeout(() => {
+              var cleanUrl =
+                $window.location.origin + $window.location.pathname + "#/main";
+              $window.location.replace(cleanUrl);
+            }, 2000);
           },
           function (error) {
             $scope.loading = false;
             $scope.errorMessage =
               error && error.message
                 ? error.message
-                : "Autentificarea OIDC a eșuat sau sesiunea a expirat.";
+                : "OIDC authentification has failed or session has expired.";
           },
         );
       } else {
         $scope.loading = false;
-        $scope.errorMessage = "Codul de autorizare OIDC lipsește din URL.";
+        $scope.errorMessage = "Authorization code is missing in the url.";
       }
     },
   );
