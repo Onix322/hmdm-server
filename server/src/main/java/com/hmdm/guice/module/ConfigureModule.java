@@ -107,8 +107,6 @@ public class ConfigureModule extends AbstractModule {
     private final String oidcClientId = "oidc.client.id";
     private final String oidcRedirectUrl = "oidc.redirect.url";
     private final String oidcScope = "oidc.scope";
-    private final String oidcPkce = "oidc.pkce";
-    private final String oidcSecretKey = "oidc.secret";
     private final String oidcAuthorizeUrl = "oidc.authorize.url";
     private final String oidcResponseType = "oidc.response.type";
     private final ServletContext context;
@@ -419,11 +417,5 @@ public class ConfigureModule extends AbstractModule {
         this.bindConstant()
                 .annotatedWith(Names.named(oidcResponseType))
                 .to(opt != null ? opt : "code");
-
-        opt = this.context.getInitParameter(oidcPkce);
-        this.bindConstant().annotatedWith(Names.named(oidcPkce)).to(opt != null ? opt : "false");
-
-        opt = this.context.getInitParameter(oidcSecretKey);
-        this.bindConstant().annotatedWith(Names.named(oidcSecretKey)).to(opt != null ? opt : "");
     }
 }

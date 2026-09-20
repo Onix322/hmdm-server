@@ -89,7 +89,7 @@
 
 
     <!-- Auth / OIDC settings -->
-    <Parameter name="auth.class" value="${auth.class}"/>
+    <Parameter name="auth.enable" value="${auth.enable}"/>
     <Parameter name="oidc.authorize.url" value="${oidc.authorize.url}"/>
     <Parameter name="oidc.jwks.url" value="${oidc.jwks.url}"/>
     <Parameter name="oidc.issuer" value="${oidc.issuer}"/>
@@ -100,6 +100,4 @@
     <Parameter name="oidc.redirect.url" value="${oidc.redirect.url}"/>
     <Parameter name="oidc.scope" value="${oidc.scope}"/>
     <Parameter name="oidc.response.type" value="${oidc.response.type}"/>
-    <Parameter name="oidc.pkce" value="${oidc.pkce}"/>
-    <Parameter name="oidc.secret" value="${oidc.secret}"/>
 </Context>

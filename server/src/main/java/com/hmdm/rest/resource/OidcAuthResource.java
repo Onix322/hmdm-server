@@ -68,8 +68,6 @@ public class OidcAuthResource {
     private String oidcAuthorizeUrl;
     private String oidcResponseType;
     private String oidcTokenUrl;
-    private String oidcSecret;
-    private Boolean oidcPkce;
 
     /** A constructor required by Swagger. */
     public OidcAuthResource() {}
@@ -86,9 +84,7 @@ public class OidcAuthResource {
             @Named("oidc.client.id") String clientId,
             @Named("oidc.redirect.url") String redirectUrl,
             @Named("oidc.response.type") String responseType,
-            @Named("oidc.token.url") String tokenUrl,
-            @Named("oidc.secret") String secret,
-            @Named("oidc.pkce") String pkce) {
+            @Named("oidc.token.url") String tokenUrl) {
         this.authHelper = authHelper;
         this.authEngine = authEngine;
         this.oidcJwksUrl = jwksUrl;
@@ -100,8 +96,6 @@ public class OidcAuthResource {
         this.oidcRedirectUrl = redirectUrl;
         this.oidcResponseType = responseType;
         this.oidcTokenUrl = tokenUrl;
-        this.oidcPkce = Boolean.parseBoolean(pkce);
-        this.oidcSecret = secret;
     }
 
     @GET

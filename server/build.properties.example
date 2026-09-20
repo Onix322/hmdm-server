@@ -75,7 +75,7 @@ jwt.validityrememberme=2592000
 
 # Auth / OIDC settings
 # in auth.class use 'OIDC' if you have a oAuth2 / OIDC provider
-auth.class=Local
+auth.enable=true
 oidc.authorize.url=
 oidc.jwks.url=
 oidc.issuer=
