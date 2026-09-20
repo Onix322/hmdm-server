@@ -1,5 +1,12 @@
 package com.hmdm.util;
 
+import com.auth0.jwk.Jwk;
+import com.auth0.jwk.JwkProvider;
+import com.auth0.jwk.UrlJwkProvider;
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.JWTVerifier;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.hmdm.persistence.CustomerDAO;
 import com.hmdm.persistence.UnsecureDAO;
 import com.hmdm.persistence.domain.Settings;
@@ -7,11 +14,13 @@ import com.hmdm.persistence.domain.User;
 import com.hmdm.rest.filter.AuthFilter;
 import com.hmdm.rest.json.view.user.UserView;
 
+import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.security.interfaces.RSAPublicKey;
 import java.util.Base64;
 import java.util.UUID;
 
@@ -171,5 +180,30 @@ public class AuthHelper {
                 .append("&code_verifier=")
                 .append(encode(codeVerifier))
                 .toString();
+    }
+
+    /**
+     * Verifies the given ID token against the OIDC provider's JWKS endpoint, checking signature,
+     * issuer, and audience.
+     *
+     * @param idTokenString raw JWT ID token string
+     * @param jwksUrl URL to fetch the public signing keys (JWKS)
+     * @param issuer expected token issuer (iss claim)
+     * @param audience expected client/audience (aud claim)
+     * @return DecodedJWT if valid
+     * @throws Exception if signature verification or claims validation fails
+     */
+    public DecodedJWT verifyToken(
+            String idTokenString, String jwksUrl, String issuer, String audience) throws Exception {
+        JwkProvider provider = new UrlJwkProvider(new URL(jwksUrl));
+        DecodedJWT unverifiedJwt = JWT.decode(idTokenString);
+
+        Jwk jwk = provider.get(unverifiedJwt.getKeyId());
+        Algorithm algorithm = Algorithm.RSA256((RSAPublicKey) jwk.getPublicKey(), null);
+
+        JWTVerifier verifier =
+                JWT.require(algorithm).withIssuer(issuer).withAudience(audience).build();
+
+        return verifier.verify(idTokenString);
     }
 }

@@ -21,7 +21,6 @@
 
 package com.hmdm.rest.resource;
 
-import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -194,10 +193,19 @@ public class OidcAuthResource {
         ObjectMapper mapper = new ObjectMapper();
         JsonNode jsonNode = mapper.readTree(rawJson);
         String idTokenString = jsonNode.path("id_token").asText();
-        DecodedJWT jwt = JWT.decode(idTokenString);
 
+        // 6.1 cryptographic verification
+        DecodedJWT jwt;
+        try {
+            jwt =
+                    this.authHelper.verifyToken(
+                            idTokenString, this.oidcJwksUrl, this.oidcIssuer, this.oidcAudience);
+        } catch (Exception e) {
+            return Response.ERROR("Token verification failed: " + e.getMessage());
+        }
+
+        // 6.2 extract user login (email)
         String email = jwt.getClaim("email").asString();
-
         if (email == null || email.trim().isEmpty()) {
             return Response.ERROR("No email claim present in ID token");
         }
