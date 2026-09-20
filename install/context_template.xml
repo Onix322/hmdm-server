@@ -92,7 +92,7 @@
     <!-- <Parameter name="jwt.validityrememberme" value="2592000"/> -->
 
     <!-- OIDC / OAuth2 Configuration -->
-    <Parameter name="auth.enable" value="_AUTH_ENABLE_"/>
+    <Parameter name="oidc.enable" value="_OIDC_ENABLE_"/>
     <Parameter name="oidc.authorize.url" value="_OIDC_AUTHORIZE_URL_"/>
     <Parameter name="oidc.jwks.url" value="_OIDC_JWKS_URL_"/>
     <Parameter name="oidc.issuer" value="_OIDC_ISSUER_"/>

@@ -28,9 +28,8 @@ import com.hmdm.plugins.audit.AuditPluginConfigurationImpl;
 import com.hmdm.plugins.audit.persistence.AuditDAO;
 import com.hmdm.plugins.audit.persistence.domain.AuditLogRecord;
 import com.hmdm.util.BackgroundTaskRunnerService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import java.io.IOException;
+import java.util.Optional;
 import javax.inject.Named;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -39,60 +38,46 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.util.Optional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * <p>Intercepts incoming requests and logs the audit records for users activities.</p>
+ * Intercepts incoming requests and logs the audit records for users activities.
  *
  * @author isv
  */
 @Singleton
 public class AuditFilter implements Filter {
 
-    /**
-     * <p>A logger to be used for logging the audit log records.</p>
-     */
+    /** A logger to be used for logging the audit log records. */
     private static final Logger auditLogger = LoggerFactory.getLogger("AuditLogger");
 
-    /**
-     * <p>A logger used for logging other events encountered while filtering the requests.</p>
-     */
+    /** A logger used for logging other events encountered while filtering the requests. */
     private static final Logger logger = LoggerFactory.getLogger(AuditFilter.class);
 
-    /**
-     * <p>A DAO to be used for inserting audit log records into database.</p>
-     */
+    /** A DAO to be used for inserting audit log records into database. */
     private final AuditDAO auditDAO;
 
-    /**
-     * <p>A runner for the audit log record insertion tasks.</p>
-     */
+    /** A runner for the audit log record insertion tasks. */
     private final BackgroundTaskRunnerService backgroundTaskRunnerService;
 
-    /**
-     * <p>The current status of installed plugins.</p>
-     */
+    /** The current status of installed plugins. */
     private PluginStatusCache pluginStatusCache;
 
-    /**
-     * <p>IP addresses of reverse proxies, comma-separated</p>
-     */
+    /** IP addresses of reverse proxies, comma-separated */
     private final String proxyIps;
 
-    /**
-     * <p>IP addresses of reverse proxies, comma-separated</p>
-     */
+    /** IP addresses of reverse proxies, comma-separated */
     private final String ipHeader;
 
-    /**
-     * <p>Constructs new <code>AuditFilter</code> instance. This implementation does nothing.</p>
-     */
+    /** Constructs new <code>AuditFilter</code> instance. This implementation does nothing. */
     @Inject
-    public AuditFilter(AuditDAO auditDAO, BackgroundTaskRunnerService backgroundTaskRunnerService,
-                       PluginStatusCache pluginStatusCache,
-                       @Named("proxy.addresses") String proxyIps,
-                       @Named("proxy.ip.header") String ipHeader) {
+    public AuditFilter(
+            AuditDAO auditDAO,
+            BackgroundTaskRunnerService backgroundTaskRunnerService,
+            PluginStatusCache pluginStatusCache,
+            @Named("proxy.addresses") String proxyIps,
+            @Named("proxy.ip.header") String ipHeader) {
         this.auditDAO = auditDAO;
         this.backgroundTaskRunnerService = backgroundTaskRunnerService;
         this.pluginStatusCache = pluginStatusCache;
@@ -105,31 +90,30 @@ public class AuditFilter implements Filter {
         }
     }
 
-    /**
-     * <p>Does nothing.</p>
-     */
+    /** Does nothing. */
     @Override
-    public void init(FilterConfig filterConfig) {
-    }
+    public void init(FilterConfig filterConfig) {}
 
     /**
-     * <p>Intercepts the specified request/response chain and records the audit data if auditing for specified request
-     * is supported.</p>
+     * Intercepts the specified request/response chain and records the audit data if auditing for
+     * specified request is supported.
      */
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+            throws IOException, ServletException {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         final String requestURI = httpRequest.getRequestURI();
         final String context = httpRequest.getContextPath();
 
-        if (pluginStatusCache.isPluginDisabled(AuditPluginConfigurationImpl.PLUGIN_ID) ||
-            httpRequest.getMethod().equalsIgnoreCase("GET")) {
+        if (pluginStatusCache.isPluginDisabled(AuditPluginConfigurationImpl.PLUGIN_ID)
+                || httpRequest.getMethod().equalsIgnoreCase("GET")) {
             // GET requests are not recorded
             chain.doFilter(request, response);
             return;
         }
 
-        final Optional<ResourceAuditInfo> auditInfo = ResourceAuditInfo.findAuditInfo(httpRequest.getMethod(), requestURI.substring(context.length()));
+        final Optional<ResourceAuditInfo> auditInfo =
+                ResourceAuditInfo.findAuditInfo(httpRequest.getMethod(), requestURI.substring(context.length()));
         boolean needAudit = auditInfo.isPresent();
 
         ResourceAuditor resourceAuditor = null;
@@ -153,36 +137,25 @@ public class AuditFilter implements Filter {
                     auditLogger.info(logRecord.toLogString());
                     this.backgroundTaskRunnerService.submitTask(new Task(logRecord));
                 }
-
             }
         }
     }
 
-    /**
-     * <p>Does nothing.</p>
-     */
+    /** Does nothing. */
     @Override
-    public void destroy() {
+    public void destroy() {}
 
-    }
-
-    /**
-     * <p>A task to be used for inserting the audit log record into database in the background.</p>
-     */
+    /** A task to be used for inserting the audit log record into database in the background. */
     private class Task implements Runnable {
 
-        /**
-         * <p>An audit log record to be inserted.</p>
-         */
+        /** An audit log record to be inserted. */
         private final AuditLogRecord logRecord;
 
         private Task(AuditLogRecord logRecord) {
             this.logRecord = logRecord;
         }
 
-        /**
-         * <pInserts the audit log record into database.</p>
-         */
+        /** <pInserts the audit log record into database. */
         @Override
         public void run() {
             try {

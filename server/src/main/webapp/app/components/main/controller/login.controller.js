@@ -73,6 +73,18 @@ angular
         authService.loginLocal($scope.login.username, password, loginHandler);
       };
 
+      // OIDC status
+      $scope.oidcStatus = false;
+
+      // Metodă pentru verificarea statusului OIDC de la server
+      function checkOidcStatus() {
+        authService.getOidcStatus(function (response) {
+          $scope.oidcStatus = response.data.status;
+          console.log(response);
+        });
+      }
+
+      checkOidcStatus();
       // OIDC login
       $scope.loginOIDC = function () {
         authService.loginOIDC(function (response) {

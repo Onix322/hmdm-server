@@ -42,6 +42,14 @@ angular
           });
         },
 
+        getOidcStatus: function (successCallback) {
+          serverAuthService.getOidcStatus(function (response) {
+            if (response && response.status === "OK") {
+              successCallback(response);
+            }
+          });
+        },
+
         handleOidcCallback: function (
           code,
           state,
@@ -146,6 +154,10 @@ angular
       {},
       {
         login: { url: "rest/public/auth/login", method: "POST" },
+        getOidcStatus: {
+          url: "rest/public/auth/login-oidc-status",
+          method: "GET",
+        },
         loginOidc: { url: "rest/public/auth/login-oidc", method: "GET" },
         callbackOidc: { url: "rest/public/auth/callback-oidc", method: "POST" },
         logout: { url: "rest/public/auth/logout", method: "POST" },

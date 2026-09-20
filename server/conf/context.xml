@@ -89,7 +89,7 @@
 
 
     <!-- Auth / OIDC settings -->
-    <Parameter name="auth.enable" value="${auth.enable}"/>
+    <Parameter name="oidc.enable" value="${oidc.enable}"/>
     <Parameter name="oidc.authorize.url" value="${oidc.authorize.url}"/>
     <Parameter name="oidc.jwks.url" value="${oidc.jwks.url}"/>
     <Parameter name="oidc.issuer" value="${oidc.issuer}"/>

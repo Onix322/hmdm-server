@@ -30,7 +30,6 @@ import com.hmdm.persistence.domain.User;
 import com.hmdm.rest.json.Response;
 import com.hmdm.rest.json.view.user.UserView;
 import com.hmdm.util.AuthHelper;
-
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -39,7 +38,6 @@ import java.net.http.HttpResponse;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -67,6 +65,7 @@ public class OidcAuthResource {
     private String oidcAuthorizeUrl;
     private String oidcResponseType;
     private String oidcTokenUrl;
+    private Boolean oidcEnable;
 
     /** A constructor required by Swagger. */
     public OidcAuthResource() {}
@@ -83,7 +82,8 @@ public class OidcAuthResource {
             @Named("oidc.client.id") String clientId,
             @Named("oidc.redirect.url") String redirectUrl,
             @Named("oidc.response.type") String responseType,
-            @Named("oidc.token.url") String tokenUrl) {
+            @Named("oidc.token.url") String tokenUrl,
+            @Named("oidc.enable") String oidcEnable) {
         this.authHelper = authHelper;
         this.authEngine = authEngine;
         this.oidcJwksUrl = jwksUrl;
@@ -95,6 +95,16 @@ public class OidcAuthResource {
         this.oidcRedirectUrl = redirectUrl;
         this.oidcResponseType = responseType;
         this.oidcTokenUrl = tokenUrl;
+        this.oidcEnable = Boolean.parseBoolean(oidcEnable);
+    }
+
+    @GET
+    @Path("/login-oidc-status")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response loginOidcStatus() {
+        Map<String, Boolean> status = new HashMap<>();
+        status.put("status", oidcEnable);
+        return Response.OK(status);
     }
 
     @GET
@@ -104,6 +114,10 @@ public class OidcAuthResource {
             throws InterruptedException, NoSuchAlgorithmException {
         // 1. gets the request
 
+        // 1.1 verify if oidc is enabled
+        if (!this.oidcEnable) {
+            return Response.ERROR("Authentification with oAuth / OIDC provider is not enabled");
+        }
         // 2. generate state and code_challager
         String state = this.authHelper.generateState();
 
@@ -119,15 +133,14 @@ public class OidcAuthResource {
         session.setAttribute("OIDC_STATE", state);
 
         // 3. create redirectUrl
-        String redirectUrl =
-                this.authHelper.buildAuthorizeUrl(
-                        this.oidcAuthorizeUrl,
-                        this.oidcClientId,
-                        this.oidcResponseType,
-                        this.oidcRedirectUrl,
-                        this.oidcScope,
-                        state,
-                        codeChallange);
+        String redirectUrl = this.authHelper.buildAuthorizeUrl(
+                this.oidcAuthorizeUrl,
+                this.oidcClientId,
+                this.oidcResponseType,
+                this.oidcRedirectUrl,
+                this.oidcScope,
+                state,
+                codeChallange);
 
         // 4. send the url to frontend
         Map<String, Object> innerData = new HashMap<>();
@@ -140,15 +153,17 @@ public class OidcAuthResource {
     @Path("/callback-oidc")
     @Produces(MediaType.APPLICATION_JSON)
     public Response callbackOidc(
-            @Context HttpServletRequest request,
-            @QueryParam("code") String code,
-            @QueryParam("state") String state)
+            @Context HttpServletRequest request, @QueryParam("code") String code, @QueryParam("state") String state)
             throws InterruptedException, IOException {
 
         // 1. prepare
         HttpSession session = request.getSession(false);
         if (session == null) {
             return Response.ERROR("Session expired or invalid");
+        }
+        // 1.1 verify if oidc is enabled
+        if (!this.oidcEnable) {
+            return Response.ERROR("Authentification with oAuth / OIDC provider is not enabled");
         }
 
         String oidcState = (String) session.getAttribute("OIDC_STATE");
@@ -162,25 +177,21 @@ public class OidcAuthResource {
 
         // 3. creare url
         String requestBody =
-                this.authHelper.buildRequestBody(
-                        code, this.oidcRedirectUrl, this.oidcClientId, oidcVerifier);
+                this.authHelper.buildRequestBody(code, this.oidcRedirectUrl, this.oidcClientId, oidcVerifier);
 
         // 4. exchange for access / id token
         HttpClient client = HttpClient.newHttpClient();
 
-        HttpRequest exchangeRequest =
-                HttpRequest.newBuilder()
-                        .uri(URI.create(this.oidcTokenUrl))
-                        .header("Content-Type", "application/x-www-form-urlencoded")
-                        .POST(HttpRequest.BodyPublishers.ofString(requestBody.toString()))
-                        .build();
+        HttpRequest exchangeRequest = HttpRequest.newBuilder()
+                .uri(URI.create(this.oidcTokenUrl))
+                .header("Content-Type", "application/x-www-form-urlencoded")
+                .POST(HttpRequest.BodyPublishers.ofString(requestBody.toString()))
+                .build();
 
-        HttpResponse<String> providerResponse =
-                client.send(exchangeRequest, HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> providerResponse = client.send(exchangeRequest, HttpResponse.BodyHandlers.ofString());
 
         if (providerResponse.statusCode() != 200) {
-            return Response.ERROR(
-                    "Provider rejected token exchange. Error: " + providerResponse.body());
+            return Response.ERROR("Provider rejected token exchange. Error: " + providerResponse.body());
         }
 
         String rawJson = providerResponse.body();
@@ -197,9 +208,7 @@ public class OidcAuthResource {
         // 6.1 cryptographic verification
         DecodedJWT jwt;
         try {
-            jwt =
-                    this.authHelper.verifyToken(
-                            idTokenString, this.oidcJwksUrl, this.oidcIssuer, this.oidcAudience);
+            jwt = this.authHelper.verifyToken(idTokenString, this.oidcJwksUrl, this.oidcIssuer, this.oidcAudience);
         } catch (Exception e) {
             return Response.ERROR("Token verification failed: " + e.getMessage());
         }
