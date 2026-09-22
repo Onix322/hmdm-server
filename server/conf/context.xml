@@ -86,4 +86,18 @@
     <!-- <Parameter name="jwt.secretkey" value="${jwt.secretkey}"/> -->
     <!-- <Parameter name="jwt.validity" value="${jwt.validity}"/> -->
     <!-- <Parameter name="jwt.validityrememberme" value="${jwt.validityrememberme}"/> -->
+
+
+    <!-- Auth / OIDC settings -->
+    <Parameter name="oidc.enable" value="${oidc.enable}"/>
+    <Parameter name="oidc.authorize.url" value="${oidc.authorize.url}"/>
+    <Parameter name="oidc.jwks.url" value="${oidc.jwks.url}"/>
+    <Parameter name="oidc.issuer" value="${oidc.issuer}"/>
+    <Parameter name="oidc.token.url" value="${oidc.token.url}"/>
+    <Parameter name="oidc.user.info" value="${oidc.user.info}"/>
+    <Parameter name="oidc.client.id" value="${oidc.client.id}"/>
+    <Parameter name="oidc.audience" value="${oidc.audience}"/>
+    <Parameter name="oidc.redirect.url" value="${oidc.redirect.url}"/>
+    <Parameter name="oidc.scope" value="${oidc.scope}"/>
+    <Parameter name="oidc.response.type" value="${oidc.response.type}"/>
 </Context>

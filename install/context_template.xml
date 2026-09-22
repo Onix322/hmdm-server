@@ -90,4 +90,17 @@
     <!-- <Parameter name="jwt.secretkey" value="20c68f0d9185b1d18cf6add1e8b491fd89529a44"/> -->
     <!-- <Parameter name="jwt.validity" value="86400"/> -->
     <!-- <Parameter name="jwt.validityrememberme" value="2592000"/> -->
+
+    <!-- OIDC / OAuth2 Configuration -->
+    <Parameter name="oidc.enable" value="_OIDC_ENABLE_"/>
+    <Parameter name="oidc.authorize.url" value="_OIDC_AUTHORIZE_URL_"/>
+    <Parameter name="oidc.jwks.url" value="_OIDC_JWKS_URL_"/>
+    <Parameter name="oidc.issuer" value="_OIDC_ISSUER_"/>
+    <Parameter name="oidc.token.url" value="_OIDC_TOKEN_URL_"/>
+    <Parameter name="oidc.user.info" value="_OIDC_USER_INFO_"/>
+    <Parameter name="oidc.client.id" value="_OIDC_CLIENT_ID_"/>
+    <Parameter name="oidc.audience" value="_OIDC_AUDIENCE_"/>
+    <Parameter name="oidc.redirect.url" value="_OIDC_REDIRECT_URL_"/>
+    <Parameter name="oidc.scope" value="_OIDC_SCOPE_"/>
+    <Parameter name="oidc.response.type" value="_OIDC_RESPONSE_TYPE_"/>
 </Context>

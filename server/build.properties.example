@@ -13,7 +13,7 @@ base.directory=D:/home/launcher
 files.directory=D:/home/launcher/files
 
 # A base URL for deployment of this build
-base.url=http://localhost:9090
+base.url=http://localhost:8080
 
 # A usage scenario:
 # shared: the application hosts data for multiple customers
@@ -71,3 +71,21 @@ smtp.from=noreply@example.com
 jwt.secretkey=20c68f0d9185b1d18cf6add1e8b491fd89529a44
 jwt.validity=86400
 jwt.validityrememberme=2592000
+
+
+# Auth / OIDC settings
+oidc.enable=false
+oidc.authorize.url=
+oidc.jwks.url=
+oidc.issuer=
+oidc.token.url=
+oidc.user.info=
+oidc.client.id=
+oidc.audience=
+oidc.redirect.url=
+oidc.scope=
+oidc.response.type=
+
+# Use oidc.secret if oidc.pkce is false. If true, backend skips oidc.secret during token exchange.
+oidc.pkce=true
+oidc.secret=
