@@ -91,9 +91,6 @@ angular
           userLang = SUPPORTED_LANGUAGES[userLang];
         } else {
           userLang = ENGLISH;
-        }
-      } else {
-        userLang = ENGLISH;
       }
 
       return userLang;
