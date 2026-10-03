@@ -1,0 +1,15 @@
+com/hmdm/plugins/push/rest/json/PushMessageFilter.class
+com/hmdm/plugins/push/persistence/PushScheduleDAO.class
+com/hmdm/plugins/push/PushPluginConfigurationImpl.class
+com/hmdm/plugins/push/persistence/PushDAO.class
+com/hmdm/plugins/push/rest/json/PushSendRequest.class
+com/hmdm/plugins/push/guice/module/PushScheduleTaskModule.class
+com/hmdm/plugins/push/persistence/domain/PluginPushMessage.class
+com/hmdm/plugins/push/persistence/mapper/PushMessageMapper.class
+com/hmdm/plugins/push/guice/module/PushLiquibaseModule.class
+com/hmdm/plugins/push/rest/json/PushScheduleFilter.class
+com/hmdm/plugins/push/persistence/domain/PluginPushSchedule.class
+com/hmdm/plugins/push/rest/PushResource.class
+com/hmdm/plugins/push/guice/module/PushRestModule.class
+com/hmdm/plugins/push/persistence/mapper/PushScheduleMapper.class
+com/hmdm/plugins/push/guice/module/PushPersistenceModule.class

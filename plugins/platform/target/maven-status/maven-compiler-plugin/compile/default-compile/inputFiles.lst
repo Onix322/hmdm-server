@@ -1,0 +1,16 @@
+/home/alex/Documents/Projects/hmdm-server/plugins/platform/src/main/java/com/hmdm/plugin/PluginTaskModule.java
+/home/alex/Documents/Projects/hmdm-server/plugins/platform/src/main/java/com/hmdm/plugin/PluginList.java
+/home/alex/Documents/Projects/hmdm-server/plugins/platform/src/main/java/com/hmdm/plugin/persistence/domain/Plugin.java
+/home/alex/Documents/Projects/hmdm-server/plugins/platform/src/main/java/com/hmdm/plugin/guice/module/PluginPlatformTaskModule.java
+/home/alex/Documents/Projects/hmdm-server/plugins/platform/src/main/java/com/hmdm/plugin/persistence/domain/DisabledPlugin.java
+/home/alex/Documents/Projects/hmdm-server/plugins/platform/src/main/java/com/hmdm/plugin/rest/PluginAccessFilter.java
+/home/alex/Documents/Projects/hmdm-server/plugins/platform/src/main/java/com/hmdm/plugin/guice/module/PluginRestModule.java
+/home/alex/Documents/Projects/hmdm-server/plugins/platform/src/main/java/com/hmdm/plugin/guice/module/PluginLiquibaseModule.java
+/home/alex/Documents/Projects/hmdm-server/plugins/platform/src/main/java/com/hmdm/plugin/PluginConfiguration.java
+/home/alex/Documents/Projects/hmdm-server/plugins/platform/src/main/java/com/hmdm/plugin/persistence/PluginDAO.java
+/home/alex/Documents/Projects/hmdm-server/plugins/platform/src/main/java/com/hmdm/plugin/service/PluginStatusCache.java
+/home/alex/Documents/Projects/hmdm-server/plugins/platform/src/main/java/com/hmdm/plugin/persistence/mapper/PluginMapper.java
+/home/alex/Documents/Projects/hmdm-server/plugins/platform/src/main/java/com/hmdm/plugin/guice/module/PluginPersistenceModule.java
+/home/alex/Documents/Projects/hmdm-server/plugins/platform/src/main/java/com/hmdm/plugin/persistence/CustomerCreatedEventListener.java
+/home/alex/Documents/Projects/hmdm-server/plugins/platform/src/main/java/com/hmdm/plugin/guice/module/PluginLiquibaseResourceAccessor.java
+/home/alex/Documents/Projects/hmdm-server/plugins/platform/src/main/java/com/hmdm/plugin/rest/PluginResource.java

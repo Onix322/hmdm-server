@@ -1,0 +1,34 @@
+{
+  "name": "angular-input-dropdown",
+  "version": "1.1.0",
+  "homepage": "https://github.com/hannaholl/angular-input-dropdown",
+  "authors": [
+    "hannahollstrom <hanna.hollstrom@gmail.com>"
+  ],
+  "description": "Angular directive for creating an input field with a dropdown list.",
+  "main": [
+    "inputDropdown.js",
+    "inputDropdownStyles.css"
+  ],
+  "keywords": [
+    "angular",
+    "dropdown"
+  ],
+  "dependencies": {
+    "angular": ">= 1.3.0"
+  },
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "demo"
+  ],
+  "_release": "1.1.0",
+  "_resolution": {
+    "type": "version",
+    "tag": "v1.1.0",
+    "commit": "7842ce0e2b9191843d1d6571483713156919288d"
+  },
+  "_source": "https://github.com/hannaholl/angular-input-dropdown.git",
+  "_target": "1.1.0",
+  "_originalSource": "angular-input-dropdown"
+}

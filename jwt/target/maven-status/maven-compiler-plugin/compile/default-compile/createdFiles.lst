@@ -1,0 +1,4 @@
+com/hmdm/security/jwt/rest/JWTAuthResource.class
+com/hmdm/security/jwt/rest/JWTToken.class
+com/hmdm/security/jwt/TokenProvider.class
+com/hmdm/security/jwt/JWTFilter.class

@@ -1,0 +1,11 @@
+/home/alex/Documents/Projects/hmdm-server/plugins/devicelog/postgres/src/main/java/com/hmdm/plugins/devicelog/persistence/postgres/guice/module/DeviceLogPostgresServiceModule.java
+/home/alex/Documents/Projects/hmdm-server/plugins/devicelog/postgres/src/main/java/com/hmdm/plugins/devicelog/persistence/postgres/guice/module/DeviceLogPostgresTaskModule.java
+/home/alex/Documents/Projects/hmdm-server/plugins/devicelog/postgres/src/main/java/com/hmdm/plugins/devicelog/persistence/postgres/dao/PostgresDeviceLogPluginSettingsDAO.java
+/home/alex/Documents/Projects/hmdm-server/plugins/devicelog/postgres/src/main/java/com/hmdm/plugins/devicelog/persistence/postgres/dao/domain/PostgresDeviceLogRule.java
+/home/alex/Documents/Projects/hmdm-server/plugins/devicelog/postgres/src/main/java/com/hmdm/plugins/devicelog/persistence/postgres/guice/module/DeviceLogPostgresLiquibaseModule.java
+/home/alex/Documents/Projects/hmdm-server/plugins/devicelog/postgres/src/main/java/com/hmdm/plugins/devicelog/persistence/postgres/DeviceLogPostgresPersistenceConfiguration.java
+/home/alex/Documents/Projects/hmdm-server/plugins/devicelog/postgres/src/main/java/com/hmdm/plugins/devicelog/persistence/postgres/dao/domain/PostgresDeviceLogPluginSettings.java
+/home/alex/Documents/Projects/hmdm-server/plugins/devicelog/postgres/src/main/java/com/hmdm/plugins/devicelog/persistence/postgres/dao/mapper/PostgresDeviceLogMapper.java
+/home/alex/Documents/Projects/hmdm-server/plugins/devicelog/postgres/src/main/java/com/hmdm/plugins/devicelog/persistence/postgres/dao/domain/PostgresDeviceLogRecord.java
+/home/alex/Documents/Projects/hmdm-server/plugins/devicelog/postgres/src/main/java/com/hmdm/plugins/devicelog/persistence/postgres/guice/module/DeviceLogPostgresPersistenceModule.java
+/home/alex/Documents/Projects/hmdm-server/plugins/devicelog/postgres/src/main/java/com/hmdm/plugins/devicelog/persistence/postgres/dao/PostgresDeviceLogDAO.java

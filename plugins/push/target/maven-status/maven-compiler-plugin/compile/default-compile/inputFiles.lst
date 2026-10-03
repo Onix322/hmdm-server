@@ -1,0 +1,15 @@
+/home/alex/Documents/Projects/hmdm-server/plugins/push/src/main/java/com/hmdm/plugins/push/guice/module/PushLiquibaseModule.java
+/home/alex/Documents/Projects/hmdm-server/plugins/push/src/main/java/com/hmdm/plugins/push/rest/json/PushMessageFilter.java
+/home/alex/Documents/Projects/hmdm-server/plugins/push/src/main/java/com/hmdm/plugins/push/persistence/PushScheduleDAO.java
+/home/alex/Documents/Projects/hmdm-server/plugins/push/src/main/java/com/hmdm/plugins/push/PushPluginConfigurationImpl.java
+/home/alex/Documents/Projects/hmdm-server/plugins/push/src/main/java/com/hmdm/plugins/push/rest/PushResource.java
+/home/alex/Documents/Projects/hmdm-server/plugins/push/src/main/java/com/hmdm/plugins/push/rest/json/PushSendRequest.java
+/home/alex/Documents/Projects/hmdm-server/plugins/push/src/main/java/com/hmdm/plugins/push/persistence/mapper/PushMessageMapper.java
+/home/alex/Documents/Projects/hmdm-server/plugins/push/src/main/java/com/hmdm/plugins/push/guice/module/PushPersistenceModule.java
+/home/alex/Documents/Projects/hmdm-server/plugins/push/src/main/java/com/hmdm/plugins/push/guice/module/PushRestModule.java
+/home/alex/Documents/Projects/hmdm-server/plugins/push/src/main/java/com/hmdm/plugins/push/persistence/PushDAO.java
+/home/alex/Documents/Projects/hmdm-server/plugins/push/src/main/java/com/hmdm/plugins/push/guice/module/PushScheduleTaskModule.java
+/home/alex/Documents/Projects/hmdm-server/plugins/push/src/main/java/com/hmdm/plugins/push/persistence/domain/PluginPushSchedule.java
+/home/alex/Documents/Projects/hmdm-server/plugins/push/src/main/java/com/hmdm/plugins/push/persistence/mapper/PushScheduleMapper.java
+/home/alex/Documents/Projects/hmdm-server/plugins/push/src/main/java/com/hmdm/plugins/push/rest/json/PushScheduleFilter.java
+/home/alex/Documents/Projects/hmdm-server/plugins/push/src/main/java/com/hmdm/plugins/push/persistence/domain/PluginPushMessage.java

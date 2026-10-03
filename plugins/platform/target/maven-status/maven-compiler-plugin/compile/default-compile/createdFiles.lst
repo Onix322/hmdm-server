@@ -1,0 +1,16 @@
+com/hmdm/plugin/guice/module/PluginPersistenceModule.class
+com/hmdm/plugin/persistence/domain/Plugin.class
+com/hmdm/plugin/guice/module/PluginRestModule.class
+com/hmdm/plugin/rest/PluginAccessFilter.class
+com/hmdm/plugin/rest/PluginResource.class
+com/hmdm/plugin/PluginTaskModule.class
+com/hmdm/plugin/guice/module/PluginPlatformTaskModule.class
+com/hmdm/plugin/guice/module/PluginLiquibaseResourceAccessor.class
+com/hmdm/plugin/PluginList.class
+com/hmdm/plugin/service/PluginStatusCache.class
+com/hmdm/plugin/persistence/domain/DisabledPlugin.class
+com/hmdm/plugin/PluginConfiguration.class
+com/hmdm/plugin/persistence/PluginDAO.class
+com/hmdm/plugin/persistence/mapper/PluginMapper.class
+com/hmdm/plugin/persistence/CustomerCreatedEventListener.class
+com/hmdm/plugin/guice/module/PluginLiquibaseModule.class

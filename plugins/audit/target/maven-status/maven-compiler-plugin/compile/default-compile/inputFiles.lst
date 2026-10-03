@@ -1,0 +1,16 @@
+/home/alex/Documents/Projects/hmdm-server/plugins/audit/src/main/java/com/hmdm/plugins/audit/AuditPluginConfigurationImpl.java
+/home/alex/Documents/Projects/hmdm-server/plugins/audit/src/main/java/com/hmdm/plugins/audit/guice/module/AuditRestModule.java
+/home/alex/Documents/Projects/hmdm-server/plugins/audit/src/main/java/com/hmdm/plugins/audit/guice/module/AuditPersistenceModule.java
+/home/alex/Documents/Projects/hmdm-server/plugins/audit/src/main/java/com/hmdm/plugins/audit/rest/filter/ResourceAuditInfo.java
+/home/alex/Documents/Projects/hmdm-server/plugins/audit/src/main/java/com/hmdm/plugins/audit/rest/json/AuditLogFilter.java
+/home/alex/Documents/Projects/hmdm-server/plugins/audit/src/main/java/com/hmdm/plugins/audit/guice/module/AuditLiquibaseModule.java
+/home/alex/Documents/Projects/hmdm-server/plugins/audit/src/main/java/com/hmdm/plugins/audit/rest/filter/AuditFilter.java
+/home/alex/Documents/Projects/hmdm-server/plugins/audit/src/main/java/com/hmdm/plugins/audit/persistence/domain/AuditLogRecord.java
+/home/alex/Documents/Projects/hmdm-server/plugins/audit/src/main/java/com/hmdm/plugins/audit/rest/AuditResource.java
+/home/alex/Documents/Projects/hmdm-server/plugins/audit/src/main/java/com/hmdm/plugins/audit/rest/filter/ServletRequestAuditWrapper.java
+/home/alex/Documents/Projects/hmdm-server/plugins/audit/src/main/java/com/hmdm/plugins/audit/persistence/mapper/AuditMapper.java
+/home/alex/Documents/Projects/hmdm-server/plugins/audit/src/main/java/com/hmdm/plugins/audit/persistence/AuditDAO.java
+/home/alex/Documents/Projects/hmdm-server/plugins/audit/src/main/java/com/hmdm/plugins/audit/rest/filter/ResourceAuditor.java
+/home/alex/Documents/Projects/hmdm-server/plugins/audit/src/main/java/com/hmdm/plugins/audit/rest/filter/ServletOutputStreamWrapper.java
+/home/alex/Documents/Projects/hmdm-server/plugins/audit/src/main/java/com/hmdm/plugins/audit/rest/filter/ServletResponseAuditWrapper.java
+/home/alex/Documents/Projects/hmdm-server/plugins/audit/src/main/java/com/hmdm/plugins/audit/guice/module/AuditConfigureModule.java
