@@ -24,12 +24,11 @@ package com.hmdm.plugins.messaging.persistence.domain;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.hmdm.persistence.domain.CustomerData;
-import io.swagger.annotations.ApiModelProperty;
-
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.io.Serializable;
 
 /**
- * <p>A domain object representing the message sent to the device.</p>
+ * A domain object representing the message sent to the device.
  *
  * @author isv
  */
@@ -37,105 +36,108 @@ import java.io.Serializable;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Message implements CustomerData, Serializable {
 
-    private static final long serialVersionUID = 4721182825864477586L;
+  private static final long serialVersionUID = 4721182825864477586L;
 
-    public static final int STATUS_SENT = 0;
-    public static final int STATUS_DELIVERED = 1;
-    public static final int STATUS_READ = 2;
+  public static final int STATUS_SENT = 0;
+  public static final int STATUS_DELIVERED = 1;
+  public static final int STATUS_READ = 2;
 
-    @ApiModelProperty("ID of message record")
-    private Integer id;
+  @Schema(description = "ID of message record")
+  private Integer id;
 
-    @ApiModelProperty("Customer ID")
-    private int customerId;
+  @Schema(description = "Customer ID")
+  private int customerId;
 
-    @ApiModelProperty("Device ID")
-    private int deviceId;
+  @Schema(description = "Device ID")
+  private int deviceId;
 
-    @ApiModelProperty("Device Number")
-    private String deviceNumber;
+  @Schema(description = "Device Number")
+  private String deviceNumber;
 
-    @ApiModelProperty("Timestamp when the message has been sent (in milliseconds since epoch time)")
-    private long ts;
+  @Schema(
+      description = "Timestamp when the message has been sent (in milliseconds since epoch time)")
+  private long ts;
 
-    @ApiModelProperty("Message text")
-    private String message;
+  @Schema(description = "Message text")
+  private String message;
 
-    @ApiModelProperty("Message status")
-    private int status;
+  @Schema(description = "Message status")
+  private int status;
 
-    /**
-     * <p>Constructs new <code>Message</code> instance. This implementation does nothing.</p>
-     */
-    public Message() {
-    }
+  /** Constructs new <code>Message</code> instance. This implementation does nothing. */
+  public Message() {}
 
-    public Integer getId() {
-        return id;
-    }
+  public Integer getId() {
+    return id;
+  }
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+  public void setId(Integer id) {
+    this.id = id;
+  }
 
-    @Override
-    public int getCustomerId() {
-        return customerId;
-    }
+  @Override
+  public int getCustomerId() {
+    return customerId;
+  }
 
-    @Override
-    public void setCustomerId(int customerId) {
-        this.customerId = customerId;
-    }
+  @Override
+  public void setCustomerId(int customerId) {
+    this.customerId = customerId;
+  }
 
-    public int getDeviceId() {
-        return deviceId;
-    }
+  public int getDeviceId() {
+    return deviceId;
+  }
 
-    public void setDeviceId(int deviceId) {
-        this.deviceId = deviceId;
-    }
+  public void setDeviceId(int deviceId) {
+    this.deviceId = deviceId;
+  }
 
-    public String getDeviceNumber() {
-        return deviceNumber;
-    }
+  public String getDeviceNumber() {
+    return deviceNumber;
+  }
 
-    public void setDeviceNumber(String deviceNumber) {
-        this.deviceNumber = deviceNumber;
-    }
+  public void setDeviceNumber(String deviceNumber) {
+    this.deviceNumber = deviceNumber;
+  }
 
-    public long getTs() {
-        return ts;
-    }
+  public long getTs() {
+    return ts;
+  }
 
-    public void setTs(long ts) {
-        this.ts = ts;
-    }
+  public void setTs(long ts) {
+    this.ts = ts;
+  }
 
-    public String getMessage() {
-        return message;
-    }
+  public String getMessage() {
+    return message;
+  }
 
-    public void setMessage(String message) {
-        this.message = message;
-    }
+  public void setMessage(String message) {
+    this.message = message;
+  }
 
-    public int getStatus() {
-        return status;
-    }
+  public int getStatus() {
+    return status;
+  }
 
-    public void setStatus(int status) {
-        this.status = status;
-    }
+  public void setStatus(int status) {
+    this.status = status;
+  }
 
-    @Override
-    public String toString() {
-        return "Message{" +
-                "id=" + id +
-                ", deviceId=" + deviceId +
-                ", ts=" + ts +
-                ", message=" + message +
-                ", status=" + status +
-                '}';
-    }
+  @Override
+  public String toString() {
+    return "Message{"
+        + "id="
+        + id
+        + ", deviceId="
+        + deviceId
+        + ", ts="
+        + ts
+        + ", message="
+        + message
+        + ", status="
+        + status
+        + '}';
+  }
 }

@@ -21,67 +21,60 @@
 
 package com.hmdm.persistence.domain;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
-
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.io.Serializable;
 import java.util.Objects;
 
 /**
- * <p>Authentication scheme</p>
+ * Authentication scheme
  *
  * @author isv
  */
-@ApiModel(description = "Authentication scheme")
+@Schema(description = "Authentication scheme")
 public class AuthScheme implements Serializable {
 
-    private static final long serialVersionUID = -8203664108955594811L;
+  private static final long serialVersionUID = -8203664108955594811L;
 
-    @ApiModelProperty("Scheme type")
-    private String type;
-    @ApiModelProperty("Implementing class")
-    private String implClass;
+  @Schema(description = "Scheme type")
+  private String type;
 
-    /**
-     * <p>Constructs new <code>AuthScheme</code> instance. This implementation does nothing.</p>
-     */
-    public AuthScheme() {
-    }
+  @Schema(description = "Implementing class")
+  private String implClass;
 
-    public String getType() {
-        return type;
-    }
+  /** Constructs new <code>AuthScheme</code> instance. This implementation does nothing. */
+  public AuthScheme() {}
 
-    public void setType(String type) {
-        this.type = type;
-    }
+  public String getType() {
+    return type;
+  }
 
-    public String getImplClass() {
-        return implClass;
-    }
+  public void setType(String type) {
+    this.type = type;
+  }
 
-    public void setImplClass(String implClass) {
-        this.implClass = implClass;
-    }
+  public String getImplClass() {
+    return implClass;
+  }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        AuthScheme that = (AuthScheme) o;
-        return type.equals(that.type);
-    }
+  public void setImplClass(String implClass) {
+    this.implClass = implClass;
+  }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(type);
-    }
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    AuthScheme that = (AuthScheme) o;
+    return type.equals(that.type);
+  }
 
-    @Override
-    public String toString() {
-        return "AuthScheme{" +
-                "type=" + type +
-                ", implClass='" + implClass + '\'' +
-                '}';
-    }
+  @Override
+  public int hashCode() {
+    return Objects.hash(type);
+  }
+
+  @Override
+  public String toString() {
+    return "AuthScheme{" + "type=" + type + ", implClass='" + implClass + '\'' + '}';
+  }
 }

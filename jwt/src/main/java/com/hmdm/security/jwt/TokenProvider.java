@@ -41,7 +41,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.Date;
 
-import javax.inject.Named;
+import jakarta.inject.Named;
 
 /**
  * A provider for JWT tokens.

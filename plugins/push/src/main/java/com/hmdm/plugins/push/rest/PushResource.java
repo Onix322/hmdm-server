@@ -39,369 +39,368 @@ import com.hmdm.rest.json.PaginatedData;
 import com.hmdm.rest.json.Response;
 import com.hmdm.security.SecurityContext;
 import com.hmdm.security.SecurityException;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.Authorization;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
+import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.MediaType;
+import java.util.LinkedList;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-import java.util.LinkedList;
-import java.util.List;
-
 /**
- * <p>A resource to be used for managing the <code>Push</code> plugin data for customer account associated
- * with current user.</p>
+ * A resource to be used for managing the <code>Push</code> plugin data for customer account
+ * associated with current user.
  *
  * @author isv
  */
 @Singleton
 @Path("/plugins/push")
-@Api(tags = {"Push messaging plugin"})
+@Tag(name = "Push messaging plugin")
 public class PushResource {
 
-    private static final Logger logger = LoggerFactory.getLogger(PushResource.class);
+  private static final Logger logger = LoggerFactory.getLogger(PushResource.class);
 
-    /**
-     * <p>An interface to push message records persistence.</p>
-     */
-    private PushDAO pushDAO;
+  /** An interface to push message records persistence. */
+  private PushDAO pushDAO;
 
-    /**
-     * <p>An interface to scheduled task records persistence.</p>
-     */
-    private PushScheduleDAO pushScheduleDAO;
+  /** An interface to scheduled task records persistence. */
+  private PushScheduleDAO pushScheduleDAO;
 
-    /**
-     * <p>An interface to persistence without security checks.</p>
-     */
-    private UnsecureDAO unsecureDAO;
+  /** An interface to persistence without security checks. */
+  private UnsecureDAO unsecureDAO;
 
-    /**
-     * <p>An interface to device records persistence.</p>
-     */
-    private DeviceDAO deviceDAO;
+  /** An interface to device records persistence. */
+  private DeviceDAO deviceDAO;
 
-    /**
-     * <p>An interface to notification services.</p>
-     */
-    private PushService pushService;
+  /** An interface to notification services. */
+  private PushService pushService;
 
-    private PluginStatusCache pluginStatusCache;
+  private PluginStatusCache pluginStatusCache;
 
-    /**
-     * <p>A constructor required by swagger.</p>
-     */
-    public PushResource() {
+  /** A constructor required by swagger. */
+  public PushResource() {}
+
+  /** Constructs new <code>PushResource</code> instance. This implementation does nothing. */
+  @Inject
+  public PushResource(
+      PushDAO pushDAO,
+      PushScheduleDAO pushScheduleDAO,
+      UnsecureDAO unsecureDAO,
+      DeviceDAO deviceDAO,
+      PushService pushService,
+      PluginStatusCache pluginStatusCache) {
+    this.pushDAO = pushDAO;
+    this.pushScheduleDAO = pushScheduleDAO;
+    this.unsecureDAO = unsecureDAO;
+    this.deviceDAO = deviceDAO;
+    this.pushService = pushService;
+    this.pluginStatusCache = pluginStatusCache;
+  }
+
+  // =================================================================================================================
+
+  /**
+   * Gets the list of push message records matching the specified filter.
+   *
+   * @param filter a filter to be used for filtering the records.
+   * @return a response with list of device log records matching the specified filter.
+   */
+  @Operation(
+      summary = "Search Push messages",
+      description = "Gets the list of message records matching the specified filter",
+      security = {@SecurityRequirement(name = "Bearer Token")})
+  @ApiResponses({
+    @ApiResponse(
+        responseCode = "200",
+        description = "OK",
+        content = @Content(schema = @Schema(implementation = PaginatedData.class)))
+  })
+  @POST
+  @Path("/private/search")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response getMessages(PushMessageFilter filter) {
+    try {
+      List<PluginPushMessage> records = this.pushDAO.findAll(filter);
+      long count = this.pushDAO.countAll(filter);
+
+      return Response.OK(new PaginatedData<>(records, count));
+    } catch (Exception e) {
+      e.printStackTrace();
+      logger.error(
+          "Failed to search the push message records due to unexpected error. Filter: {}",
+          filter,
+          e);
+      return Response.INTERNAL_ERROR();
     }
+  }
 
-    /**
-     * <p>Constructs new <code>PushResource</code> instance. This implementation does nothing.</p>
-     */
-    @Inject
-    public PushResource(PushDAO pushDAO,
-                             PushScheduleDAO pushScheduleDAO,
-                             UnsecureDAO unsecureDAO,
-                             DeviceDAO deviceDAO,
-                             PushService pushService,
-                             PluginStatusCache pluginStatusCache) {
-        this.pushDAO = pushDAO;
-        this.pushScheduleDAO = pushScheduleDAO;
-        this.unsecureDAO = unsecureDAO;
-        this.deviceDAO = deviceDAO;
-        this.pushService = pushService;
-        this.pluginStatusCache = pluginStatusCache;
-    }
+  // =================================================================================================================
+  @Operation(
+      summary = "Send new Push message",
+      description = "Sends a new Push message to a specified device.",
+      security = {@SecurityRequirement(name = "Bearer Token")})
+  @POST
+  @Path("/private/send")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response sendMessage(PushSendRequest sendRequest) {
+    try {
+      final boolean canSendMessages = SecurityContext.get().hasPermission("plugin_push_send");
 
-    // =================================================================================================================
+      if (!canSendMessages) {
+        logger.error(
+            "Unauthorized attempt to send a Push message",
+            SecurityException.onCustomerDataAccessViolation(0, "push"));
+        return Response.PERMISSION_DENIED();
+      }
 
-    /**
-     * <p>Gets the list of push message records matching the specified filter.</p>
-     *
-     * @param filter a filter to be used for filtering the records.
-     * @return a response with list of device log records matching the specified filter.
-     */
-    @ApiOperation(
-            value = "Search Push messages",
-            notes = "Gets the list of message records matching the specified filter",
-            response = PaginatedData.class,
-            authorizations = {@Authorization("Bearer Token")}
-    )
-    @POST
-    @Path("/private/search")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getMessages(PushMessageFilter filter) {
-        try {
-            List<PluginPushMessage> records = this.pushDAO.findAll(filter);
-            long count = this.pushDAO.countAll(filter);
+      List<PluginPushMessage> messages = new LinkedList<>();
 
-            return Response.OK(new PaginatedData<>(records, count));
-        } catch (Exception e) {
-            e.printStackTrace();
-            logger.error("Failed to search the push message records due to unexpected error. Filter: {}", filter, e);
-            return Response.INTERNAL_ERROR();
+      if (sendRequest.getScope().equals("device")) {
+        // Send by device number
+        if (sendRequest.getDeviceNumber() != null) {
+          PluginPushMessage message = new PluginPushMessage();
+          Device device = deviceDAO.getDeviceByNumber(sendRequest.getDeviceNumber());
+          if (device == null) {
+            String error =
+                "Attempt to send Push message to wrong device number "
+                    + sendRequest.getDeviceNumber();
+            logger.error(error);
+            return Response.ERROR(error);
+          }
+          message.setDeviceId(device.getId());
+          messages.add(message);
+        } else {
+          String error = "Empty device number while trying to send a Push message!";
+          logger.error(error);
+          return Response.ERROR(error);
         }
-    }
-
-    // =================================================================================================================
-    @ApiOperation(
-            value = "Send new Push message",
-            notes = "Sends a new Push message to a specified device.",
-            authorizations = {@Authorization("Bearer Token")}
-    )
-    @POST
-    @Path("/private/send")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response sendMessage(PushSendRequest sendRequest) {
-        try {
-            final boolean canSendMessages = SecurityContext.get().hasPermission("plugin_push_send");
-
-            if (!canSendMessages) {
-                logger.error("Unauthorized attempt to send a Push message",
-                        SecurityException.onCustomerDataAccessViolation(0, "push"));
-                return Response.PERMISSION_DENIED();
-            }
-
-            List<PluginPushMessage> messages = new LinkedList<>();
-
-            if (sendRequest.getScope().equals("device")) {
-                // Send by device number
-                if (sendRequest.getDeviceNumber() != null) {
-                    PluginPushMessage message = new PluginPushMessage();
-                    Device device = deviceDAO.getDeviceByNumber(sendRequest.getDeviceNumber());
-                    if (device == null) {
-                        String error = "Attempt to send Push message to wrong device number " + sendRequest.getDeviceNumber();
-                        logger.error(error);
-                        return Response.ERROR(error);
-                    }
-                    message.setDeviceId(device.getId());
-                    messages.add(message);
-                } else {
-                    String error = "Empty device number while trying to send a Push message!";
-                    logger.error(error);
-                    return Response.ERROR(error);
-                }
-            } else {
-                DeviceSearchRequest dsr = new DeviceSearchRequest();
-                dsr.setPageSize(1000000); // No page limitations
-                dsr.setCustomerId(SecurityContext.get().getCurrentCustomerId().get());
-                dsr.setUserId(SecurityContext.get().getCurrentUser().get().getId());
-                if (sendRequest.getScope().equals("group")) {
-                    if (sendRequest.getGroupId() == null || sendRequest.getGroupId() == 0) {
-                        String error = "Empty group id while trying to send a Push message to group!";
-                        logger.error(error);
-                        return Response.ERROR(error);
-                    }
-                    dsr.setGroupId(sendRequest.getGroupId());
-                }
-                else if (sendRequest.getScope().equals("configuration")) {
-                    if (sendRequest.getConfigurationId() == null || sendRequest.getConfigurationId() == 0) {
-                        String error = "Empty configuration id while trying to send a Push message to configuration!";
-                        logger.error(error);
-                        return Response.ERROR(error);
-                    }
-                    dsr.setConfigurationId(sendRequest.getConfigurationId());
-
-                }
-
-                List<Device> devices = deviceDAO.getAllDevices(dsr).getItems();
-                for (Device device : devices) {
-                    PluginPushMessage message = new PluginPushMessage();
-                    message.setDeviceId(device.getId());
-                    messages.add(message);
-                }
-            }
-
-            for (PluginPushMessage message : messages) {
-                message.setMessageType(sendRequest.getMessageType());
-                if (sendRequest.getPayload() != null && !sendRequest.getPayload().trim().equals("")) {
-                    message.setPayload(sendRequest.getPayload());
-                }
-                message.setTs(System.currentTimeMillis());
-                sendSingleMessage(message);
-            }
-
-            return Response.OK();
-        } catch (Exception e) {
-            e.printStackTrace();
-            logger.error("Unexpected error when sending a Push message", e);
-            return Response.ERROR();
-        }
-    }
-
-    private boolean sendSingleMessage(PluginPushMessage message) {
-         try {
-             this.pushDAO.insertMessage(message);
-
-             PushMessage pushMessage = new PushMessage();
-             pushMessage.setDeviceId(message.getDeviceId());
-             pushMessage.setMessageType(message.getMessageType());
-             pushMessage.setPayload(message.getPayload());
-
-             this.pushService.send(pushMessage);
-
-             return true;
-
-         } catch (Exception e) {
-             e.printStackTrace();
-             logger.error("Unexpected error when sending a Push message to " + message.getDeviceId(), e);
-             return false;
-         }
-    }
-
-    // =================================================================================================================
-    @ApiOperation(
-            value = "Delete Push message",
-            notes = "Delete an existing Push message"
-    )
-    @DELETE
-    @Path("/private/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response removeMessage(@PathParam("id") @ApiParam("Message ID") Integer id) {
-        final boolean canSendMessages = SecurityContext.get().hasPermission("plugin_push_delete");
-
-        if (!(canSendMessages)) {
-            logger.error("Unauthorized attempt to delete Push message",
-                    SecurityException.onCustomerDataAccessViolation(id, "push"));
-            return Response.PERMISSION_DENIED();
+      } else {
+        DeviceSearchRequest dsr = new DeviceSearchRequest();
+        dsr.setPageSize(1000000); // No page limitations
+        dsr.setCustomerId(SecurityContext.get().getCurrentCustomerId().get());
+        dsr.setUserId(SecurityContext.get().getCurrentUser().get().getId());
+        if (sendRequest.getScope().equals("group")) {
+          if (sendRequest.getGroupId() == null || sendRequest.getGroupId() == 0) {
+            String error = "Empty group id while trying to send a Push message to group!";
+            logger.error(error);
+            return Response.ERROR(error);
+          }
+          dsr.setGroupId(sendRequest.getGroupId());
+        } else if (sendRequest.getScope().equals("configuration")) {
+          if (sendRequest.getConfigurationId() == null || sendRequest.getConfigurationId() == 0) {
+            String error =
+                "Empty configuration id while trying to send a Push message to configuration!";
+            logger.error(error);
+            return Response.ERROR(error);
+          }
+          dsr.setConfigurationId(sendRequest.getConfigurationId());
         }
 
-        this.pushDAO.deleteMessage(id);
-        return Response.OK();
+        List<Device> devices = deviceDAO.getAllDevices(dsr).getItems();
+        for (Device device : devices) {
+          PluginPushMessage message = new PluginPushMessage();
+          message.setDeviceId(device.getId());
+          messages.add(message);
+        }
+      }
+
+      for (PluginPushMessage message : messages) {
+        message.setMessageType(sendRequest.getMessageType());
+        if (sendRequest.getPayload() != null && !sendRequest.getPayload().trim().equals("")) {
+          message.setPayload(sendRequest.getPayload());
+        }
+        message.setTs(System.currentTimeMillis());
+        sendSingleMessage(message);
+      }
+
+      return Response.OK();
+    } catch (Exception e) {
+      e.printStackTrace();
+      logger.error("Unexpected error when sending a Push message", e);
+      return Response.ERROR();
+    }
+  }
+
+  private boolean sendSingleMessage(PluginPushMessage message) {
+    try {
+      this.pushDAO.insertMessage(message);
+
+      PushMessage pushMessage = new PushMessage();
+      pushMessage.setDeviceId(message.getDeviceId());
+      pushMessage.setMessageType(message.getMessageType());
+      pushMessage.setPayload(message.getPayload());
+
+      this.pushService.send(pushMessage);
+
+      return true;
+
+    } catch (Exception e) {
+      e.printStackTrace();
+      logger.error("Unexpected error when sending a Push message to " + message.getDeviceId(), e);
+      return false;
+    }
+  }
+
+  // =================================================================================================================
+  @Operation(summary = "Delete Push message", description = "Delete an existing Push message")
+  @DELETE
+  @Path("/private/{id}")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response removeMessage(
+      @PathParam("id") @Parameter(description = "Message ID") Integer id) {
+    final boolean canSendMessages = SecurityContext.get().hasPermission("plugin_push_delete");
+
+    if (!(canSendMessages)) {
+      logger.error(
+          "Unauthorized attempt to delete Push message",
+          SecurityException.onCustomerDataAccessViolation(id, "push"));
+      return Response.PERMISSION_DENIED();
     }
 
+    this.pushDAO.deleteMessage(id);
+    return Response.OK();
+  }
 
-    // =================================================================================================================
-    @ApiOperation(
-            value = "Purge old Push messages",
-            notes = "Deletes all Push messages older than a specified number of days.",
-            authorizations = {@Authorization("Bearer Token")}
-    )
-    @GET
-    @Path("/private/purge/{days}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response purgeMessages(@PathParam("days") Integer days) {
-        try {
-            final boolean canPurgeMessages = SecurityContext.get().hasPermission("plugin_push_delete");
+  // =================================================================================================================
+  @Operation(
+      summary = "Purge old Push messages",
+      description = "Deletes all Push messages older than a specified number of days.",
+      security = {@SecurityRequirement(name = "Bearer Token")})
+  @GET
+  @Path("/private/purge/{days}")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response purgeMessages(@PathParam("days") Integer days) {
+    try {
+      final boolean canPurgeMessages = SecurityContext.get().hasPermission("plugin_push_delete");
 
-            if (!canPurgeMessages) {
-                logger.error("Unauthorized attempt to purge old Push messages",
-                        SecurityException.onCustomerDataAccessViolation(0, "push"));
-                return Response.PERMISSION_DENIED();
-            }
+      if (!canPurgeMessages) {
+        logger.error(
+            "Unauthorized attempt to purge old Push messages",
+            SecurityException.onCustomerDataAccessViolation(0, "push"));
+        return Response.PERMISSION_DENIED();
+      }
 
-            this.pushDAO.purgeOldMessages(days);
+      this.pushDAO.purgeOldMessages(days);
 
-            return Response.OK();
-        } catch (Exception e) {
-            e.printStackTrace();
-            logger.error("Unexpected error when purging old Push messages", e);
-            return Response.ERROR();
-        }
+      return Response.OK();
+    } catch (Exception e) {
+      e.printStackTrace();
+      logger.error("Unexpected error when purging old Push messages", e);
+      return Response.ERROR();
     }
+  }
 
+  // =================================================================================================================
 
-    // =================================================================================================================
+  /**
+   * Gets the list of scheduled task records matching the specified filter.
+   *
+   * @param filter a filter to be used for filtering the records.
+   * @return a response with list of scheduled task records matching the specified filter.
+   */
+  @Operation(
+      summary = "Search scheduled tasks",
+      description = "Gets the list of scheduled task records matching the specified filter",
+      security = {@SecurityRequirement(name = "Bearer Token")})
+  @ApiResponses({
+    @ApiResponse(
+        responseCode = "200",
+        description = "OK",
+        content = @Content(schema = @Schema(implementation = PaginatedData.class)))
+  })
+  @POST
+  @Path("/private/searchTasks")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response getTasks(PushScheduleFilter filter) {
+    try {
+      List<PluginPushSchedule> records = this.pushScheduleDAO.findAll(filter);
+      long count = this.pushScheduleDAO.countAll(filter);
 
-    /**
-     * <p>Gets the list of scheduled task records matching the specified filter.</p>
-     *
-     * @param filter a filter to be used for filtering the records.
-     * @return a response with list of scheduled task records matching the specified filter.
-     */
-    @ApiOperation(
-            value = "Search scheduled tasks",
-            notes = "Gets the list of scheduled task records matching the specified filter",
-            response = PaginatedData.class,
-            authorizations = {@Authorization("Bearer Token")}
-    )
-    @POST
-    @Path("/private/searchTasks")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getTasks(PushScheduleFilter filter) {
-        try {
-            List<PluginPushSchedule> records = this.pushScheduleDAO.findAll(filter);
-            long count = this.pushScheduleDAO.countAll(filter);
-
-            return Response.OK(new PaginatedData<>(records, count));
-        } catch (Exception e) {
-            e.printStackTrace();
-            logger.error("Failed to search the scheduled task records due to unexpected error. Filter: {}", filter, e);
-            return Response.INTERNAL_ERROR();
-        }
+      return Response.OK(new PaginatedData<>(records, count));
+    } catch (Exception e) {
+      e.printStackTrace();
+      logger.error(
+          "Failed to search the scheduled task records due to unexpected error. Filter: {}",
+          filter,
+          e);
+      return Response.INTERNAL_ERROR();
     }
+  }
 
-    // =================================================================================================================
-    @ApiOperation(
-            value = "Create or update a scheduled task",
-            notes = "Creates a new scheduled task record (if id is not provided) or updates existing one otherwise",
-            authorizations = {@Authorization("Bearer Token")}
-    )
-    @PUT
-    @Path("/private/task")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response saveTask(PluginPushSchedule task) {
-        if (!SecurityContext.get().hasPermission("plugin_push_delete")) {
-            logger.error("Unauthorized attempt to save scheduled task by user " +
-                    SecurityContext.get().getCurrentUserName());
-            return Response.PERMISSION_DENIED();
-        }
-        try {
-            if (task.getScope().equals("device")) {
-                // Autocomplete returns device number
-                Device dbDevice = deviceDAO.getDeviceByNumber(task.getDeviceNumber());
-                if (dbDevice == null) {
-                    logger.error("Invalid device number in the scheduled task! " + task.getDeviceNumber());
-                    return Response.INTERNAL_ERROR();
-                }
-                task.setDeviceId(dbDevice.getId());
-            }
-            if (task.getId() == null || task.getId() == 0) {
-                pushScheduleDAO.insert(task);
-            } else {
-                pushScheduleDAO.update(task);
-            }
-
-            return Response.OK();
-        } catch (Exception e) {
-            e.printStackTrace();
-            logger.error("Failed to create or update device log plugin settings rule", e);
-            return Response.INTERNAL_ERROR();
-        }
+  // =================================================================================================================
+  @Operation(
+      summary = "Create or update a scheduled task",
+      description =
+          "Creates a new scheduled task record (if id is not provided) or updates existing one"
+              + " otherwise",
+      security = {@SecurityRequirement(name = "Bearer Token")})
+  @PUT
+  @Path("/private/task")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response saveTask(PluginPushSchedule task) {
+    if (!SecurityContext.get().hasPermission("plugin_push_delete")) {
+      logger.error(
+          "Unauthorized attempt to save scheduled task by user "
+              + SecurityContext.get().getCurrentUserName());
+      return Response.PERMISSION_DENIED();
     }
+    try {
+      if (task.getScope().equals("device")) {
+        // Autocomplete returns device number
+        Device dbDevice = deviceDAO.getDeviceByNumber(task.getDeviceNumber());
+        if (dbDevice == null) {
+          logger.error("Invalid device number in the scheduled task! " + task.getDeviceNumber());
+          return Response.INTERNAL_ERROR();
+        }
+        task.setDeviceId(dbDevice.getId());
+      }
+      if (task.getId() == null || task.getId() == 0) {
+        pushScheduleDAO.insert(task);
+      } else {
+        pushScheduleDAO.update(task);
+      }
 
-    // =================================================================================================================
-    @ApiOperation(
-            value = "Delete a scheduled task",
-            notes = "Delete an existing scheduled task"
-    )
-    @DELETE
-    @Path("/private/task/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response removeTask(@PathParam("id") @ApiParam("Task ID") Integer id) {
-        if (!SecurityContext.get().hasPermission("plugin_push_delete")) {
-            logger.error("Unauthorized attempt to delete a scheduled task by user " +
-                    SecurityContext.get().getCurrentUserName());
-            return Response.PERMISSION_DENIED();
-        }
-        try {
-            this.pushScheduleDAO.delete(id);
-            return Response.OK();
-        } catch (SecurityException e) {
-            logger.error("Prohibited to delete a scheduled task #{} by current user", id, e);
-            return Response.PERMISSION_DENIED();
-        } catch (Exception e) {
-            e.printStackTrace();
-            logger.error("Failed to delete a scheduled task #{} due to unexpected error", id, e);
-            return Response.INTERNAL_ERROR();
-        }
+      return Response.OK();
+    } catch (Exception e) {
+      e.printStackTrace();
+      logger.error("Failed to create or update device log plugin settings rule", e);
+      return Response.INTERNAL_ERROR();
     }
+  }
 
-
+  // =================================================================================================================
+  @Operation(summary = "Delete a scheduled task", description = "Delete an existing scheduled task")
+  @DELETE
+  @Path("/private/task/{id}")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response removeTask(@PathParam("id") @Parameter(description = "Task ID") Integer id) {
+    if (!SecurityContext.get().hasPermission("plugin_push_delete")) {
+      logger.error(
+          "Unauthorized attempt to delete a scheduled task by user "
+              + SecurityContext.get().getCurrentUserName());
+      return Response.PERMISSION_DENIED();
+    }
+    try {
+      this.pushScheduleDAO.delete(id);
+      return Response.OK();
+    } catch (SecurityException e) {
+      logger.error("Prohibited to delete a scheduled task #{} by current user", id, e);
+      return Response.PERMISSION_DENIED();
+    } catch (Exception e) {
+      e.printStackTrace();
+      logger.error("Failed to delete a scheduled task #{} due to unexpected error", id, e);
+      return Response.INTERNAL_ERROR();
+    }
+  }
 }

@@ -6,7 +6,7 @@ package com.hmdm.auth;
  * <p>Defines the parameters required by different authentication strategies. For example:
  *
  * <ul>
- *   <li>Local authentication provides a {@link User} and password.
+ *   <li>Local authentication provides a {@link User}i and password.
  *   <li>OIDC authentication provides a {@link User} and token.
  * </ul>
  */

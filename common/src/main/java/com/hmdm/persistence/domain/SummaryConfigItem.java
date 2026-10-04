@@ -22,47 +22,45 @@
 package com.hmdm.persistence.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.hmdm.service.DeviceApplicationsStatus;
-import com.hmdm.service.DeviceConfigFilesStatus;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
-
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.io.Serializable;
 
-@ApiModel(description = "Response for inquiry summary data by configuration")
+@Schema(description = "Response for inquiry summary data by configuration")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class SummaryConfigItem implements Serializable {
 
-    private static final long serialVersionUID = -8435796711101696938L;
+  private static final long serialVersionUID = -8435796711101696938L;
 
-    @ApiModelProperty("Count of items")
-    private int counter;
-    @ApiModelProperty("Configuration ID")
-    private int id;
-    @ApiModelProperty("Configuration name")
-    private String name;
+  @Schema(description = "Count of items")
+  private int counter;
 
-    public int getCounter() {
-        return counter;
-    }
+  @Schema(description = "Configuration ID")
+  private int id;
 
-    public void setCounter(int counter) {
-        this.counter = counter;
-    }
+  @Schema(description = "Configuration name")
+  private String name;
 
-    public int getId() {
-        return id;
-    }
+  public int getCounter() {
+    return counter;
+  }
 
-    public void setId(int id) {
-        this.id = id;
-    }
+  public void setCounter(int counter) {
+    this.counter = counter;
+  }
 
-    public String getName() {
-        return name;
-    }
+  public int getId() {
+    return id;
+  }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+  public void setId(int id) {
+    this.id = id;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
 }

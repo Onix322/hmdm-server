@@ -24,88 +24,87 @@ package com.hmdm.rest.json.view.devicelist;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.hmdm.persistence.domain.Application;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
-
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.io.Serializable;
 
 /**
- * <p>A wrapper around the {@link Application} object providing the view suitable for the <code>Device List</code> view
- * of server application.</p>
+ * A wrapper around the {@link Application} object providing the view suitable for the <code>
+ * Device List</code> view of server application.
  *
  * @author isv
  */
-@JsonIgnoreProperties(value = {"application"}, ignoreUnknown = true)
+@JsonIgnoreProperties(
+    value = {"application"},
+    ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@ApiModel(description = "A specification of a single application available for usage on mobile device")
+@Schema(
+    description = "A specification of a single application available for usage on mobile device")
 public class ApplicationView implements Serializable {
 
-    private static final long serialVersionUID = 2154319093765210298L;
-    
-    /**
-     * <p>A wrapped application object.</p>
-     */
-    private final Application application;
+  private static final long serialVersionUID = 2154319093765210298L;
 
-    /**
-     * <p>Constructs new <code>ApplicationView</code> instance. This implementation does nothing.</p>
-     */
-    ApplicationView(Application application) {
-        this.application = application;
-    }
+  /** A wrapped application object. */
+  private final Application application;
 
-    @ApiModelProperty("A package ID of application")
-    public String getPkg() {
-        return this.application.getPkg();
-    }
+  /** Constructs new <code>ApplicationView</code> instance. This implementation does nothing. */
+  ApplicationView(Application application) {
+    this.application = application;
+  }
 
-    @ApiModelProperty("A version of application")
-    public String getVersion() {
-        return this.application.getVersion();
-    }
+  @Schema(description = "A package ID of application")
+  public String getPkg() {
+    return this.application.getPkg();
+  }
 
-    @ApiModelProperty("An URL for application package")
-    public String getUrl() {
-        if (this.application.getUrl() != null) {
-            return this.application.getUrl();
-        } else {
-            // URL is used just to check the application status
-            // So for split APKs we return the first non-null URL
-            // If an app is not installed but has at least one APK URL, we treat this as an error
-            if (this.application.getUrlArm64() != null) {
-                return this.application.getUrlArm64();
-            }
-            return this.application.getUrlArmeabi();
-        }
-    }
+  @Schema(description = "A version of application")
+  public String getVersion() {
+    return this.application.getVersion();
+  }
 
-    @ApiModelProperty("An application ID")
-    public Integer getId() {
-        return this.application.getId();
+  @Schema(description = "An URL for application package")
+  public String getUrl() {
+    if (this.application.getUrl() != null) {
+      return this.application.getUrl();
+    } else {
+      // URL is used just to check the application status
+      // So for split APKs we return the first non-null URL
+      // If an app is not installed but has at least one APK URL, we treat this as an error
+      if (this.application.getUrlArm64() != null) {
+        return this.application.getUrlArm64();
+      }
+      return this.application.getUrlArmeabi();
     }
+  }
 
-    @ApiModelProperty("A flag indicating if application is used in device configuration")
-    public boolean isSelected() {
-        return this.application.isSelected();
-    }
+  @Schema(description = "An application ID")
+  public Integer getId() {
+    return this.application.getId();
+  }
 
-    @ApiModelProperty("A flag indicating if application version shouldnt be checked")
-    public boolean isSkipVersion() {
-        return this.application.isSkipVersion();
-    }
+  @Schema(description = "A flag indicating if application is used in device configuration")
+  public boolean isSelected() {
+    return this.application.isSelected();
+  }
 
-    // A helper property to indicate the action required to be performed by mobile device
-    // in regard to application installation
-    // 0 - do not install and hide if installed
-    // 1 - install
-    // 2 - do not install and remove if installed
-    @ApiModelProperty(value = "The action required to be performed by mobile device", allowableValues = "0,1,2")
-    public int getAction() {
-        return this.application.getAction();
-    }
+  @Schema(description = "A flag indicating if application version shouldnt be checked")
+  public boolean isSkipVersion() {
+    return this.application.isSkipVersion();
+  }
 
-    @ApiModelProperty("A name of application")
-    public String getName() {
-        return this.application.getName();
-    }
+  // A helper property to indicate the action required to be performed by mobile device
+  // in regard to application installation
+  // 0 - do not install and hide if installed
+  // 1 - install
+  // 2 - do not install and remove if installed
+  @Schema(
+      description = "The action required to be performed by mobile device",
+      allowableValues = "0,1,2")
+  public int getAction() {
+    return this.application.getAction();
+  }
+
+  @Schema(description = "A name of application")
+  public String getName() {
+    return this.application.getName();
+  }
 }

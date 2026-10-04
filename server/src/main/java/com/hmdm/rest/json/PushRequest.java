@@ -22,59 +22,57 @@
 package com.hmdm.rest.json;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import io.swagger.annotations.ApiModel;
-
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 
-@ApiModel(description = "Request to send Push messages to specified devices/groups")
+@Schema(description = "Request to send Push messages to specified devices/groups")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class PushRequest {
-    private String messageType;
-    private String payload;
-    private List<String> deviceNumbers;
-    private List<String> groups;
-    private Boolean broadcast;
+  private String messageType;
+  private String payload;
+  private List<String> deviceNumbers;
+  private List<String> groups;
+  private Boolean broadcast;
 
-    public PushRequest() {
-    }
+  public PushRequest() {}
 
-    public String getMessageType() {
-        return messageType;
-    }
+  public String getMessageType() {
+    return messageType;
+  }
 
-    public void setMessageType(String messageType) {
-        this.messageType = messageType;
-    }
+  public void setMessageType(String messageType) {
+    this.messageType = messageType;
+  }
 
-    public String getPayload() {
-        return payload;
-    }
+  public String getPayload() {
+    return payload;
+  }
 
-    public void setPayload(String payload) {
-        this.payload = payload;
-    }
+  public void setPayload(String payload) {
+    this.payload = payload;
+  }
 
-    public List<String> getDeviceNumbers() {
-        return deviceNumbers;
-    }
+  public List<String> getDeviceNumbers() {
+    return deviceNumbers;
+  }
 
-    public void setDeviceNumbers(List<String> deviceNumbers) {
-        this.deviceNumbers = deviceNumbers;
-    }
+  public void setDeviceNumbers(List<String> deviceNumbers) {
+    this.deviceNumbers = deviceNumbers;
+  }
 
-    public List<String> getGroups() {
-        return groups;
-    }
+  public List<String> getGroups() {
+    return groups;
+  }
 
-    public void setGroups(List<String> groups) {
-        this.groups = groups;
-    }
+  public void setGroups(List<String> groups) {
+    this.groups = groups;
+  }
 
-    public Boolean getBroadcast() {
-        return broadcast;
-    }
+  public Boolean getBroadcast() {
+    return broadcast;
+  }
 
-    public void setBroadcast(Boolean broadcast) {
-        this.broadcast = broadcast;
-    }
+  public void setBroadcast(Boolean broadcast) {
+    this.broadcast = broadcast;
+  }
 }

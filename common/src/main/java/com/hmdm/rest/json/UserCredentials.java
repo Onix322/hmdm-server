@@ -22,53 +22,50 @@
 package com.hmdm.rest.json;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
-
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.io.Serializable;
 
-@ApiModel(description = "The credentials to be used for authenticating the user to application")
+@Schema(description = "The credentials to be used for authenticating the user to application")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UserCredentials implements Serializable {
 
-    private static final long serialVersionUID = 7107010132749776504L;
+  private static final long serialVersionUID = 7107010132749776504L;
 
-    @ApiModelProperty("A username to be used for authentication")
-    private String login;
+  @Schema(description = "A username to be used for authentication")
+  private String login;
 
-    @ApiModelProperty("A password to be used for authentication (MD5-hash)")
-    private String password;
+  @Schema(description = "A password to be used for authentication (MD5-hash)")
+  private String password;
 
-    @ApiModelProperty(hidden = true)
-    @Deprecated
-    private String email;
+  @Schema(hidden = true)
+  @Deprecated
+  private String email;
 
-    public UserCredentials() {}
+  public UserCredentials() {}
 
-    public String getLogin() {
-        return this.login;
-    }
+  public String getLogin() {
+    return this.login;
+  }
 
-    public void setLogin(String login) {
-        this.login = login;
-    }
+  public void setLogin(String login) {
+    this.login = login;
+  }
 
-    public String getPassword() {
-        return this.password;
-    }
+  public String getPassword() {
+    return this.password;
+  }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+  public void setPassword(String password) {
+    this.password = password;
+  }
 
-    @Deprecated
-    public String getEmail() {
-        return this.email;
-    }
+  @Deprecated
+  public String getEmail() {
+    return this.email;
+  }
 
-    @Deprecated
-    public void setEmail(String email) {
-        this.email = email;
-    }
+  @Deprecated
+  public void setEmail(String email) {
+    this.email = email;
+  }
 }

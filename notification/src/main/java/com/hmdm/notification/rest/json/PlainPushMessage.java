@@ -22,55 +22,56 @@
 package com.hmdm.notification.rest.json;
 
 import com.hmdm.notification.persistence.domain.PushMessage;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
-
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.io.Serializable;
 
 /**
- * <p>A DTO carrying the details for a single push-message to be delivered to device.</p>
+ * A DTO carrying the details for a single push-message to be delivered to device.
  *
  * @author isv
  */
-@ApiModel(description = "A notification message")
+@Schema(description = "A notification message")
 public class PlainPushMessage implements Serializable {
 
-    private static final long serialVersionUID = 5860815657249909466L;
-    @ApiModelProperty("A type of the message")
-    private String messageType;
-    @ApiModelProperty("A payload for the message")
-    private String payload;
+  private static final long serialVersionUID = 5860815657249909466L;
 
-    /**
-     * <p>Constructs new <code>PlainPushMessage</code> instance. This implementation does nothing.</p>
-     */
-    public PlainPushMessage(PushMessage original) {
-        this.messageType = original.getMessageType();
-        this.payload = original.getPayload();
-    }
+  @Schema(description = "A type of the message")
+  private String messageType;
 
-    public String getMessageType() {
-        return messageType;
-    }
+  @Schema(description = "A payload for the message")
+  private String payload;
 
-    public void setMessageType(String messageType) {
-        this.messageType = messageType;
-    }
+  /** Constructs new <code>PlainPushMessage</code> instance. This implementation does nothing. */
+  public PlainPushMessage(PushMessage original) {
+    this.messageType = original.getMessageType();
+    this.payload = original.getPayload();
+  }
 
+  public String getMessageType() {
+    return messageType;
+  }
 
-    public String getPayload() {
-        return payload;
-    }
+  public void setMessageType(String messageType) {
+    this.messageType = messageType;
+  }
 
-    public void setPayload(String payload) {
-        this.payload = payload;
-    }
+  public String getPayload() {
+    return payload;
+  }
 
-    @Override
-    public String toString() {
-        return "PlainPushMessage{" +
-                "messageType='" + messageType + '\'' +
-                ", payload='" + payload + '\'' +
-                '}';
-    }
+  public void setPayload(String payload) {
+    this.payload = payload;
+  }
+
+  @Override
+  public String toString() {
+    return "PlainPushMessage{"
+        + "messageType='"
+        + messageType
+        + '\''
+        + ", payload='"
+        + payload
+        + '\''
+        + '}';
+  }
 }

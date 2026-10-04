@@ -22,155 +22,157 @@
 package com.hmdm.plugins.deviceinfo.rest.json;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
-
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Date;
 
 /**
- * <p>A filter for searching the dynamic info records for device for export.</p>
+ * A filter for searching the dynamic info records for device for export.
  *
  * @author isv
  */
-@ApiModel(description = "A filter for searching the dynamic info records for device for export")
-@JsonIgnoreProperties(value = {"deviceId"}, ignoreUnknown = true)
+@Schema(description = "A filter for searching the dynamic info records for device for export")
+@JsonIgnoreProperties(
+    value = {"deviceId"},
+    ignoreUnknown = true)
 public class DynamicInfoExportFilter implements Serializable {
 
-    private static final long serialVersionUID = -2707690119899104358L;
-    @ApiModelProperty(hidden = true)
-    private int deviceId;
+  private static final long serialVersionUID = -2707690119899104358L;
 
-    /**
-     * <p>A device identifier.</p>
-     */
-    @ApiModelProperty("A device identifier")
-    private String deviceNumber;
+  @Schema(hidden = true)
+  private int deviceId;
 
-    /**
-     * <p>A timestamp for <code>FROM</code> boundary for filtering the data records by dates.</p>
-     */
-    @ApiModelProperty("A timestamp for FROM boundary for filtering the data records by dates")
-    private Date dateFrom;
+  /** A device identifier. */
+  @Schema(description = "A device identifier")
+  private String deviceNumber;
 
-    /**
-     * <p>A timestamp for <code>TO</code> boundary for filtering the data records by dates.</p>
-     */
-    @ApiModelProperty("A timestamp for TO boundary for filtering the data records by dates")
-    private Date dateTo;
+  /** A timestamp for <code>FROM</code> boundary for filtering the data records by dates. */
+  @Schema(description = "A timestamp for FROM boundary for filtering the data records by dates")
+  private Date dateFrom;
 
-    @ApiModelProperty("A fixed interval is to be used for searching the records (in seconds)")
-    private Integer fixedInterval = 24 * 3600;
+  /** A timestamp for <code>TO</code> boundary for filtering the data records by dates. */
+  @Schema(description = "A timestamp for TO boundary for filtering the data records by dates")
+  private Date dateTo;
 
-    @ApiModelProperty("A flag indicating if a fixed interval is to be used for searching the records")
-    private boolean useFixedInterval = true;
+  @Schema(description = "A fixed interval is to be used for searching the records (in seconds)")
+  private Integer fixedInterval = 24 * 3600;
 
-    @ApiModelProperty("A list of names of record fields to be exported")
-    private String[] fields;
+  @Schema(
+      description = "A flag indicating if a fixed interval is to be used for searching the records")
+  private boolean useFixedInterval = true;
 
-    /**
-     * <p>A locale used for localizing the generated content.</p>
-     */
-    private String locale;
+  @Schema(description = "A list of names of record fields to be exported")
+  private String[] fields;
 
-    /**
-     * <p>Constructs new <code>DynamicInfoExportFilter</code> instance. This implementation does nothing.</p>
-     */
-    public DynamicInfoExportFilter() {
+  /** A locale used for localizing the generated content. */
+  private String locale;
+
+  /**
+   * Constructs new <code>DynamicInfoExportFilter</code> instance. This implementation does nothing.
+   */
+  public DynamicInfoExportFilter() {}
+
+  public int getDeviceId() {
+    return deviceId;
+  }
+
+  public void setDeviceId(int deviceId) {
+    this.deviceId = deviceId;
+  }
+
+  public String getDeviceNumber() {
+    return deviceNumber;
+  }
+
+  public void setDeviceNumber(String deviceNumber) {
+    this.deviceNumber = deviceNumber;
+  }
+
+  public Date getDateFrom() {
+    return dateFrom;
+  }
+
+  public void setDateFrom(Date dateFrom) {
+    this.dateFrom = dateFrom;
+  }
+
+  public Date getDateTo() {
+    return dateTo;
+  }
+
+  public void setDateTo(Date dateTo) {
+    this.dateTo = dateTo;
+  }
+
+  public Integer getFixedInterval() {
+    return fixedInterval;
+  }
+
+  public void setFixedInterval(Integer fixedInterval) {
+    this.fixedInterval = fixedInterval;
+  }
+
+  public boolean isUseFixedInterval() {
+    return useFixedInterval;
+  }
+
+  public void setUseFixedInterval(boolean useFixedInterval) {
+    this.useFixedInterval = useFixedInterval;
+  }
+
+  public String[] getFields() {
+    return fields;
+  }
+
+  public void setFields(String[] fields) {
+    this.fields = fields;
+  }
+
+  public String getLocale() {
+    return locale;
+  }
+
+  public void setLocale(String locale) {
+    this.locale = locale;
+  }
+
+  public long getDateFromMillis() {
+    if (dateFrom != null) {
+      return dateFrom.getTime();
+    } else {
+      return 0;
     }
+  }
 
-    public int getDeviceId() {
-        return deviceId;
+  public long getDateToMillis() {
+    if (dateTo != null) {
+      return dateTo.getTime();
+    } else {
+      return 0;
     }
+  }
 
-    public void setDeviceId(int deviceId) {
-        this.deviceId = deviceId;
-    }
-
-    public String getDeviceNumber() {
-        return deviceNumber;
-    }
-
-    public void setDeviceNumber(String deviceNumber) {
-        this.deviceNumber = deviceNumber;
-    }
-
-    public Date getDateFrom() {
-        return dateFrom;
-    }
-
-    public void setDateFrom(Date dateFrom) {
-        this.dateFrom = dateFrom;
-    }
-
-    public Date getDateTo() {
-        return dateTo;
-    }
-
-    public void setDateTo(Date dateTo) {
-        this.dateTo = dateTo;
-    }
-
-    public Integer getFixedInterval() {
-        return fixedInterval;
-    }
-
-    public void setFixedInterval(Integer fixedInterval) {
-        this.fixedInterval = fixedInterval;
-    }
-
-    public boolean isUseFixedInterval() {
-        return useFixedInterval;
-    }
-
-    public void setUseFixedInterval(boolean useFixedInterval) {
-        this.useFixedInterval = useFixedInterval;
-    }
-
-    public String[] getFields() {
-        return fields;
-    }
-
-    public void setFields(String[] fields) {
-        this.fields = fields;
-    }
-
-    public String getLocale() {
-        return locale;
-    }
-
-    public void setLocale(String locale) {
-        this.locale = locale;
-    }
-
-    public long getDateFromMillis() {
-        if (dateFrom != null) {
-            return dateFrom.getTime();
-        } else {
-            return 0;
-        }
-    }
-
-    public long getDateToMillis() {
-        if (dateTo != null) {
-            return dateTo.getTime();
-        } else {
-            return 0;
-        }
-    }
-
-    @Override
-    public String toString() {
-        return "DynamicInfoExportFilter{" +
-                "deviceId=" + deviceId +
-                ", deviceNumber='" + deviceNumber + '\'' +
-                ", dateFrom=" + dateFrom +
-                ", dateTo=" + dateTo +
-                ", fixedInterval=" + fixedInterval +
-                ", useFixedInterval=" + useFixedInterval +
-                ", locale=" + locale +
-                ", fields=" + Arrays.toString(fields) +
-                '}';
-    }
+  @Override
+  public String toString() {
+    return "DynamicInfoExportFilter{"
+        + "deviceId="
+        + deviceId
+        + ", deviceNumber='"
+        + deviceNumber
+        + '\''
+        + ", dateFrom="
+        + dateFrom
+        + ", dateTo="
+        + dateTo
+        + ", fixedInterval="
+        + fixedInterval
+        + ", useFixedInterval="
+        + useFixedInterval
+        + ", locale="
+        + locale
+        + ", fields="
+        + Arrays.toString(fields)
+        + '}';
+  }
 }

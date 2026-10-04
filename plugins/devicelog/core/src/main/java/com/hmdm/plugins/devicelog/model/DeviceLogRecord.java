@@ -21,131 +21,137 @@
 
 package com.hmdm.plugins.devicelog.model;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.io.Serializable;
-import java.util.Date;
 
-@ApiModel(description = "A single log record received from device")
+@Schema(description = "A single log record received from device")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public abstract class DeviceLogRecord implements Serializable {
 
-    private static final long serialVersionUID = 7956573806273714751L;
-    
-    @ApiModelProperty("A timestamp of creation of log record (in milliseconds since epoch time")
-    private Long createTime;
+  private static final long serialVersionUID = 7956573806273714751L;
 
-    @ApiModelProperty("An ID of an application related to log record")
-    private int applicationId;
+  @Schema(description = "A timestamp of creation of log record (in milliseconds since epoch time")
+  private Long createTime;
 
-    @ApiModelProperty("An ID of a device related to log record")
-    private int deviceId;
+  @Schema(description = "An ID of an application related to log record")
+  private int applicationId;
 
-    @ApiModelProperty("An IP-address for the originating request")
-    private String ipAddress;
+  @Schema(description = "An ID of a device related to log record")
+  private int deviceId;
 
-    @ApiModelProperty("A severity for log record")
-    private LogLevel severity;
+  @Schema(description = "An IP-address for the originating request")
+  private String ipAddress;
 
-    @ApiModelProperty("A message for log record")
-    private String message;
+  @Schema(description = "A severity for log record")
+  private LogLevel severity;
 
-    @ApiModelProperty("A device identifier")
-    private String deviceNumber;
+  @Schema(description = "A message for log record")
+  private String message;
 
-    @ApiModelProperty("A package ID for application")
-    private String applicationPkg;
+  @Schema(description = "A device identifier")
+  private String deviceNumber;
 
-    /**
-     * <p>Constructs new <code>DeviceLogRecord</code> instance. This implementation does nothing.</p>
-     */
-    public DeviceLogRecord() {
-    }
+  @Schema(description = "A package ID for application")
+  private String applicationPkg;
 
-    public Long getCreateTime() {
-        return createTime;
-    }
+  /** Constructs new <code>DeviceLogRecord</code> instance. This implementation does nothing. */
+  public DeviceLogRecord() {}
 
-    public void setCreateTime(Long createTime) {
-        this.createTime = createTime;
-    }
+  public Long getCreateTime() {
+    return createTime;
+  }
 
-    public int getApplicationId() {
-        return applicationId;
-    }
+  public void setCreateTime(Long createTime) {
+    this.createTime = createTime;
+  }
 
-    public void setApplicationId(int applicationId) {
-        this.applicationId = applicationId;
-    }
+  public int getApplicationId() {
+    return applicationId;
+  }
 
-    public int getDeviceId() {
-        return deviceId;
-    }
+  public void setApplicationId(int applicationId) {
+    this.applicationId = applicationId;
+  }
 
-    public void setDeviceId(int deviceId) {
-        this.deviceId = deviceId;
-    }
+  public int getDeviceId() {
+    return deviceId;
+  }
 
-    public String getIpAddress() {
-        return ipAddress;
-    }
+  public void setDeviceId(int deviceId) {
+    this.deviceId = deviceId;
+  }
 
-    public void setIpAddress(String ipAddress) {
-        this.ipAddress = ipAddress;
-    }
+  public String getIpAddress() {
+    return ipAddress;
+  }
 
-    public LogLevel getSeverity() {
-        return severity;
-    }
+  public void setIpAddress(String ipAddress) {
+    this.ipAddress = ipAddress;
+  }
 
-    public void setSeverity(LogLevel severity) {
-        this.severity = severity;
-    }
+  public LogLevel getSeverity() {
+    return severity;
+  }
 
-    public String getMessage() {
-        return message;
-    }
+  public void setSeverity(LogLevel severity) {
+    this.severity = severity;
+  }
 
-    public void setMessage(String message) {
-        this.message = message;
-    }
+  public String getMessage() {
+    return message;
+  }
 
-    public String getDeviceNumber() {
-        return deviceNumber;
-    }
+  public void setMessage(String message) {
+    this.message = message;
+  }
 
-    public void setDeviceNumber(String deviceNumber) {
-        this.deviceNumber = deviceNumber;
-    }
+  public String getDeviceNumber() {
+    return deviceNumber;
+  }
 
-    public String getApplicationPkg() {
-        return applicationPkg;
-    }
+  public void setDeviceNumber(String deviceNumber) {
+    this.deviceNumber = deviceNumber;
+  }
 
-    public void setApplicationPkg(String applicationPkg) {
-        this.applicationPkg = applicationPkg;
-    }
+  public String getApplicationPkg() {
+    return applicationPkg;
+  }
 
-    /**
-     * <p>Gets the unique identifier for this record within underlying persistence layer.</p>
-     *
-     * @return an identifier for this record.
-     */
-    public abstract String getIdentifier();
+  public void setApplicationPkg(String applicationPkg) {
+    this.applicationPkg = applicationPkg;
+  }
 
-    @Override
-    public String toString() {
-        return "DeviceLogRecord{" +
-                "createTime=" + createTime +
-                ", applicationId=" + applicationId +
-                ", deviceId=" + deviceId +
-                ", ipAddress='" + ipAddress + '\'' +
-                ", severity=" + severity +
-                ", message='" + message + '\'' +
-                ", deviceNumber='" + deviceNumber + '\'' +
-                ", applicationPkg='" + applicationPkg + '\'' +
-                '}';
-    }
+  /**
+   * Gets the unique identifier for this record within underlying persistence layer.
+   *
+   * @return an identifier for this record.
+   */
+  public abstract String getIdentifier();
+
+  @Override
+  public String toString() {
+    return "DeviceLogRecord{"
+        + "createTime="
+        + createTime
+        + ", applicationId="
+        + applicationId
+        + ", deviceId="
+        + deviceId
+        + ", ipAddress='"
+        + ipAddress
+        + '\''
+        + ", severity="
+        + severity
+        + ", message='"
+        + message
+        + '\''
+        + ", deviceNumber='"
+        + deviceNumber
+        + '\''
+        + ", applicationPkg='"
+        + applicationPkg
+        + '\''
+        + '}';
+  }
 }

@@ -22,30 +22,27 @@
 package com.hmdm.security.jwt.rest;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
-
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.io.Serializable;
 
-@ApiModel(description = "A JWT token identifying a single client of the application")
+@Schema(description = "A JWT token identifying a single client of the application")
 public class JWTToken implements Serializable {
 
-    private static final long serialVersionUID = -2577292299714311437L;
-    
-    @ApiModelProperty(value = "A token value", name = "id_token")
-    private String idToken;
+  private static final long serialVersionUID = -2577292299714311437L;
 
-    public JWTToken(String idToken) {
-        this.idToken = idToken;
-    }
+  @Schema(description = "A token value", name = "id_token")
+  private String idToken;
 
-    @JsonProperty("id_token")
-    public String getIdToken() {
-        return idToken;
-    }
+  public JWTToken(String idToken) {
+    this.idToken = idToken;
+  }
 
-    public void setIdToken(String idToken) {
-        this.idToken = idToken;
-    }
+  @JsonProperty("id_token")
+  public String getIdToken() {
+    return idToken;
+  }
 
+  public void setIdToken(String idToken) {
+    this.idToken = idToken;
+  }
 }

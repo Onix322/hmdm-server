@@ -21,23 +21,18 @@
 
 package com.hmdm.rest.resource;
 
-import com.hmdm.persistence.IconDAO;
 import com.hmdm.persistence.UsageStatsDAO;
-import com.hmdm.persistence.domain.Icon;
 import com.hmdm.persistence.domain.UsageStats;
 import com.hmdm.rest.json.Response;
-import io.swagger.annotations.Api;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
+import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.MediaType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-import java.util.List;
-
 /**
- * <p>A resource providing interface to usage statistics collection functionality.</p>
+ * A resource providing interface to usage statistics collection functionality.
  *
  * @author isv
  */
@@ -45,27 +40,23 @@ import java.util.List;
 @Singleton
 public class StatsResource {
 
-    private static final Logger logger = LoggerFactory.getLogger(StatsResource.class);
+  private static final Logger logger = LoggerFactory.getLogger(StatsResource.class);
 
-    private UsageStatsDAO usageStatsDAO;
+  private UsageStatsDAO usageStatsDAO;
 
-    public StatsResource() {
-    }
+  public StatsResource() {}
 
-    /**
-     * <p>Constructs new <code>StatsResource</code> instance. This implementation does nothing.</p>
-     */
-    @Inject
-    public StatsResource(UsageStatsDAO usageStatsDAO) {
-        this.usageStatsDAO = usageStatsDAO;
-    }
+  /** Constructs new <code>StatsResource</code> instance. This implementation does nothing. */
+  @Inject
+  public StatsResource(UsageStatsDAO usageStatsDAO) {
+    this.usageStatsDAO = usageStatsDAO;
+  }
 
-    @PUT
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response saveStats(UsageStats usageStats) {
-        usageStatsDAO.insertUsageStats(usageStats);
-        return Response.OK();
-    }
-
+  @PUT
+  @Produces(MediaType.APPLICATION_JSON)
+  @Consumes(MediaType.APPLICATION_JSON)
+  public Response saveStats(UsageStats usageStats) {
+    usageStatsDAO.insertUsageStats(usageStats);
+    return Response.OK();
+  }
 }

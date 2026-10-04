@@ -24,43 +24,42 @@ package com.hmdm.rest.json.view.devicelist;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.hmdm.persistence.domain.Application;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
-
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.io.Serializable;
 
 /**
- * <p>A wrapper around the {@link Application} object providing the view suitable for the <code>Device List</code> view
- * of server application. The wrapped application object represents an application installed on device.</p>
+ * A wrapper around the {@link Application} object providing the view suitable for the <code>
+ * Device List</code> view of server application. The wrapped application object represents an
+ * application installed on device.
  *
  * @author isv
  */
-@JsonIgnoreProperties(value = {"application"}, ignoreUnknown = true)
+@JsonIgnoreProperties(
+    value = {"application"},
+    ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@ApiModel(description = "A specification of a single application installed and used on mobile device")
+@Schema(description = "A specification of a single application installed and used on mobile device")
 public class DeviceApplicationView implements Serializable {
 
-    private static final long serialVersionUID = 1086525298150378152L;
-    
-    /**
-     * <p>A wrapped application object.</p>
-     */
-    private final Application application;
+  private static final long serialVersionUID = 1086525298150378152L;
 
-    /**
-     * <p>Constructs new <code>DeviceApplicationView</code> instance. This implementation does nothing.</p>
-     */
-    DeviceApplicationView(Application application) {
-        this.application = application;
-    }
+  /** A wrapped application object. */
+  private final Application application;
 
-    @ApiModelProperty("A package ID of application")
-    public String getPkg() {
-        return application.getPkg();
-    }
+  /**
+   * Constructs new <code>DeviceApplicationView</code> instance. This implementation does nothing.
+   */
+  DeviceApplicationView(Application application) {
+    this.application = application;
+  }
 
-    @ApiModelProperty("A version of application")
-    public String getVersion() {
-        return application.getVersion();
-    }
+  @Schema(description = "A package ID of application")
+  public String getPkg() {
+    return application.getPkg();
+  }
+
+  @Schema(description = "A version of application")
+  public String getVersion() {
+    return application.getVersion();
+  }
 }

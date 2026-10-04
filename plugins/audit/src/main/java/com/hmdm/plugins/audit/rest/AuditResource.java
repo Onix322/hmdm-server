@@ -21,84 +21,77 @@
 
 package com.hmdm.plugins.audit.rest;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import com.hmdm.plugins.audit.persistence.AuditDAO;
 import com.hmdm.plugins.audit.persistence.domain.AuditLogRecord;
 import com.hmdm.plugins.audit.rest.json.AuditLogFilter;
 import com.hmdm.rest.json.PaginatedData;
 import com.hmdm.rest.json.Response;
 import com.hmdm.security.SecurityContext;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.Authorization;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import java.util.List;
-
 /**
- * <p>A resource to be used for accessing the data for <code>Audit</code> log records.</p>
+ * A resource to be used for accessing the data for <code>Audit</code> log records.
  *
  * @author isv
  */
 @Singleton
 @Path("/plugins/audit")
-@Api(tags = {"Audit"})
+@Tag(name = "Audit")
 public class AuditResource {
 
-    private static final Logger logger = LoggerFactory.getLogger(AuditResource.class);
+  private static final Logger logger = LoggerFactory.getLogger(AuditResource.class);
 
-    private AuditDAO auditDAO;
+  private AuditDAO auditDAO;
 
-    /**
-     * <p>A constructor required by Swagger.</p>
-     */
-    public AuditResource() {
+  /** A constructor required by Swagger. */
+  public AuditResource() {}
+
+  /** Constructs new <code>AuditResource</code> instance. This implementation does nothing. */
+  @Inject
+  public AuditResource(AuditDAO auditDAO) {
+    this.auditDAO = auditDAO;
+  }
+
+  /**
+   * Gets the list of audit log records matching the specified filter.
+   *
+   * @param filter a filter to be used for filtering the records.
+   * @return a response with list of audit log records matching the specified filter.
+   */
+  @Operation(
+      summary = "Search logs",
+      description = "Gets the list of audit log records matching the specified filter",
+      security = @SecurityRequirement(name = "Bearer Token"))
+  @POST
+  @Path("/private/log/search")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response getLogs(AuditLogFilter filter) {
+    if (!SecurityContext.get().hasPermission("plugin_audit_access")) {
+      logger.error(
+          "Unauthorized attempt to get the audit log by user "
+              + SecurityContext.get().getCurrentUserName());
+      return Response.PERMISSION_DENIED();
     }
+    try {
+      List<AuditLogRecord> records = this.auditDAO.findAll(filter);
+      long count = this.auditDAO.countAll(filter);
 
-    /**
-     * <p>Constructs new <code>AuditResource</code> instance. This implementation does nothing.</p>
-     */
-    @Inject
-    public AuditResource(AuditDAO auditDAO) {
-        this.auditDAO = auditDAO;
+      return Response.OK(new PaginatedData<>(records, count));
+    } catch (Exception e) {
+      logger.error(
+          "Failed to search the audit log records due to unexpected error. Filter: {}", filter, e);
+      return Response.INTERNAL_ERROR();
     }
-
-    /**
-     * <p>Gets the list of audit log records matching the specified filter.</p>
-     *
-     * @param filter a filter to be used for filtering the records.
-     * @return a response with list of audit log records matching the specified filter.
-     */
-    @ApiOperation(
-            value = "Search logs",
-            notes = "Gets the list of audit log records matching the specified filter",
-            response = PaginatedData.class,
-            authorizations = {@Authorization("Bearer Token")}
-    )
-    @POST
-    @Path("/private/log/search")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getLogs(AuditLogFilter filter) {
-        if (!SecurityContext.get().hasPermission("plugin_audit_access")) {
-            logger.error("Unauthorized attempt to get the audit log by user " +
-                    SecurityContext.get().getCurrentUserName());
-            return Response.PERMISSION_DENIED();
-        }
-        try {
-            List<AuditLogRecord> records = this.auditDAO.findAll(filter);
-            long count = this.auditDAO.countAll(filter);
-
-            return Response.OK(new PaginatedData<>(records, count));
-        } catch (Exception e) {
-            logger.error("Failed to search the audit log records due to unexpected error. Filter: {}", filter, e);
-            return Response.INTERNAL_ERROR();
-        }
-    }
-
+  }
 }

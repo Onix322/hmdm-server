@@ -22,39 +22,38 @@
 package com.hmdm.rest.json;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
-
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 
-@ApiModel(description = "A request to setup links between the single file and listed configurations")
+@Schema(description = "A request to setup links between the single file and listed configurations")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class LinkConfigurationsToFileRequest {
 
-    @ApiModelProperty("An ID of a file  to link configurations to")
-    private int fileId;
-    @ApiModelProperty("A list of configurations to link to application")
-    private List<FileConfigurationLink> configurations;
+  @Schema(description = "An ID of a file  to link configurations to")
+  private int fileId;
 
-    /**
-     * <p>Constructs new <code>LinkConfigurationsToFileRequest</code> instance. This implementation does nothing.</p>
-     */
-    public LinkConfigurationsToFileRequest() {
-    }
+  @Schema(description = "A list of configurations to link to application")
+  private List<FileConfigurationLink> configurations;
 
-    public int getFileId() {
-        return fileId;
-    }
+  /**
+   * Constructs new <code>LinkConfigurationsToFileRequest</code> instance. This implementation does
+   * nothing.
+   */
+  public LinkConfigurationsToFileRequest() {}
 
-    public void setFileId(int fileId) {
-        this.fileId = fileId;
-    }
+  public int getFileId() {
+    return fileId;
+  }
 
-    public List<FileConfigurationLink> getConfigurations() {
-        return configurations;
-    }
+  public void setFileId(int fileId) {
+    this.fileId = fileId;
+  }
 
-    public void setConfigurations(List<FileConfigurationLink> configurations) {
-        this.configurations = configurations;
-    }
+  public List<FileConfigurationLink> getConfigurations() {
+    return configurations;
+  }
+
+  public void setConfigurations(List<FileConfigurationLink> configurations) {
+    this.configurations = configurations;
+  }
 }

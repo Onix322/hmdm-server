@@ -21,75 +21,80 @@
 
 package com.hmdm.plugins.devicelog.rest.json;
 
-import io.swagger.annotations.ApiModelProperty;
-
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.io.Serializable;
 
 /**
- * <p>A DTO representing a single device log record uploaded by device to server.</p>
+ * A DTO representing a single device log record uploaded by device to server.
  *
  * @author isv
  */
 public class UploadedDeviceLogRecord implements Serializable {
 
-    private static final long serialVersionUID = -5572542628689577966L;
-    @ApiModelProperty("A timestamp of creation of log record (in milliseconds since epoch time")
-    private Long timestamp;
+  private static final long serialVersionUID = -5572542628689577966L;
 
-    @ApiModelProperty("A package ID of an application related to log record")
-    private String packageId;
+  @Schema(description = "A timestamp of creation of log record (in milliseconds since epoch time")
+  private Long timestamp;
 
-    @ApiModelProperty("A severity for log record")
-    private int logLevel;
+  @Schema(description = "A package ID of an application related to log record")
+  private String packageId;
 
-    @ApiModelProperty("A message for log record")
-    private String message;
+  @Schema(description = "A severity for log record")
+  private int logLevel;
 
-    /**
-     * <p>Constructs new <code>UploadedDeviceLogRecord</code> instance. This implementation does nothing.</p>
-     */
-    public UploadedDeviceLogRecord() {
-    }
+  @Schema(description = "A message for log record")
+  private String message;
 
-    public Long getTimestamp() {
-        return timestamp;
-    }
+  /**
+   * Constructs new <code>UploadedDeviceLogRecord</code> instance. This implementation does nothing.
+   */
+  public UploadedDeviceLogRecord() {}
 
-    public void setTimestamp(Long timestamp) {
-        this.timestamp = timestamp;
-    }
+  public Long getTimestamp() {
+    return timestamp;
+  }
 
-    public String getPackageId() {
-        return packageId;
-    }
+  public void setTimestamp(Long timestamp) {
+    this.timestamp = timestamp;
+  }
 
-    public void setPackageId(String packageId) {
-        this.packageId = packageId;
-    }
+  public String getPackageId() {
+    return packageId;
+  }
 
-    public int getLogLevel() {
-        return logLevel;
-    }
+  public void setPackageId(String packageId) {
+    this.packageId = packageId;
+  }
 
-    public void setLogLevel(int logLevel) {
-        this.logLevel = logLevel;
-    }
+  public int getLogLevel() {
+    return logLevel;
+  }
 
-    public String getMessage() {
-        return message;
-    }
+  public void setLogLevel(int logLevel) {
+    this.logLevel = logLevel;
+  }
 
-    public void setMessage(String message) {
-        this.message = message;
-    }
+  public String getMessage() {
+    return message;
+  }
 
-    @Override
-    public String toString() {
-        return "UploadedDeviceLogRecord{" +
-                "timestamp=" + timestamp +
-                ", packageId='" + packageId + '\'' +
-                ", logLevel=" + logLevel +
-                ", message='" + message + '\'' +
-                '}';
-    }
+  public void setMessage(String message) {
+    this.message = message;
+  }
+
+  @Override
+  public String toString() {
+    return "UploadedDeviceLogRecord{"
+        + "timestamp="
+        + timestamp
+        + ", packageId='"
+        + packageId
+        + '\''
+        + ", logLevel="
+        + logLevel
+        + ", message='"
+        + message
+        + '\''
+        + '}';
+  }
 }

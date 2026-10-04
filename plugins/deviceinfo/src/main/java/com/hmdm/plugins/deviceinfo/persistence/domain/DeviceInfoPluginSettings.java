@@ -23,108 +23,108 @@ package com.hmdm.plugins.deviceinfo.persistence.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.hmdm.persistence.domain.CustomerData;
-import io.swagger.annotations.ApiModelProperty;
-
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.io.Serializable;
 
 /**
- * <p>A domain object representing a single collection of <code>Device Info</code> plugin settings per customer account.
- * </p>
+ * A domain object representing a single collection of <code>Device Info</code> plugin settings per
+ * customer account.
  *
  * @author isv
  */
-@JsonIgnoreProperties(ignoreUnknown = true, value = {"customerId"})
+@JsonIgnoreProperties(
+    ignoreUnknown = true,
+    value = {"customerId"})
 public class DeviceInfoPluginSettings implements CustomerData, Serializable {
 
-    private static final long serialVersionUID = 7558374403579325390L;
-    
-    /**
-     * <p>An ID of a setting record.</p>
-     */
-    @ApiModelProperty("An ID of a setting record.")
-    private Integer id;
+  private static final long serialVersionUID = 7558374403579325390L;
 
-    /**
-     * <p>An ID of a customer account which the record belongs to.</p>
-     */
-    @ApiModelProperty(hidden = true)
-    private int customerId;
+  /** An ID of a setting record. */
+  @Schema(description = "An ID of a setting record.")
+  private Integer id;
 
-    /**
-     * <p>A period for preserving the data records in persistent data store (in days).</p>
-     */
-    @ApiModelProperty(value = "A period for preserving the data records in persistent data store (in days)", required = true)
-    private int dataPreservePeriod = 30;
+  /** An ID of a customer account which the record belongs to. */
+  @Schema(hidden = true)
+  private int customerId;
 
-    /**
-     * <p>An interval for transmitting data by device (in minutes)</p>
-     */
-    @ApiModelProperty(value = "An interval for transmitting data by device (in minutes)", required = true)
-    private int intervalMins = 15;
+  /** A period for preserving the data records in persistent data store (in days). */
+  @Schema(
+      description = "A period for preserving the data records in persistent data store (in days)",
+      required = true)
+  private int dataPreservePeriod = 30;
 
-    /**
-     * <p>A flag indicating if device must send dynamic data or not.</p>
-     */
-    @ApiModelProperty(value = "A flag indicating if device must send dynamic data or not", required = true)
-    private boolean sendData = false;
+  /** An interval for transmitting data by device (in minutes) */
+  @Schema(description = "An interval for transmitting data by device (in minutes)", required = true)
+  private int intervalMins = 15;
 
-    /**
-     * <p>Constructs new <code>DeviceInfoPluginSettings</code> instance. This implementation does nothing.</p>
-     */
-    public DeviceInfoPluginSettings() {
-    }
+  /** A flag indicating if device must send dynamic data or not. */
+  @Schema(
+      description = "A flag indicating if device must send dynamic data or not",
+      required = true)
+  private boolean sendData = false;
 
-    @Override
-    public Integer getId() {
-        return id;
-    }
+  /**
+   * Constructs new <code>DeviceInfoPluginSettings</code> instance. This implementation does
+   * nothing.
+   */
+  public DeviceInfoPluginSettings() {}
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+  @Override
+  public Integer getId() {
+    return id;
+  }
 
-    @Override
-    public int getCustomerId() {
-        return customerId;
-    }
+  public void setId(Integer id) {
+    this.id = id;
+  }
 
-    @Override
-    public void setCustomerId(int customerId) {
-        this.customerId = customerId;
-    }
+  @Override
+  public int getCustomerId() {
+    return customerId;
+  }
 
-    public int getDataPreservePeriod() {
-        return dataPreservePeriod;
-    }
+  @Override
+  public void setCustomerId(int customerId) {
+    this.customerId = customerId;
+  }
 
-    public void setDataPreservePeriod(int dataPreservePeriod) {
-        this.dataPreservePeriod = dataPreservePeriod;
-    }
+  public int getDataPreservePeriod() {
+    return dataPreservePeriod;
+  }
 
-    public int getIntervalMins() {
-        return intervalMins;
-    }
+  public void setDataPreservePeriod(int dataPreservePeriod) {
+    this.dataPreservePeriod = dataPreservePeriod;
+  }
 
-    public void setIntervalMins(int intervalMins) {
-        this.intervalMins = intervalMins;
-    }
+  public int getIntervalMins() {
+    return intervalMins;
+  }
 
-    public boolean isSendData() {
-        return sendData;
-    }
+  public void setIntervalMins(int intervalMins) {
+    this.intervalMins = intervalMins;
+  }
 
-    public void setSendData(boolean sendData) {
-        this.sendData = sendData;
-    }
+  public boolean isSendData() {
+    return sendData;
+  }
 
-    @Override
-    public String toString() {
-        return "DeviceInfoPluginSettings{" +
-                "id=" + id +
-                ", customerId=" + customerId +
-                ", dataPreservePeriod=" + dataPreservePeriod +
-                ", intervalMins=" + intervalMins +
-                ", sendData=" + sendData +
-                '}';
-    }
+  public void setSendData(boolean sendData) {
+    this.sendData = sendData;
+  }
+
+  @Override
+  public String toString() {
+    return "DeviceInfoPluginSettings{"
+        + "id="
+        + id
+        + ", customerId="
+        + customerId
+        + ", dataPreservePeriod="
+        + dataPreservePeriod
+        + ", intervalMins="
+        + intervalMins
+        + ", sendData="
+        + sendData
+        + '}';
+  }
 }

@@ -21,161 +21,184 @@
 
 package com.hmdm.plugins.audit.persistence.domain;
 
-import com.hmdm.persistence.domain.CustomerData;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
+import com.hmdm.persistence.domain.CustomerData;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.io.Serializable;
 
 /**
- * <p>A domain object representing a single audit log record.</p>
+ * A domain object representing a single audit log record.
  *
  * @author isv
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-@ApiModel(description = "A single audit log record")
+@Schema(description = "A single audit log record")
 public class AuditLogRecord implements CustomerData, Serializable {
 
-    private static final long serialVersionUID = 6693474050584082712L;
+  private static final long serialVersionUID = 6693474050584082712L;
 
-    @ApiModelProperty("An ID of the record")
-    private Integer id;
+  @Schema(description = "An ID of the record")
+  private Integer id;
 
-    // An ID of a customer account which these settings correspond to
-    @ApiModelProperty(hidden = true)
-    private Integer customerId;
+  // An ID of a customer account which these settings correspond to
+  @Schema(hidden = true)
+  private Integer customerId;
 
-    @ApiModelProperty("An ID of the user mapped to request.")
-    private Integer userId;
+  @Schema(description = "An ID of the user mapped to request.")
+  private Integer userId;
 
-    @ApiModelProperty("A timestamp of recording the audit data (in milliseconds since epoch time).")
-    private long createTime;
+  @Schema(
+      description = "A timestamp of recording the audit data (in milliseconds since epoch time).")
+  private long createTime;
 
-    @ApiModelProperty("A username of the user mapped to request.")
-    private String login;
+  @Schema(description = "A username of the user mapped to request.")
+  private String login;
 
-    @ApiModelProperty("A key referencing the description of performed action in localization resource bundle")
-    private String action;
+  @Schema(
+      description =
+          "A key referencing the description of performed action in localization resource bundle")
+  private String action;
 
-    @ApiModelProperty(hidden = true)
-    private String payload;
+  @Schema(hidden = true)
+  private String payload;
 
-    @ApiModelProperty("An IP-address of the request sender")
-    private String ipAddress;
+  @Schema(description = "An IP-address of the request sender")
+  private String ipAddress;
 
-    @ApiModelProperty("Error flag, 0 - no error")
-    private Integer errorCode;
+  @Schema(description = "Error flag, 0 - no error")
+  private Integer errorCode;
 
-    /**
-     * <p>Constructs new <code>AuditLogRecord</code> instance. This implementation does nothing.</p>
-     */
-    public AuditLogRecord() {
-    }
+  /** Constructs new <code>AuditLogRecord</code> instance. This implementation does nothing. */
+  public AuditLogRecord() {}
 
-    @Override
-    public Integer getId() {
-        return id;
-    }
+  @Override
+  public Integer getId() {
+    return id;
+  }
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+  public void setId(Integer id) {
+    this.id = id;
+  }
 
-    @Override
-    public int getCustomerId() {
-        return customerId == null ? 0 : customerId;
-    }
+  @Override
+  public int getCustomerId() {
+    return customerId == null ? 0 : customerId;
+  }
 
-    @Override
-    public void setCustomerId(int customerId) {
-        this.customerId = customerId;
-    }
+  @Override
+  public void setCustomerId(int customerId) {
+    this.customerId = customerId;
+  }
 
-    public void setCustomerId(Integer customerId) {
-        this.customerId = customerId;
-    }
+  public void setCustomerId(Integer customerId) {
+    this.customerId = customerId;
+  }
 
-    public Integer getUserId() {
-        return userId;
-    }
+  public Integer getUserId() {
+    return userId;
+  }
 
-    public void setUserId(Integer userId) {
-        this.userId = userId;
-    }
+  public void setUserId(Integer userId) {
+    this.userId = userId;
+  }
 
-    public long getCreateTime() {
-        return createTime;
-    }
+  public long getCreateTime() {
+    return createTime;
+  }
 
-    public void setCreateTime(long createTime) {
-        this.createTime = createTime;
-    }
+  public void setCreateTime(long createTime) {
+    this.createTime = createTime;
+  }
 
-    public String getLogin() {
-        return login;
-    }
+  public String getLogin() {
+    return login;
+  }
 
-    public void setLogin(String login) {
-        this.login = login;
-    }
+  public void setLogin(String login) {
+    this.login = login;
+  }
 
-    public String getAction() {
-        return action;
-    }
+  public String getAction() {
+    return action;
+  }
 
-    public void setAction(String action) {
-        this.action = action;
-    }
+  public void setAction(String action) {
+    this.action = action;
+  }
 
-    public String getPayload() {
-        return payload;
-    }
+  public String getPayload() {
+    return payload;
+  }
 
-    public void setPayload(String payload) {
-        this.payload = payload;
-    }
+  public void setPayload(String payload) {
+    this.payload = payload;
+  }
 
-    public String getIpAddress() {
-        return ipAddress;
-    }
+  public String getIpAddress() {
+    return ipAddress;
+  }
 
-    public void setIpAddress(String ipAddress) {
-        this.ipAddress = ipAddress;
-    }
+  public void setIpAddress(String ipAddress) {
+    this.ipAddress = ipAddress;
+  }
 
-    public Integer getErrorCode() {
-        return errorCode;
-    }
+  public Integer getErrorCode() {
+    return errorCode;
+  }
 
-    public void setErrorCode(Integer errorCode) {
-        this.errorCode = errorCode;
-    }
+  public void setErrorCode(Integer errorCode) {
+    this.errorCode = errorCode;
+  }
 
-    @Override
-    public String toString() {
-        return "AuditLogRecord{" +
-                "id=" + id +
-                ", customerId=" + customerId +
-                ", userId=" + userId +
-                ", createTime=" + createTime +
-                ", login='" + login + '\'' +
-                ", action='" + action + '\'' +
-                ", payload='" + payload + '\'' +
-                ", ipAddress='" + ipAddress + '\'' +
-                ", errorCode='" + errorCode + '\'' +
-                '}';
-    }
+  @Override
+  public String toString() {
+    return "AuditLogRecord{"
+        + "id="
+        + id
+        + ", customerId="
+        + customerId
+        + ", userId="
+        + userId
+        + ", createTime="
+        + createTime
+        + ", login='"
+        + login
+        + '\''
+        + ", action='"
+        + action
+        + '\''
+        + ", payload='"
+        + payload
+        + '\''
+        + ", ipAddress='"
+        + ipAddress
+        + '\''
+        + ", errorCode='"
+        + errorCode
+        + '\''
+        + '}';
+  }
 
-    public String toLogString() {
-        return "" +
-                "createTime=" + createTime +
-                ", userId=" + userId +
-                ", login='" + login + '\'' +
-                ", ipAddress='" + ipAddress + '\'' +
-                ", action='" + action + '\'' +
-                ", payload='" + payload + '\'' +
-                ", errorCode='" + errorCode + '\''
-        ;
-    }
+  public String toLogString() {
+    return ""
+        + "createTime="
+        + createTime
+        + ", userId="
+        + userId
+        + ", login='"
+        + login
+        + '\''
+        + ", ipAddress='"
+        + ipAddress
+        + '\''
+        + ", action='"
+        + action
+        + '\''
+        + ", payload='"
+        + payload
+        + '\''
+        + ", errorCode='"
+        + errorCode
+        + '\'';
+  }
 }

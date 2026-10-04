@@ -23,128 +23,150 @@ package com.hmdm.rest.json;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.hmdm.persistence.domain.CustomerData;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
-
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.io.Serializable;
 
-@ApiModel(description = "A link between the file and the configuration")
+@Schema(description = "A link between the file and the configuration")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class FileConfigurationLink implements CustomerData, Serializable {
 
-    @ApiModelProperty(value = "An ID of a link between the file and configuration. " +
-            "May be null if those are not linked", required = false)
-    private Integer id;
-    @ApiModelProperty("An ID of a customer account which both the file and configuration belong to")
-    private int customerId;
-    @ApiModelProperty("An ID of a configuration")
-    private int configurationId;
-    @ApiModelProperty("A name of a configuration")
-    private String configurationName;
-    @ApiModelProperty("An ID of a file")
-    private int fileId;
-    @ApiModelProperty("A name of a file")
-    private String fileName;
-    @ApiModelProperty(value = "A flag indicating that file is to be uploaded to device in the configuration")
-    private boolean upload;
-    @ApiModelProperty(value = "A flag indicating that file is to be removed from the configuration")
-    private boolean remove;
-    @ApiModelProperty(value = "Set by front-end when the configuration needs to be notified about changes")
-    private boolean notify;
+  @Schema(
+      description =
+          "An ID of a link between the file and configuration. "
+              + "May be null if those are not linked",
+      required = false)
+  private Integer id;
 
-    /**
-     * <p>Constructs new <code>FileConfigurationLink</code> instance. This implementation does nothing.</p>
-     */
-    public FileConfigurationLink() {
-    }
+  @Schema(
+      description = "An ID of a customer account which both the file and configuration belong to")
+  private int customerId;
 
-    @Override
-    public Integer getId() {
-        return id;
-    }
+  @Schema(description = "An ID of a configuration")
+  private int configurationId;
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+  @Schema(description = "A name of a configuration")
+  private String configurationName;
 
-    @Override
-    public int getCustomerId() {
-        return customerId;
-    }
+  @Schema(description = "An ID of a file")
+  private int fileId;
 
-    @Override
-    public void setCustomerId(int customerId) {
-        this.customerId = customerId;
-    }
+  @Schema(description = "A name of a file")
+  private String fileName;
 
-    public int getConfigurationId() {
-        return configurationId;
-    }
+  @Schema(
+      description = "A flag indicating that file is to be uploaded to device in the configuration")
+  private boolean upload;
 
-    public void setConfigurationId(int configurationId) {
-        this.configurationId = configurationId;
-    }
+  @Schema(description = "A flag indicating that file is to be removed from the configuration")
+  private boolean remove;
 
-    public String getConfigurationName() {
-        return configurationName;
-    }
+  @Schema(
+      description = "Set by front-end when the configuration needs to be notified about changes")
+  private boolean notify;
 
-    public void setConfigurationName(String configurationName) {
-        this.configurationName = configurationName;
-    }
+  /**
+   * Constructs new <code>FileConfigurationLink</code> instance. This implementation does nothing.
+   */
+  public FileConfigurationLink() {}
 
-    public int getFileId() {
-        return fileId;
-    }
+  @Override
+  public Integer getId() {
+    return id;
+  }
 
-    public void setFileId(int fileId) {
-        this.fileId = fileId;
-    }
+  public void setId(Integer id) {
+    this.id = id;
+  }
 
-    public String getFileName() {
-        return fileName;
-    }
+  @Override
+  public int getCustomerId() {
+    return customerId;
+  }
 
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
-    }
+  @Override
+  public void setCustomerId(int customerId) {
+    this.customerId = customerId;
+  }
 
-    public boolean isUpload() {
-        return upload;
-    }
+  public int getConfigurationId() {
+    return configurationId;
+  }
 
-    public void setUpload(boolean upload) {
-        this.upload = upload;
-    }
+  public void setConfigurationId(int configurationId) {
+    this.configurationId = configurationId;
+  }
 
-    public boolean isRemove() {
-        return remove;
-    }
+  public String getConfigurationName() {
+    return configurationName;
+  }
 
-    public void setRemove(boolean remove) {
-        this.remove = remove;
-    }
+  public void setConfigurationName(String configurationName) {
+    this.configurationName = configurationName;
+  }
 
-    public boolean isNotify() {
-        return notify;
-    }
+  public int getFileId() {
+    return fileId;
+  }
 
-    public void setNotify(boolean notify) {
-        this.notify = notify;
-    }
+  public void setFileId(int fileId) {
+    this.fileId = fileId;
+  }
 
-    @Override
-    public String toString() {
-        return "FileConfigurationLink{" +
-                "id=" + id +
-                ", customerId=" + customerId +
-                ", configurationId=" + configurationId +
-                ", configurationName='" + configurationName + '\'' +
-                ", fileId=" + fileId +
-                ", fileName='" + fileName + '\'' +
-                ", upload=" + upload +
-                ", remove=" + remove +
-                ", notify=" + notify +
-                '}';
-    }
+  public String getFileName() {
+    return fileName;
+  }
+
+  public void setFileName(String fileName) {
+    this.fileName = fileName;
+  }
+
+  public boolean isUpload() {
+    return upload;
+  }
+
+  public void setUpload(boolean upload) {
+    this.upload = upload;
+  }
+
+  public boolean isRemove() {
+    return remove;
+  }
+
+  public void setRemove(boolean remove) {
+    this.remove = remove;
+  }
+
+  public boolean isNotify() {
+    return notify;
+  }
+
+  public void setNotify(boolean notify) {
+    this.notify = notify;
+  }
+
+  @Override
+  public String toString() {
+    return "FileConfigurationLink{"
+        + "id="
+        + id
+        + ", customerId="
+        + customerId
+        + ", configurationId="
+        + configurationId
+        + ", configurationName='"
+        + configurationName
+        + '\''
+        + ", fileId="
+        + fileId
+        + ", fileName='"
+        + fileName
+        + '\''
+        + ", upload="
+        + upload
+        + ", remove="
+        + remove
+        + ", notify="
+        + notify
+        + '}';
+  }
 }

@@ -21,180 +21,214 @@
 
 package com.hmdm.rest.json;
 
-import com.hmdm.persistence.domain.CustomerData;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.hmdm.persistence.domain.CustomerData;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
 
-@ApiModel(description = "A link between the single application and single configuration")
+@Schema(description = "A link between the single application and single configuration")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ApplicationConfigurationLink implements CustomerData {
 
-    @ApiModelProperty(value = "An ID of a link between the application and configuration. " +
-            "May be null if those are not linked", required = false)
-    private Integer id;
-    @ApiModelProperty("An ID of a customer account which both the application and configuration belong to")
-    private int customerId;
-    @ApiModelProperty("An ID of a configuration")
-    private int configurationId;
-    @ApiModelProperty("A name of a configuration")
-    private String configurationName;
-    @ApiModelProperty("An ID of an application")
-    private int applicationId;
-    @ApiModelProperty("A name of an application")
-    private String applicationName;
-    // A helper property to indicate the action required to be performed by mobile device
-    // in regard to application installation
-    // 0 - do not install and hide if installed
-    // 1 - install
-    // 2 - do not install and remove if installed
-    @ApiModelProperty(
-            value = "An action required to be performed by mobile device in regard to application installation",
-            allowableValues = "0,1,2"
-    )
-    private int action;
-    @ApiModelProperty("A flag indicating if icon is to be shown on mobile device")
-    private Boolean showIcon;
-    @ApiModelProperty(value = "A flag indicating that application is to be removed from the application")
-    private boolean remove;
-    @ApiModelProperty(value = "A flag indicating if more recent version of application exists")
-    private boolean outdated;
-    @ApiModelProperty(value = "A latest version of the application")
-    private String latestVersionText;
-    @ApiModelProperty(value = "A current version of the application as set for configuration")
-    private String currentVersionText;
-    @ApiModelProperty(value = "Set by front-end when the configuration needs to be notified about changes")
-    private boolean notify;
+  @Schema(
+      description =
+          "An ID of a link between the application and configuration. "
+              + "May be null if those are not linked",
+      requiredMode = RequiredMode.REQUIRED)
+  private Integer id;
 
-    /**
-     * <p>Constructs new <code>ApplicationConfigurationLink</code> instance. This implementation does nothing.</p>
-     */
-    public ApplicationConfigurationLink() {
-    }
+  @Schema(
+      description =
+          "An ID of a customer account which both the application and configuration belong to")
+  private int customerId;
 
-    @Override
-    public Integer getId() {
-        return id;
-    }
+  @Schema(description = "An ID of a configuration")
+  private int configurationId;
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+  @Schema(description = "A name of a configuration")
+  private String configurationName;
 
-    @Override
-    public int getCustomerId() {
-        return customerId;
-    }
+  @Schema(description = "An ID of an application")
+  private int applicationId;
 
-    @Override
-    public void setCustomerId(int customerId) {
-        this.customerId = customerId;
-    }
+  @Schema(description = "A name of an application")
+  private String applicationName;
 
-    public int getConfigurationId() {
-        return configurationId;
-    }
+  // A helper property to indicate the action required to be performed by mobile device
+  // in regard to application installation
+  // 0 - do not install and hide if installed
+  // 1 - install
+  // 2 - do not install and remove if installed
+  @Schema(
+      description =
+          "An action required to be performed by mobile device in regard to application"
+              + " installation",
+      allowableValues = "0,1,2")
+  private int action;
 
-    public void setConfigurationId(int configurationId) {
-        this.configurationId = configurationId;
-    }
+  @Schema(description = "A flag indicating if icon is to be shown on mobile device")
+  private Boolean showIcon;
 
-    public String getConfigurationName() {
-        return configurationName;
-    }
+  @Schema(description = "A flag indicating that application is to be removed from the application")
+  private boolean remove;
 
-    public void setConfigurationName(String configurationName) {
-        this.configurationName = configurationName;
-    }
+  @Schema(description = "A flag indicating if more recent version of application exists")
+  private boolean outdated;
 
-    public int getApplicationId() {
-        return applicationId;
-    }
+  @Schema(description = "A latest version of the application")
+  private String latestVersionText;
 
-    public void setApplicationId(int applicationId) {
-        this.applicationId = applicationId;
-    }
+  @Schema(description = "A current version of the application as set for configuration")
+  private String currentVersionText;
 
-    public String getApplicationName() {
-        return applicationName;
-    }
+  @Schema(
+      description = "Set by front-end when the configuration needs to be notified about changes")
+  private boolean notify;
 
-    public void setApplicationName(String applicationName) {
-        this.applicationName = applicationName;
-    }
+  /**
+   * Constructs new <code>ApplicationConfigurationLink</code> instance. This implementation does
+   * nothing.
+   */
+  public ApplicationConfigurationLink() {}
 
-    public int getAction() {
-        return action;
-    }
+  @Override
+  public Integer getId() {
+    return id;
+  }
 
-    public void setAction(int action) {
-        this.action = action;
-    }
+  public void setId(Integer id) {
+    this.id = id;
+  }
 
-    public Boolean getShowIcon() {
-        return showIcon;
-    }
+  @Override
+  public int getCustomerId() {
+    return customerId;
+  }
 
-    public void setShowIcon(Boolean showIcon) {
-        this.showIcon = showIcon;
-    }
+  @Override
+  public void setCustomerId(int customerId) {
+    this.customerId = customerId;
+  }
 
-    public boolean isRemove() {
-        return remove;
-    }
+  public int getConfigurationId() {
+    return configurationId;
+  }
 
-    public void setRemove(boolean remove) {
-        this.remove = remove;
-    }
+  public void setConfigurationId(int configurationId) {
+    this.configurationId = configurationId;
+  }
 
-    public boolean isOutdated() {
-        return outdated;
-    }
+  public String getConfigurationName() {
+    return configurationName;
+  }
 
-    public void setOutdated(boolean outdated) {
-        this.outdated = outdated;
-    }
+  public void setConfigurationName(String configurationName) {
+    this.configurationName = configurationName;
+  }
 
-    public String getLatestVersionText() {
-        return latestVersionText;
-    }
+  public int getApplicationId() {
+    return applicationId;
+  }
 
-    public void setLatestVersionText(String latestVersionText) {
-        this.latestVersionText = latestVersionText;
-    }
+  public void setApplicationId(int applicationId) {
+    this.applicationId = applicationId;
+  }
 
-    public String getCurrentVersionText() {
-        return currentVersionText;
-    }
+  public String getApplicationName() {
+    return applicationName;
+  }
 
-    public void setCurrentVersionText(String currentVersionText) {
-        this.currentVersionText = currentVersionText;
-    }
+  public void setApplicationName(String applicationName) {
+    this.applicationName = applicationName;
+  }
 
-    public boolean isNotify() {
-        return notify;
-    }
+  public int getAction() {
+    return action;
+  }
 
-    public void setNotify(boolean notify) {
-        this.notify = notify;
-    }
+  public void setAction(int action) {
+    this.action = action;
+  }
 
-    @Override
-    public String toString() {
-        return "ApplicationConfigurationLink{" +
-                "id=" + id +
-                ", customerId=" + customerId +
-                ", configurationId=" + configurationId +
-                ", configurationName='" + configurationName + '\'' +
-                ", applicationId=" + applicationId +
-                ", applicationName='" + applicationName + '\'' +
-                ", action=" + action +
-                ", showIcon=" + showIcon +
-                ", remove=" + remove +
-                ", outdated=" + outdated +
-                ", currentVersionText=" + currentVersionText +
-                ", latestVersionText=" + latestVersionText +
-                ", notify=" + notify +
-                '}';
-    }
+  public Boolean getShowIcon() {
+    return showIcon;
+  }
+
+  public void setShowIcon(Boolean showIcon) {
+    this.showIcon = showIcon;
+  }
+
+  public boolean isRemove() {
+    return remove;
+  }
+
+  public void setRemove(boolean remove) {
+    this.remove = remove;
+  }
+
+  public boolean isOutdated() {
+    return outdated;
+  }
+
+  public void setOutdated(boolean outdated) {
+    this.outdated = outdated;
+  }
+
+  public String getLatestVersionText() {
+    return latestVersionText;
+  }
+
+  public void setLatestVersionText(String latestVersionText) {
+    this.latestVersionText = latestVersionText;
+  }
+
+  public String getCurrentVersionText() {
+    return currentVersionText;
+  }
+
+  public void setCurrentVersionText(String currentVersionText) {
+    this.currentVersionText = currentVersionText;
+  }
+
+  public boolean isNotify() {
+    return notify;
+  }
+
+  public void setNotify(boolean notify) {
+    this.notify = notify;
+  }
+
+  @Override
+  public String toString() {
+    return "ApplicationConfigurationLink{"
+        + "id="
+        + id
+        + ", customerId="
+        + customerId
+        + ", configurationId="
+        + configurationId
+        + ", configurationName='"
+        + configurationName
+        + '\''
+        + ", applicationId="
+        + applicationId
+        + ", applicationName='"
+        + applicationName
+        + '\''
+        + ", action="
+        + action
+        + ", showIcon="
+        + showIcon
+        + ", remove="
+        + remove
+        + ", outdated="
+        + outdated
+        + ", currentVersionText="
+        + currentVersionText
+        + ", latestVersionText="
+        + latestVersionText
+        + ", notify="
+        + notify
+        + '}';
+  }
 }

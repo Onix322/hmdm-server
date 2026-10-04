@@ -22,173 +22,172 @@
 package com.hmdm.rest.json;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
-
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.io.Serializable;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-@ApiModel(description = "A response from the application to request from client. The actual type of 'data' is specific to request.")
+@Schema(
+    description =
+        "A response from the application to request from client. The actual type of 'data' is"
+            + " specific to request.")
 public class Response implements Serializable {
 
-    private static final long serialVersionUID = 3268801711912541479L;
-    
-    @ApiModelProperty("A status of the server response.")
-    private Response.ResponseStatus status;
+  private static final long serialVersionUID = 3268801711912541479L;
 
-    @ApiModelProperty("An optional message related to status.")
-    private String message;
+  @Schema(description = "A status of the server response.")
+  private Response.ResponseStatus status;
 
-    @ApiModelProperty("A data requested by client.")
-    private Object data;
+  @Schema(description = "An optional message related to status.")
+  private String message;
 
-    public Response() {
-    }
+  @Schema(description = "A data requested by client.")
+  private Object data;
 
-    private Response(Response.ResponseStatus status, String message, Object data) {
-        this.status = status;
-        this.message = message;
-        this.data = data;
-    }
+  public Response() {}
 
-    public Response.ResponseStatus getStatus() {
-        return this.status;
-    }
+  private Response(Response.ResponseStatus status, String message, Object data) {
+    this.status = status;
+    this.message = message;
+    this.data = data;
+  }
 
-    public void setStatus(Response.ResponseStatus status) {
-        this.status = status;
-    }
+  public Response.ResponseStatus getStatus() {
+    return this.status;
+  }
 
-    public String getMessage() {
-        return this.message;
-    }
+  public void setStatus(Response.ResponseStatus status) {
+    this.status = status;
+  }
 
-    public void setMessage(String message) {
-        this.message = message;
-    }
+  public String getMessage() {
+    return this.message;
+  }
 
-    public Object getData() {
-        return this.data;
-    }
+  public void setMessage(String message) {
+    this.message = message;
+  }
 
-    public void setData(Object data) {
-        this.data = data;
-    }
+  public Object getData() {
+    return this.data;
+  }
 
-    public static Response OK(String message, Object data) {
-        return new Response(Response.ResponseStatus.OK, message, data);
-    }
+  public void setData(Object data) {
+    this.data = data;
+  }
 
-    public static Response OK(Object data) {
-        return OK(null, data);
-    }
+  public static Response OK(String message, Object data) {
+    return new Response(Response.ResponseStatus.OK, message, data);
+  }
 
-    public static Response OK(String message) {
-        return OK(message, null);
-    }
+  public static Response OK(Object data) {
+    return OK(null, data);
+  }
 
-    public static Response OK() {
-        return OK(null, null);
-    }
+  public static Response OK(String message) {
+    return OK(message, null);
+  }
 
-    public static Response WARNING(String message, Object data) {
-        return new Response(Response.ResponseStatus.WARNING, message, data);
-    }
+  public static Response OK() {
+    return OK(null, null);
+  }
 
-    public static Response WARNING(Object data) {
-        return WARNING(null, data);
-    }
+  public static Response WARNING(String message, Object data) {
+    return new Response(Response.ResponseStatus.WARNING, message, data);
+  }
 
-    public static Response WARNING(String message) {
-        return WARNING(message, null);
-    }
+  public static Response WARNING(Object data) {
+    return WARNING(null, data);
+  }
 
-    public static Response WARNING() {
-        return WARNING(null, null);
-    }
+  public static Response WARNING(String message) {
+    return WARNING(message, null);
+  }
 
-    public static Response ERROR(String message, Object data) {
-        return new Response(Response.ResponseStatus.ERROR, message, data);
-    }
+  public static Response WARNING() {
+    return WARNING(null, null);
+  }
 
-    public static Response ERROR(Object data) {
-        return ERROR(null, data);
-    }
+  public static Response ERROR(String message, Object data) {
+    return new Response(Response.ResponseStatus.ERROR, message, data);
+  }
 
-    public static Response ERROR(String message) {
-        return ERROR(message, null);
-    }
+  public static Response ERROR(Object data) {
+    return ERROR(null, data);
+  }
 
-    public static Response INTERNAL_ERROR() {
-        return ERROR("error.internal.server", null);
-    }
+  public static Response ERROR(String message) {
+    return ERROR(message, null);
+  }
 
-    public static Response PLUGIN_DISABLED() {
-        return ERROR("error.resource.disabled", null);
-    }
+  public static Response INTERNAL_ERROR() {
+    return ERROR("error.internal.server", null);
+  }
 
-    public static Response PERMISSION_DENIED() {
-        return ERROR("error.permission.denied", null);
-    }
+  public static Response PLUGIN_DISABLED() {
+    return ERROR("error.resource.disabled", null);
+  }
 
-    public static Response OBJECT_NOT_FOUND_ERROR() {
-        return ERROR("error.notfound.object", null);
-    }
+  public static Response PERMISSION_DENIED() {
+    return ERROR("error.permission.denied", null);
+  }
 
-    public static Response DEVICE_NOT_FOUND_ERROR() {
-        return ERROR("error.notfound.device", null);
-    }
+  public static Response OBJECT_NOT_FOUND_ERROR() {
+    return ERROR("error.notfound.object", null);
+  }
 
-    public static Response DUPLICATE_ENTITY(String message) {
-        return ERROR(message, null);
-    }
+  public static Response DEVICE_NOT_FOUND_ERROR() {
+    return ERROR("error.notfound.device", null);
+  }
 
-    public static Response DUPLICATE_APPLICATION() {
-        return ERROR("error.duplicate.application", null);
-    }
+  public static Response DUPLICATE_ENTITY(String message) {
+    return ERROR(message, null);
+  }
 
-    public static Response RECENT_APPLICATION_VERSION_EXISTS() {
-        return ERROR("error.recent.application.version.exists", null);
-    }
+  public static Response DUPLICATE_APPLICATION() {
+    return ERROR("error.duplicate.application", null);
+  }
 
-    public static Response APPLICATION_CONFIG_REFERENCE_EXISTS() {
-        return ERROR("error.application.config.reference.exists", null);
-    }
+  public static Response RECENT_APPLICATION_VERSION_EXISTS() {
+    return ERROR("error.recent.application.version.exists", null);
+  }
 
-    public static Response APPLICATION_NOT_FOUND_ERROR() {
-        return ERROR("error.application.not.found", null);
-    }
+  public static Response APPLICATION_CONFIG_REFERENCE_EXISTS() {
+    return ERROR("error.application.config.reference.exists", null);
+  }
 
-    public static Response CONFIGURATION_DEVICE_REFERENCE_EXISTS() {
-        return ERROR("error.configuration.device.use", null);
-    }
+  public static Response APPLICATION_NOT_FOUND_ERROR() {
+    return ERROR("error.application.not.found", null);
+  }
 
-    public static Response COMMON_APPLICATION_ACCESS_PROHIBITED() {
-        return ERROR("error.common.application.access.prohibited", null);
-    }
+  public static Response CONFIGURATION_DEVICE_REFERENCE_EXISTS() {
+    return ERROR("error.configuration.device.use", null);
+  }
 
-    public static Response DEVICE_EXISTS() {
-        return ERROR("error.duplicate.device", null);
-    }
+  public static Response COMMON_APPLICATION_ACCESS_PROHIBITED() {
+    return ERROR("error.common.application.access.prohibited", null);
+  }
 
-    public static Response FILE_EXISTS() {
-        return ERROR("error.duplicate.file", null);
-    }
+  public static Response DEVICE_EXISTS() {
+    return ERROR("error.duplicate.device", null);
+  }
 
-    public static Response FILE_USED() {
-        return ERROR("error.used.file", null);
-    }
+  public static Response FILE_EXISTS() {
+    return ERROR("error.duplicate.file", null);
+  }
 
-    public static Response ERROR() {
-        return ERROR(null, null);
-    }
+  public static Response FILE_USED() {
+    return ERROR("error.used.file", null);
+  }
 
-    public enum ResponseStatus {
-        OK,
-        WARNING,
-        ERROR;
+  public static Response ERROR() {
+    return ERROR(null, null);
+  }
 
-        ResponseStatus() {
-        }
-    }
+  public enum ResponseStatus {
+    OK,
+    WARNING,
+    ERROR;
+
+    ResponseStatus() {}
+  }
 }

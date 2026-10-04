@@ -24,12 +24,11 @@ package com.hmdm.plugins.push.persistence.domain;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.hmdm.persistence.domain.CustomerData;
-import io.swagger.annotations.ApiModelProperty;
-
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.io.Serializable;
 
 /**
- * <p>A domain object representing the Push message sent to the device.</p>
+ * A domain object representing the Push message sent to the device.
  *
  * @author isv
  */
@@ -37,101 +36,104 @@ import java.io.Serializable;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class PluginPushMessage implements CustomerData, Serializable {
 
-    private static final long serialVersionUID = 4721182825649236306L;
+  private static final long serialVersionUID = 4721182825649236306L;
 
-    @ApiModelProperty("ID of Push message record")
-    private Integer id;
+  @Schema(description = "ID of Push message record")
+  private Integer id;
 
-    @ApiModelProperty("Customer ID")
-    private int customerId;
+  @Schema(description = "Customer ID")
+  private int customerId;
 
-    @ApiModelProperty("Device ID")
-    private int deviceId;
+  @Schema(description = "Device ID")
+  private int deviceId;
 
-    @ApiModelProperty("Device Number")
-    private String deviceNumber;
+  @Schema(description = "Device Number")
+  private String deviceNumber;
 
-    @ApiModelProperty("Timestamp when the message has been sent (in milliseconds since epoch time)")
-    private long ts;
+  @Schema(
+      description = "Timestamp when the message has been sent (in milliseconds since epoch time)")
+  private long ts;
 
-    @ApiModelProperty("Push Message type")
-    private String messageType;
+  @Schema(description = "Push Message type")
+  private String messageType;
 
-    @ApiModelProperty("Push Message payload")
-    private String payload;
+  @Schema(description = "Push Message payload")
+  private String payload;
 
-    /**
-     * <p>Constructs new <code>PluginPushMessage</code> instance. This implementation does nothing.</p>
-     */
-    public PluginPushMessage() {
-    }
+  /** Constructs new <code>PluginPushMessage</code> instance. This implementation does nothing. */
+  public PluginPushMessage() {}
 
-    public Integer getId() {
-        return id;
-    }
+  public Integer getId() {
+    return id;
+  }
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+  public void setId(Integer id) {
+    this.id = id;
+  }
 
-    @Override
-    public int getCustomerId() {
-        return customerId;
-    }
+  @Override
+  public int getCustomerId() {
+    return customerId;
+  }
 
-    @Override
-    public void setCustomerId(int customerId) {
-        this.customerId = customerId;
-    }
+  @Override
+  public void setCustomerId(int customerId) {
+    this.customerId = customerId;
+  }
 
-    public int getDeviceId() {
-        return deviceId;
-    }
+  public int getDeviceId() {
+    return deviceId;
+  }
 
-    public void setDeviceId(int deviceId) {
-        this.deviceId = deviceId;
-    }
+  public void setDeviceId(int deviceId) {
+    this.deviceId = deviceId;
+  }
 
-    public String getDeviceNumber() {
-        return deviceNumber;
-    }
+  public String getDeviceNumber() {
+    return deviceNumber;
+  }
 
-    public void setDeviceNumber(String deviceNumber) {
-        this.deviceNumber = deviceNumber;
-    }
+  public void setDeviceNumber(String deviceNumber) {
+    this.deviceNumber = deviceNumber;
+  }
 
-    public long getTs() {
-        return ts;
-    }
+  public long getTs() {
+    return ts;
+  }
 
-    public void setTs(long ts) {
-        this.ts = ts;
-    }
+  public void setTs(long ts) {
+    this.ts = ts;
+  }
 
-    public String getMessageType() {
-        return messageType;
-    }
+  public String getMessageType() {
+    return messageType;
+  }
 
-    public void setMessageType(String messageType) {
-        this.messageType = messageType;
-    }
+  public void setMessageType(String messageType) {
+    this.messageType = messageType;
+  }
 
-    public String getPayload() {
-        return payload;
-    }
+  public String getPayload() {
+    return payload;
+  }
 
-    public void setPayload(String payload) {
-        this.payload = payload;
-    }
+  public void setPayload(String payload) {
+    this.payload = payload;
+  }
 
-    @Override
-    public String toString() {
-        return "PluginPushMessage{" +
-                "id=" + id +
-                ", deviceId=" + deviceId +
-                ", ts=" + ts +
-                ", messageType=" + messageType +
-                ", payload=" + payload +
-                '}';
-    }
+  @Override
+  public String toString() {
+    return "PluginPushMessage{"
+        + "id="
+        + id
+        + ", deviceId="
+        + deviceId
+        + ", ts="
+        + ts
+        + ", messageType="
+        + messageType
+        + ", payload="
+        + payload
+        + '}';
+  }
 }

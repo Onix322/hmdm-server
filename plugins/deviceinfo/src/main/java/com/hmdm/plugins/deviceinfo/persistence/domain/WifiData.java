@@ -22,125 +22,133 @@
 package com.hmdm.plugins.deviceinfo.persistence.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import io.swagger.annotations.ApiModelProperty;
-
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.io.Serializable;
 
 /**
- * <p> A domain object representing the device parameters related to Wi-Fi.</p>
+ * A domain object representing the device parameters related to Wi-Fi.
  *
  * @author isv
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class WifiData implements Serializable {
 
-    private static final long serialVersionUID = 8330103616369245912L;
-    
-    @ApiModelProperty("An ID of Wi-Fi data record")
-    private Integer id;
+  private static final long serialVersionUID = 8330103616369245912L;
 
-    @ApiModelProperty("A signal level")
-    private Integer rssi;
+  @Schema(description = "An ID of Wi-Fi data record")
+  private Integer id;
 
-    @ApiModelProperty("A SSID")
-    private String ssid;
+  @Schema(description = "A signal level")
+  private Integer rssi;
 
-    @ApiModelProperty("A security status")
-    private String security;
+  @Schema(description = "A SSID")
+  private String ssid;
 
-    @ApiModelProperty("A connection status")
-    private String state;
+  @Schema(description = "A security status")
+  private String security;
 
-    @ApiModelProperty("A used IP-address")
-    private String ip;
+  @Schema(description = "A connection status")
+  private String state;
 
-    @ApiModelProperty("A number of transmitted bytes since previous data exhange")
-    private Long tx;
+  @Schema(description = "A used IP-address")
+  private String ip;
 
-    @ApiModelProperty("A number of received bytes since previous data exhange")
-    private Long rx;
+  @Schema(description = "A number of transmitted bytes since previous data exhange")
+  private Long tx;
 
-    /**
-     * <p>Constructs new <code>WifiData</code> instance. This implementation does nothing.</p>
-     */
-    public WifiData() {
-    }
+  @Schema(description = "A number of received bytes since previous data exhange")
+  private Long rx;
 
-    public Integer getId() {
-        return id;
-    }
+  /** Constructs new <code>WifiData</code> instance. This implementation does nothing. */
+  public WifiData() {}
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+  public Integer getId() {
+    return id;
+  }
 
-    public Integer getRssi() {
-        return rssi;
-    }
+  public void setId(Integer id) {
+    this.id = id;
+  }
 
-    public void setRssi(Integer rssi) {
-        this.rssi = rssi;
-    }
+  public Integer getRssi() {
+    return rssi;
+  }
 
-    public String getSsid() {
-        return ssid;
-    }
+  public void setRssi(Integer rssi) {
+    this.rssi = rssi;
+  }
 
-    public void setSsid(String ssid) {
-        this.ssid = ssid;
-    }
+  public String getSsid() {
+    return ssid;
+  }
 
-    public String getSecurity() {
-        return security;
-    }
+  public void setSsid(String ssid) {
+    this.ssid = ssid;
+  }
 
-    public void setSecurity(String security) {
-        this.security = security;
-    }
+  public String getSecurity() {
+    return security;
+  }
 
-    public String getState() {
-        return state;
-    }
+  public void setSecurity(String security) {
+    this.security = security;
+  }
 
-    public void setState(String state) {
-        this.state = state;
-    }
+  public String getState() {
+    return state;
+  }
 
-    public String getIp() {
-        return ip;
-    }
+  public void setState(String state) {
+    this.state = state;
+  }
 
-    public void setIp(String ip) {
-        this.ip = ip;
-    }
+  public String getIp() {
+    return ip;
+  }
 
-    public Long getTx() {
-        return tx;
-    }
+  public void setIp(String ip) {
+    this.ip = ip;
+  }
 
-    public void setTx(Long tx) {
-        this.tx = tx;
-    }
+  public Long getTx() {
+    return tx;
+  }
 
-    public Long getRx() {
-        return rx;
-    }
+  public void setTx(Long tx) {
+    this.tx = tx;
+  }
 
-    public void setRx(Long rx) {
-        this.rx = rx;
-    }
+  public Long getRx() {
+    return rx;
+  }
 
-    @Override
-    public String toString() {
-        return "WifiData{" +
-                "id=" + id +
-                ", rssi=" + rssi +
-                ", ssid='" + ssid + '\'' +
-                ", security='" + security + '\'' +
-                ", state='" + state + '\'' +
-                ", ip='" + ip + '\'' +
-                ", tx=" + tx +
-                ", rx=" + rx +
-                '}';
-    }
+  public void setRx(Long rx) {
+    this.rx = rx;
+  }
+
+  @Override
+  public String toString() {
+    return "WifiData{"
+        + "id="
+        + id
+        + ", rssi="
+        + rssi
+        + ", ssid='"
+        + ssid
+        + '\''
+        + ", security='"
+        + security
+        + '\''
+        + ", state='"
+        + state
+        + '\''
+        + ", ip='"
+        + ip
+        + '\''
+        + ", tx="
+        + tx
+        + ", rx="
+        + rx
+        + '}';
+  }
 }

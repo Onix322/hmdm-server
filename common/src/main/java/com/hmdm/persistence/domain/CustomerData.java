@@ -21,43 +21,44 @@
 
 package com.hmdm.persistence.domain;
 
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
- * <p>An interface for domain objects linked to some customer record.</p>
+ * An interface for domain objects linked to some customer record.
  *
  * @author isv
  */
 public interface CustomerData {
-    
-    /**
-     * <p>Gets the ID of this object.</p>
-     *
-     * @return an ID of this object.
-     */
-    Integer getId();
 
-    /**
-     * <p>Gets the ID of a customer account record this object is linked to.</p>
-     *
-     * @return an ID of a customer account record.
-     */
-    int getCustomerId();
+  /**
+   * Gets the ID of this object.
+   *
+   * @return an ID of this object.
+   */
+  Integer getId();
 
-    /**
-     * <p>Sets the ID of a customer account record this object is linked to.</p>
-     *
-     * @param customerId an ID of a customer account record.
-     */
-    void setCustomerId(int customerId);
+  /**
+   * Gets the ID of a customer account record this object is linked to.
+   *
+   * @return an ID of a customer account record.
+   */
+  int getCustomerId();
 
-    /**
-     * <p>Checks if this record is accessible to all customers or not.</p>
-     *
-     * @return <code>true</code> if this record is accessible to all customers; <code>false</code> otherwise.
-     */
-    @ApiModelProperty(hidden = true)
-    default boolean isCommon() {
-        return false;
-    }
+  /**
+   * Sets the ID of a customer account record this object is linked to.
+   *
+   * @param customerId an ID of a customer account record.
+   */
+  void setCustomerId(int customerId);
+
+  /**
+   * Checks if this record is accessible to all customers or not.
+   *
+   * @return <code>true</code> if this record is accessible to all customers; <code>false</code>
+   *     otherwise.
+   */
+  @Schema(hidden = true)
+  default boolean isCommon() {
+    return false;
+  }
 }

@@ -23,67 +23,64 @@ package com.hmdm.rest.json;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import io.swagger.annotations.ApiModel;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
- * <p>A DTO carrying the data for name/vendor response for rebranding purposes</p>
+ * A DTO carrying the data for name/vendor response for rebranding purposes
  *
  * @author isv
  */
-@ApiModel(description = "Name and vendor for rebranding purposes")
+@Schema(description = "Name and vendor for rebranding purposes")
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class NameResponse {
 
-    private String appName;
-    private String vendorName;
-    private String vendorLink;
-    private String signupLink;
-    private String termsLink;
+  private String appName;
+  private String vendorName;
+  private String vendorLink;
+  private String signupLink;
+  private String termsLink;
 
-    /**
-     * <p>Constructs new <code>NameResponse</code> instance. This implementation does nothing.</p>
-     */
-    public NameResponse() {
-    }
+  /** Constructs new <code>NameResponse</code> instance. This implementation does nothing. */
+  public NameResponse() {}
 
-    public String getAppName() {
-        return appName;
-    }
+  public String getAppName() {
+    return appName;
+  }
 
-    public void setAppName(String appName) {
-        this.appName = appName;
-    }
+  public void setAppName(String appName) {
+    this.appName = appName;
+  }
 
-    public String getVendorName() {
-        return vendorName;
-    }
+  public String getVendorName() {
+    return vendorName;
+  }
 
-    public void setVendorName(String vendorName) {
-        this.vendorName = vendorName;
-    }
+  public void setVendorName(String vendorName) {
+    this.vendorName = vendorName;
+  }
 
-    public String getVendorLink() {
-        return vendorLink;
-    }
+  public String getVendorLink() {
+    return vendorLink;
+  }
 
-    public void setVendorLink(String vendorLink) {
-        this.vendorLink = vendorLink;
-    }
+  public void setVendorLink(String vendorLink) {
+    this.vendorLink = vendorLink;
+  }
 
-    public String getSignupLink() {
-        return signupLink;
-    }
+  public String getSignupLink() {
+    return signupLink;
+  }
 
-    public void setSignupLink(String signupLink) {
-        this.signupLink = signupLink;
-    }
+  public void setSignupLink(String signupLink) {
+    this.signupLink = signupLink;
+  }
 
-    public String getTermsLink() {
-        return termsLink;
-    }
+  public String getTermsLink() {
+    return termsLink;
+  }
 
-    public void setTermsLink(String termsLink) {
-        this.termsLink = termsLink;
-    }
+  public void setTermsLink(String termsLink) {
+    this.termsLink = termsLink;
+  }
 }

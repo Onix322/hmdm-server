@@ -21,169 +21,158 @@
 
 package com.hmdm.plugins.audit.rest.json;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.io.Serializable;
 import java.util.Date;
 
 /**
- * <p>A DTO carrying the parameters for filtering the lists of audit log record objects.</p>
+ * A DTO carrying the parameters for filtering the lists of audit log record objects.
  *
  * @author isv
  */
-@ApiModel(description = "The parameters for filtering the lists of audit log record objects")
+@Schema(description = "The parameters for filtering the lists of audit log record objects")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class AuditLogFilter implements Serializable {
 
-    private static final long serialVersionUID = -945012783831678093L;
-    /**
-     * <p>A number of records per single page of data to be retrieved.</p>
-     */
-    @ApiModelProperty("A number of records per single page of data to be retrieved")
-    private int pageSize = 50;
+  private static final long serialVersionUID = -945012783831678093L;
 
-    /**
-     * <p>A number of page of data to be retrieved.</p>
-     */
-    @ApiModelProperty("A number of page of data to be retrieved (1-based)")
-    private int pageNum = 1;
+  /** A number of records per single page of data to be retrieved. */
+  @Schema(description = "A number of records per single page of data to be retrieved")
+  private int pageSize = 50;
 
-    /**
-     * <p>A filter used for filtering the data records by message.</p>
-     */
-    @ApiModelProperty("A filter used for filtering the data records by message")
-    private String messageFilter;
+  /** A number of page of data to be retrieved. */
+  @Schema(description = "A number of page of data to be retrieved (1-based)")
+  private int pageNum = 1;
 
-    /**
-     * <p>A filter used for filtering the data records by user.</p>
-     */
-    @ApiModelProperty("A filter used for filtering the data records by user")
-    private String userFilter;
+  /** A filter used for filtering the data records by message. */
+  @Schema(description = "A filter used for filtering the data records by message")
+  private String messageFilter;
 
-    /**
-     * <p>A timestamp for <code>FROM</code> boundary for filtering the data records by dates.</p>
-     */
-    @ApiModelProperty("A timestamp for FROM boundary for filtering the data records by dates")
-    private Date dateFrom;
+  /** A filter used for filtering the data records by user. */
+  @Schema(description = "A filter used for filtering the data records by user")
+  private String userFilter;
 
-    /**
-     * <p>A timestamp for <code>TO</code> boundary for filtering the data records by dates.</p>
-     */
-    @ApiModelProperty("A timestamp for TO boundary for filtering the data records by dates")
-    private Date dateTo;
+  /** A timestamp for <code>FROM</code> boundary for filtering the data records by dates. */
+  @Schema(description = "A timestamp for FROM boundary for filtering the data records by dates")
+  private Date dateFrom;
 
-    /**
-     * <p>An ID of a customer.</p>
-     */
-    @ApiModelProperty(hidden = true)
-    private int customerId;
+  /** A timestamp for <code>TO</code> boundary for filtering the data records by dates. */
+  @Schema(description = "A timestamp for TO boundary for filtering the data records by dates")
+  private Date dateTo;
 
-    /**
-     * <p>An ID of a user.</p>
-     */
-    @ApiModelProperty(hidden = true)
-    private int userId;
+  /** An ID of a customer. */
+  @Schema(hidden = true)
+  private int customerId;
 
-    /**
-     * <p>Constructs new <code>AuditLogFilter</code> instance. This implementation does nothing.</p>
-     */
-    public AuditLogFilter() {
+  /** An ID of a user. */
+  @Schema(hidden = true)
+  private int userId;
+
+  /** Constructs new <code>AuditLogFilter</code> instance. This implementation does nothing. */
+  public AuditLogFilter() {}
+
+  public int getPageSize() {
+    return pageSize;
+  }
+
+  public void setPageSize(int pageSize) {
+    this.pageSize = pageSize;
+  }
+
+  public int getPageNum() {
+    return pageNum;
+  }
+
+  public void setPageNum(int pageNum) {
+    this.pageNum = pageNum;
+  }
+
+  public Date getDateFrom() {
+    return dateFrom;
+  }
+
+  public void setDateFrom(Date dateFrom) {
+    this.dateFrom = dateFrom;
+  }
+
+  public Date getDateTo() {
+    return dateTo;
+  }
+
+  public void setDateTo(Date dateTo) {
+    this.dateTo = dateTo;
+  }
+
+  public String getMessageFilter() {
+    return messageFilter;
+  }
+
+  public void setMessageFilter(String messageFilter) {
+    this.messageFilter = messageFilter;
+  }
+
+  public String getUserFilter() {
+    return userFilter;
+  }
+
+  public void setUserFilter(String userFilter) {
+    this.userFilter = userFilter;
+  }
+
+  public int getCustomerId() {
+    return customerId;
+  }
+
+  public void setCustomerId(int customerId) {
+    this.customerId = customerId;
+  }
+
+  public int getUserId() {
+    return userId;
+  }
+
+  public void setUserId(int userId) {
+    this.userId = userId;
+  }
+
+  public long getDateFromMillis() {
+    if (dateFrom != null) {
+      return dateFrom.getTime();
+    } else {
+      return 0;
     }
+  }
 
-    public int getPageSize() {
-        return pageSize;
+  public long getDateToMillis() {
+    if (dateTo != null) {
+      return dateTo.getTime();
+    } else {
+      return 0;
     }
+  }
 
-    public void setPageSize(int pageSize) {
-        this.pageSize = pageSize;
-    }
-
-    public int getPageNum() {
-        return pageNum;
-    }
-
-    public void setPageNum(int pageNum) {
-        this.pageNum = pageNum;
-    }
-
-    public Date getDateFrom() {
-        return dateFrom;
-    }
-
-    public void setDateFrom(Date dateFrom) {
-        this.dateFrom = dateFrom;
-    }
-
-    public Date getDateTo() {
-        return dateTo;
-    }
-
-    public void setDateTo(Date dateTo) {
-        this.dateTo = dateTo;
-    }
-
-    public String getMessageFilter() {
-        return messageFilter;
-    }
-
-    public void setMessageFilter(String messageFilter) {
-        this.messageFilter = messageFilter;
-    }
-
-    public String getUserFilter() {
-        return userFilter;
-    }
-
-    public void setUserFilter(String userFilter) {
-        this.userFilter = userFilter;
-    }
-
-    public int getCustomerId() {
-        return customerId;
-    }
-
-    public void setCustomerId(int customerId) {
-        this.customerId = customerId;
-    }
-
-    public int getUserId() {
-        return userId;
-    }
-
-    public void setUserId(int userId) {
-        this.userId = userId;
-    }
-
-    public long getDateFromMillis() {
-        if (dateFrom != null) {
-            return dateFrom.getTime();
-        } else {
-            return 0;
-        }
-    }
-
-    public long getDateToMillis() {
-        if (dateTo != null) {
-            return dateTo.getTime();
-        } else {
-            return 0;
-        }
-    }
-
-    @Override
-    public String toString() {
-        return "AuditLogFilter{" +
-                "pageSize=" + pageSize +
-                ", pageNum=" + pageNum +
-                ", messageFilter='" + messageFilter + '\'' +
-                ", userFilter='" + userFilter + '\'' +
-                ", dateFrom=" + dateFrom +
-                ", dateTo=" + dateTo +
-                ", customerId=" + customerId +
-                ", userId=" + userId +
-                '}';
-    }
-
+  @Override
+  public String toString() {
+    return "AuditLogFilter{"
+        + "pageSize="
+        + pageSize
+        + ", pageNum="
+        + pageNum
+        + ", messageFilter='"
+        + messageFilter
+        + '\''
+        + ", userFilter='"
+        + userFilter
+        + '\''
+        + ", dateFrom="
+        + dateFrom
+        + ", dateTo="
+        + dateTo
+        + ", customerId="
+        + customerId
+        + ", userId="
+        + userId
+        + '}';
+  }
 }

@@ -22,14 +22,15 @@
 package com.hmdm.plugin;
 
 /**
- * <p>An interface for the task managers provided by plugins.</p>
+ * An interface for the task managers provided by plugins.
  *
  * @author isv
  */
 public interface PluginTaskModule {
 
-    /**
-     * <p>Initializes this module. The implementations are expected to initialize and setup any necessary services.</p>
-     */
-    void init();
+  /**
+   * Initializes this module. The implementations are expected to initialize and setup any necessary
+   * services.
+   */
+  void init();
 }

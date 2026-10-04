@@ -21,92 +21,99 @@
 
 package com.hmdm.plugins.deviceinfo.rest.json;
 
-import com.hmdm.persistence.domain.Application;
 import com.hmdm.util.ApplicationUtil;
-import io.swagger.annotations.ApiModelProperty;
-
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.io.Serializable;
 
 /**
- * <p>A DTO carrying the details for a single application which is already installed or must be installed on device.</p>
+ * A DTO carrying the details for a single application which is already installed or must be
+ * installed on device.
  *
  * @author isv
  */
 public class DeviceInfoApplication implements Serializable {
 
-    private static final long serialVersionUID = -2704172120435523175L;
-    
-    @ApiModelProperty("A name of the application")
-    private String applicationName;
+  private static final long serialVersionUID = -2704172120435523175L;
 
-    @ApiModelProperty("A package ID of the application")
-    private String applicationPkg;
+  @Schema(description = "A name of the application")
+  private String applicationName;
 
-    @ApiModelProperty("A number of application version already installed on device")
-    private String versionInstalled;
+  @Schema(description = "A package ID of the application")
+  private String applicationPkg;
 
-    @ApiModelProperty("A number of application version which is required to be installed on device")
-    private String versionRequired;
+  @Schema(description = "A number of application version already installed on device")
+  private String versionInstalled;
 
-    /**
-     * <p>Constructs new <code>DeviceInfoApplication</code> instance. This implementation does nothing.</p>
-     */
-    public DeviceInfoApplication() {
-    }
+  @Schema(
+      description = "A number of application version which is required to be installed on device")
+  private String versionRequired;
 
-    public String getApplicationName() {
-        return applicationName;
-    }
+  /**
+   * Constructs new <code>DeviceInfoApplication</code> instance. This implementation does nothing.
+   */
+  public DeviceInfoApplication() {}
 
-    public void setApplicationName(String applicationName) {
-        this.applicationName = applicationName;
-    }
+  public String getApplicationName() {
+    return applicationName;
+  }
 
-    public String getApplicationPkg() {
-        return applicationPkg;
-    }
+  public void setApplicationName(String applicationName) {
+    this.applicationName = applicationName;
+  }
 
-    public void setApplicationPkg(String applicationPkg) {
-        this.applicationPkg = applicationPkg;
-    }
+  public String getApplicationPkg() {
+    return applicationPkg;
+  }
 
-    public String getVersionInstalled() {
-        return versionInstalled;
-    }
+  public void setApplicationPkg(String applicationPkg) {
+    this.applicationPkg = applicationPkg;
+  }
 
-    public void setVersionInstalled(String versionInstalled) {
-        this.versionInstalled = versionInstalled;
-    }
+  public String getVersionInstalled() {
+    return versionInstalled;
+  }
 
-    public String getVersionRequired() {
-        return versionRequired;
-    }
+  public void setVersionInstalled(String versionInstalled) {
+    this.versionInstalled = versionInstalled;
+  }
 
-    public void setVersionRequired(String versionRequired) {
-        this.versionRequired = versionRequired;
-    }
+  public String getVersionRequired() {
+    return versionRequired;
+  }
 
-    /**
-     * <p>Checks if application version already installed on device is the same as required one to be installed on
-     * device.</p>
-     *
-     * @return <code>true</code> if installed application version matches the required application version;
-     *         <code>false</code> otherwise.
-     */
-    public boolean isVersionValid() {
-        final String v1 = ApplicationUtil.normalizeVersion(this.versionInstalled);
-        final String v2 = ApplicationUtil.normalizeVersion(this.versionRequired);
+  public void setVersionRequired(String versionRequired) {
+    this.versionRequired = versionRequired;
+  }
 
-        return v1.equals(v2) || v2.equals("0");
-    }
+  /**
+   * Checks if application version already installed on device is the same as required one to be
+   * installed on device.
+   *
+   * @return <code>true</code> if installed application version matches the required application
+   *     version; <code>false</code> otherwise.
+   */
+  public boolean isVersionValid() {
+    final String v1 = ApplicationUtil.normalizeVersion(this.versionInstalled);
+    final String v2 = ApplicationUtil.normalizeVersion(this.versionRequired);
 
-    @Override
-    public String toString() {
-        return "DeviceInfoApplication{" +
-                "applicationName='" + applicationName + '\'' +
-                ", applicationPkg='" + applicationPkg + '\'' +
-                ", versionInstalled='" + versionInstalled + '\'' +
-                ", versionRequired='" + versionRequired + '\'' +
-                '}';
-    }
+    return v1.equals(v2) || v2.equals("0");
+  }
+
+  @Override
+  public String toString() {
+    return "DeviceInfoApplication{"
+        + "applicationName='"
+        + applicationName
+        + '\''
+        + ", applicationPkg='"
+        + applicationPkg
+        + '\''
+        + ", versionInstalled='"
+        + versionInstalled
+        + '\''
+        + ", versionRequired='"
+        + versionRequired
+        + '\''
+        + '}';
+  }
 }

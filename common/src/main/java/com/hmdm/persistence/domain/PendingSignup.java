@@ -22,74 +22,69 @@
 package com.hmdm.persistence.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
-
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.io.Serializable;
 
-@ApiModel(description = "Record for the customer self-signup flow")
+@Schema(description = "Record for the customer self-signup flow")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class PendingSignup implements Serializable {
 
-    private static final long serialVersionUID = 3971700195069436679L;
+  private static final long serialVersionUID = 3971700195069436679L;
 
-    @ApiModelProperty("ID")
-    private Integer id;
+  @Schema(description = "ID")
+  private Integer id;
 
-    /**
-     * <p>Signup time. (In milliseconds since epoch time).)</p>
-     */
-    private Long signupTime;
+  /** Signup time. (In milliseconds since epoch time).) */
+  private Long signupTime;
 
-    @ApiModelProperty("Customer email")
-    private String email;
+  @Schema(description = "Customer email")
+  private String email;
 
-    @ApiModelProperty("Customer language (two small letters)")
-    private String language;
+  @Schema(description = "Customer language (two small letters)")
+  private String language;
 
-    @ApiModelProperty("Customer signup token")
-    private String token;
+  @Schema(description = "Customer signup token")
+  private String token;
 
-    public PendingSignup() {
-    }
+  public PendingSignup() {}
 
-    public Integer getId() {
-        return this.id;
-    }
+  public Integer getId() {
+    return this.id;
+  }
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+  public void setId(Integer id) {
+    this.id = id;
+  }
 
-    public Long getSignupTime() {
-        return signupTime;
-    }
+  public Long getSignupTime() {
+    return signupTime;
+  }
 
-    public void setSignupTime(Long signupTime) {
-        this.signupTime = signupTime;
-    }
+  public void setSignupTime(Long signupTime) {
+    this.signupTime = signupTime;
+  }
 
-    public String getEmail() {
-        return email;
-    }
+  public String getEmail() {
+    return email;
+  }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+  public void setEmail(String email) {
+    this.email = email;
+  }
 
-    public String getLanguage() {
-        return language;
-    }
+  public String getLanguage() {
+    return language;
+  }
 
-    public void setLanguage(String language) {
-        this.language = language;
-    }
+  public void setLanguage(String language) {
+    this.language = language;
+  }
 
-    public String getToken() {
-        return token;
-    }
+  public String getToken() {
+    return token;
+  }
 
-    public void setToken(String token) {
-        this.token = token;
-    }
+  public void setToken(String token) {
+    this.token = token;
+  }
 }

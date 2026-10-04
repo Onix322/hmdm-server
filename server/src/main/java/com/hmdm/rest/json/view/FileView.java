@@ -21,168 +21,172 @@
 
 package com.hmdm.rest.json.view;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.hmdm.persistence.domain.Customer;
 import com.hmdm.persistence.domain.UploadedFile;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.io.File;
 import java.io.Serializable;
 import java.util.List;
 
-@ApiModel(description = "A single file maintained by the MDM server")
+@Schema(description = "A single file maintained by the MDM server")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class FileView implements Serializable {
 
-    private static final long serialVersionUID = 7570897379289300175L;
+  private static final long serialVersionUID = 7570897379289300175L;
 
-    @ApiModelProperty("Id of the basic UploadedFile object")
-    private Integer id;
-    @ApiModelProperty("A path to file including the file name")
-    private String filePath;
-    @ApiModelProperty("An optional file description")
-    private String description;
-    @ApiModelProperty("An URL of file")
-    private String url;
-    @ApiModelProperty("File size in bytes")
-    private long size;
-    @ApiModelProperty("Last update time in ms")
-    private long uploadTime;
-    @ApiModelProperty("File path on the device")
-    private String devicePath;
-    @ApiModelProperty("A flag showing whether the file has an external URL")
-    private boolean external;
-    @ApiModelProperty("A flag showing whether the file has variable content")
-    private boolean replaceVariables;
+  @Schema(description = "Id of the basic UploadedFile object")
+  private Integer id;
 
-    // APKs are not displayed in the Files section since v5.36.1
-    @Deprecated
-    private List<String> usedByApps;
-    private List<String> usedByIcons;
-    private List<String> usedByConfigurations;
+  @Schema(description = "A path to file including the file name")
+  private String filePath;
 
-    public FileView() {
+  @Schema(description = "An optional file description")
+  private String description;
+
+  @Schema(description = "An URL of file")
+  private String url;
+
+  @Schema(description = "File size in bytes")
+  private long size;
+
+  @Schema(description = "Last update time in ms")
+  private long uploadTime;
+
+  @Schema(description = "File path on the device")
+  private String devicePath;
+
+  @Schema(description = "A flag showing whether the file has an external URL")
+  private boolean external;
+
+  @Schema(description = "A flag showing whether the file has variable content")
+  private boolean replaceVariables;
+
+  // APKs are not displayed in the Files section since v5.36.1
+  @Deprecated private List<String> usedByApps;
+  private List<String> usedByIcons;
+  private List<String> usedByConfigurations;
+
+  public FileView() {}
+
+  public FileView(String path, String name, String url, long size) {
+    this.filePath = path + (path.length() > 0 ? "/" : "") + name;
+    this.url = url;
+    this.size = size;
+  }
+
+  public FileView(UploadedFile f, String baseUrl, String filesDirectory, Customer customer) {
+    setId(f.getId());
+    setDescription(f.getDescription());
+    setUrl(f.getUrl(baseUrl, customer));
+    if (!f.isExternal()) {
+      setFilePath(f.getFilePath().replace(File.separator, "/"));
+      File file = f.getFileByPath(filesDirectory, customer);
+      if (!file.exists()) {
+        setSize(-1);
+      } else {
+        setSize(file.length());
+      }
+      setUploadTime(f.getUploadTime());
     }
+    setDevicePath(f.getDevicePath());
+    setExternal(f.isExternal());
+    setReplaceVariables(f.isReplaceVariables());
+  }
 
-    public FileView(String path, String name, String url, long size) {
-        this.filePath = path + (path.length() > 0 ? "/" : "") + name;
-        this.url = url;
-        this.size = size;
-    }
+  public Integer getId() {
+    return id;
+  }
 
-    public FileView(UploadedFile f, String baseUrl, String filesDirectory, Customer customer) {
-        setId(f.getId());
-        setDescription(f.getDescription());
-        setUrl(f.getUrl(baseUrl, customer));
-        if (!f.isExternal()) {
-            setFilePath(f.getFilePath().replace(File.separator, "/"));
-            File file = f.getFileByPath(filesDirectory, customer);
-            if (!file.exists()) {
-                setSize(-1);
-            } else {
-                setSize(file.length());
-            }
-            setUploadTime(f.getUploadTime());
-        }
-        setDevicePath(f.getDevicePath());
-        setExternal(f.isExternal());
-        setReplaceVariables(f.isReplaceVariables());
-    }
+  public void setId(Integer id) {
+    this.id = id;
+  }
 
-    public Integer getId() {
-        return id;
-    }
+  public String getFilePath() {
+    return this.filePath;
+  }
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+  public void setFilePath(String filePath) {
+    this.filePath = filePath;
+  }
 
-    public String getFilePath() {
-        return this.filePath;
-    }
+  public String getDescription() {
+    return description;
+  }
 
-    public void setFilePath(String filePath) {
-        this.filePath = filePath;
-    }
+  public void setDescription(String description) {
+    this.description = description;
+  }
 
-    public String getDescription() {
-        return description;
-    }
+  public String getUrl() {
+    return url;
+  }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+  public void setUrl(String url) {
+    this.url = url;
+  }
 
-    public String getUrl() {
-        return url;
-    }
+  public long getSize() {
+    return size;
+  }
 
-    public void setUrl(String url) {
-        this.url = url;
-    }
+  public void setSize(long size) {
+    this.size = size;
+  }
 
-    public long getSize() {
-        return size;
-    }
+  public long getUploadTime() {
+    return uploadTime;
+  }
 
-    public void setSize(long size) {
-        this.size = size;
-    }
+  public void setUploadTime(long uploadTime) {
+    this.uploadTime = uploadTime;
+  }
 
-    public long getUploadTime() {
-        return uploadTime;
-    }
+  public String getDevicePath() {
+    return devicePath;
+  }
 
-    public void setUploadTime(long uploadTime) {
-        this.uploadTime = uploadTime;
-    }
+  public void setDevicePath(String devicePath) {
+    this.devicePath = devicePath;
+  }
 
-    public String getDevicePath() {
-        return devicePath;
-    }
+  public boolean isExternal() {
+    return external;
+  }
 
-    public void setDevicePath(String devicePath) {
-        this.devicePath = devicePath;
-    }
+  public void setExternal(boolean external) {
+    this.external = external;
+  }
 
-    public boolean isExternal() {
-        return external;
-    }
+  public boolean isReplaceVariables() {
+    return replaceVariables;
+  }
 
-    public void setExternal(boolean external) {
-        this.external = external;
-    }
+  public void setReplaceVariables(boolean replaceVariables) {
+    this.replaceVariables = replaceVariables;
+  }
 
-    public boolean isReplaceVariables() {
-        return replaceVariables;
-    }
+  public List<String> getUsedByApps() {
+    return usedByApps;
+  }
 
-    public void setReplaceVariables(boolean replaceVariables) {
-        this.replaceVariables = replaceVariables;
-    }
+  public void setUsedByApps(List<String> usedByApps) {
+    this.usedByApps = usedByApps;
+  }
 
-    public List<String> getUsedByApps() {
-        return usedByApps;
-    }
+  public List<String> getUsedByIcons() {
+    return usedByIcons;
+  }
 
-    public void setUsedByApps(List<String> usedByApps) {
-        this.usedByApps = usedByApps;
-    }
+  public void setUsedByIcons(List<String> usedByIcons) {
+    this.usedByIcons = usedByIcons;
+  }
 
-    public List<String> getUsedByIcons() {
-        return usedByIcons;
-    }
+  public List<String> getUsedByConfigurations() {
+    return usedByConfigurations;
+  }
 
-    public void setUsedByIcons(List<String> usedByIcons) {
-        this.usedByIcons = usedByIcons;
-    }
-
-    public List<String> getUsedByConfigurations() {
-        return usedByConfigurations;
-    }
-
-    public void setUsedByConfigurations(List<String> usedByConfigurations) {
-        this.usedByConfigurations = usedByConfigurations;
-    }
+  public void setUsedByConfigurations(List<String> usedByConfigurations) {
+    this.usedByConfigurations = usedByConfigurations;
+  }
 }

@@ -22,122 +22,112 @@
 package com.hmdm.plugins.push.rest.json;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
-
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.io.Serializable;
-import java.util.Date;
 
 /**
- * <p>A DTO carrying the parameters for filtering the lists of scheduled Push objects.</p>
+ * A DTO carrying the parameters for filtering the lists of scheduled Push objects.
  *
  * @author seva
  */
-@ApiModel(description = "The parameters for filtering the lists of scheduled messages")
+@Schema(description = "The parameters for filtering the lists of scheduled messages")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class PushScheduleFilter implements Serializable {
-    private static final long serialVersionUID = 5138659302284486486L;
+  private static final long serialVersionUID = 5138659302284486486L;
 
+  /** A number of records per single page of data to be retrieved. */
+  @Schema(description = "A number of records per single page of data to be retrieved")
+  private int pageSize = 50;
 
-    /**
-     * <p>A number of records per single page of data to be retrieved.</p>
-     */
-    @ApiModelProperty("A number of records per single page of data to be retrieved")
-    private int pageSize = 50;
+  /** A number of page of data to be retrieved. */
+  @Schema(description = "A number of page of data to be retrieved (1-based)")
+  private int pageNum = 1;
 
-    /**
-     * <p>A number of page of data to be retrieved.</p>
-     */
-    @ApiModelProperty("A number of page of data to be retrieved (1-based)")
-    private int pageNum = 1;
+  /** A filter used for filtering the data records by message. */
+  @Schema(description = "A filter used for filtering the data records by message")
+  private String messageFilter;
 
-    /**
-     * <p>A filter used for filtering the data records by message.</p>
-     */
-    @ApiModelProperty("A filter used for filtering the data records by message")
-    private String messageFilter;
+  /** A filter used for filtering the data records by device. */
+  @Schema(description = "A filter used for filtering the data records by payload")
+  private String payloadFilter;
 
-    /**
-     * <p>A filter used for filtering the data records by device.</p>
-     */
-    @ApiModelProperty("A filter used for filtering the data records by payload")
-    private String payloadFilter;
+  /** A name of sorting column. */
+  @Schema(description = "A name of sorting column")
+  private String sortValue = "id";
 
-    /**
-     * <p>A name of sorting column.</p>
-     */
-    @ApiModelProperty("A name of sorting column")
-    private String sortValue = "id";
+  /** An ID of a customer. */
+  @Schema(hidden = true)
+  private int customerId;
 
-    /**
-     * <p>An ID of a customer.</p>
-     */
-    @ApiModelProperty(hidden = true)
-    private int customerId;
+  /** Constructs new <code>PushMessageFilter</code> instance. This implementation does nothing. */
+  public PushScheduleFilter() {}
 
-    /**
-     * <p>Constructs new <code>PushMessageFilter</code> instance. This implementation does nothing.</p>
-     */
-    public PushScheduleFilter() {
-    }
+  public int getPageSize() {
+    return pageSize;
+  }
 
-    public int getPageSize() {
-        return pageSize;
-    }
+  public void setPageSize(int pageSize) {
+    this.pageSize = pageSize;
+  }
 
-    public void setPageSize(int pageSize) {
-        this.pageSize = pageSize;
-    }
+  public int getPageNum() {
+    return pageNum;
+  }
 
-    public int getPageNum() {
-        return pageNum;
-    }
+  public void setPageNum(int pageNum) {
+    this.pageNum = pageNum;
+  }
 
-    public void setPageNum(int pageNum) {
-        this.pageNum = pageNum;
-    }
+  public String getSortValue() {
+    return sortValue;
+  }
 
-    public String getSortValue() {
-        return sortValue;
-    }
+  public void setSortValue(String sortValue) {
+    this.sortValue = sortValue;
+  }
 
-    public void setSortValue(String sortValue) {
-        this.sortValue = sortValue;
-    }
+  public String getMessageFilter() {
+    return messageFilter;
+  }
 
-    public String getMessageFilter() {
-        return messageFilter;
-    }
+  public void setMessageFilter(String messageFilter) {
+    this.messageFilter = messageFilter;
+  }
 
-    public void setMessageFilter(String messageFilter) {
-        this.messageFilter = messageFilter;
-    }
+  public String getPayloadFilter() {
+    return payloadFilter;
+  }
 
-    public String getPayloadFilter() {
-        return payloadFilter;
-    }
+  public void setPayloadFilter(String payloadFilter) {
+    this.payloadFilter = payloadFilter;
+  }
 
-    public void setPayloadFilter(String payloadFilter) {
-        this.payloadFilter = payloadFilter;
-    }
+  public int getCustomerId() {
+    return customerId;
+  }
 
-    public int getCustomerId() {
-        return customerId;
-    }
+  public void setCustomerId(int customerId) {
+    this.customerId = customerId;
+  }
 
-    public void setCustomerId(int customerId) {
-        this.customerId = customerId;
-    }
-
-    @Override
-    public String toString() {
-        return "PushScheduleFilter{" +
-                "pageSize=" + pageSize +
-                ", pageNum=" + pageNum +
-                ", messageFilter='" + messageFilter + '\'' +
-                ", payloadFilter='" + payloadFilter + '\'' +
-                ", sortValue='" + sortValue + '\'' +
-                ", customerId=" + customerId +
-                '}';
-    }
+  @Override
+  public String toString() {
+    return "PushScheduleFilter{"
+        + "pageSize="
+        + pageSize
+        + ", pageNum="
+        + pageNum
+        + ", messageFilter='"
+        + messageFilter
+        + '\''
+        + ", payloadFilter='"
+        + payloadFilter
+        + '\''
+        + ", sortValue='"
+        + sortValue
+        + '\''
+        + ", customerId="
+        + customerId
+        + '}';
+  }
 }

@@ -21,88 +21,90 @@
 
 package com.hmdm.persistence.domain;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
-
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.io.Serializable;
 import java.util.Objects;
 
 /**
- * <p>$END$</p>
+ * $END$
  *
  * @author isv
  */
-@ApiModel(description = "A permission to perform desired action which might be granted to user role")
+@Schema(description = "A permission to perform desired action which might be granted to user role")
 public class UserRolePermission implements Serializable {
 
-    private static final long serialVersionUID = -8203664108953283604L;
+  private static final long serialVersionUID = -8203664108953283604L;
 
-    @ApiModelProperty("An ID of the permission")
-    private int id;
-    @ApiModelProperty("A name of the permission")
-    private String name;
-    @ApiModelProperty("A description of the permission")
-    private String description;
-    @ApiModelProperty(hidden = true)
-    private boolean superAdmin;
+  @Schema(description = "An ID of the permission")
+  private int id;
 
-    /**
-     * <p>Constructs new <code>UserRolePermission</code> instance. This implementation does nothing.</p>
-     */
-    public UserRolePermission() {
-    }
+  @Schema(description = "A name of the permission")
+  private String name;
 
-    public int getId() {
-        return id;
-    }
+  @Schema(description = "A description of the permission")
+  private String description;
 
-    public void setId(int id) {
-        this.id = id;
-    }
+  @Schema(hidden = true)
+  private boolean superAdmin;
 
-    public String getName() {
-        return name;
-    }
+  /** Constructs new <code>UserRolePermission</code> instance. This implementation does nothing. */
+  public UserRolePermission() {}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+  public int getId() {
+    return id;
+  }
 
-    public boolean isSuperAdmin() {
-        return superAdmin;
-    }
+  public void setId(int id) {
+    this.id = id;
+  }
 
-    public void setSuperAdmin(boolean superAdmin) {
-        this.superAdmin = superAdmin;
-    }
+  public String getName() {
+    return name;
+  }
 
-    public String getDescription() {
-        return description;
-    }
+  public void setName(String name) {
+    this.name = name;
+  }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+  public boolean isSuperAdmin() {
+    return superAdmin;
+  }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        UserRolePermission that = (UserRolePermission) o;
-        return id == that.id;
-    }
+  public void setSuperAdmin(boolean superAdmin) {
+    this.superAdmin = superAdmin;
+  }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
+  public String getDescription() {
+    return description;
+  }
 
-    @Override
-    public String toString() {
-        return "UserRolePermission{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", superAdmin=" + superAdmin +
-                '}';
-    }
+  public void setDescription(String description) {
+    this.description = description;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    UserRolePermission that = (UserRolePermission) o;
+    return id == that.id;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(id);
+  }
+
+  @Override
+  public String toString() {
+    return "UserRolePermission{"
+        + "id="
+        + id
+        + ", name='"
+        + name
+        + '\''
+        + ", superAdmin="
+        + superAdmin
+        + '}';
+  }
 }

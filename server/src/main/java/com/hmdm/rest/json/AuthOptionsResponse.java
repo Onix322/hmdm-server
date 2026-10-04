@@ -23,49 +23,46 @@ package com.hmdm.rest.json;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import io.swagger.annotations.ApiModel;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
- * <p>A DTO carrying the data for login options/p>
+ * A DTO carrying the data for login options/p>
  *
  * @author seva
  */
-@ApiModel(description = "Login options (reset password, recover, etc)")
+@Schema(description = "Login options (reset password, recover, etc)")
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class AuthOptionsResponse {
 
-    private boolean recover;
-    private boolean signup;
-    private String publicKey;
+  private boolean recover;
+  private boolean signup;
+  private String publicKey;
 
-    /**
-     * <p>Constructs new <code>AuthOptionsResponse</code> instance. This implementation does nothing.</p>
-     */
-    public AuthOptionsResponse() {
-    }
+  /** Constructs new <code>AuthOptionsResponse</code> instance. This implementation does nothing. */
+  public AuthOptionsResponse() {}
 
-    public boolean isRecover() {
-        return recover;
-    }
+  public boolean isRecover() {
+    return recover;
+  }
 
-    public void setRecover(boolean recover) {
-        this.recover = recover;
-    }
+  public void setRecover(boolean recover) {
+    this.recover = recover;
+  }
 
-    public boolean isSignup() {
-        return signup;
-    }
+  public boolean isSignup() {
+    return signup;
+  }
 
-    public void setSignup(boolean signup) {
-        this.signup = signup;
-    }
+  public void setSignup(boolean signup) {
+    this.signup = signup;
+  }
 
-    public String getPublicKey() {
-        return publicKey;
-    }
+  public String getPublicKey() {
+    return publicKey;
+  }
 
-    public void setPublicKey(String publicKey) {
-        this.publicKey = publicKey;
-    }
+  public void setPublicKey(String publicKey) {
+    this.publicKey = publicKey;
+  }
 }

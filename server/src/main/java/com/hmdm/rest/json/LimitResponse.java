@@ -23,40 +23,37 @@ package com.hmdm.rest.json;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import io.swagger.annotations.ApiModel;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
- * <p>A DTO carrying the data for storage limit response</p>
+ * A DTO carrying the data for storage limit response
  *
  * @author isv
  */
-@ApiModel(description = "Storage limit response")
+@Schema(description = "Storage limit response")
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class LimitResponse {
 
-    private int sizeLimit;
-    private int sizeUsed;
+  private int sizeLimit;
+  private int sizeUsed;
 
-    /**
-     * <p>Constructs new <code>LimitResponse</code> instance. This implementation does nothing.</p>
-     */
-    public LimitResponse() {
-    }
+  /** Constructs new <code>LimitResponse</code> instance. This implementation does nothing. */
+  public LimitResponse() {}
 
-    public int getSizeLimit() {
-        return sizeLimit;
-    }
+  public int getSizeLimit() {
+    return sizeLimit;
+  }
 
-    public void setSizeLimit(int sizeLimit) {
-        this.sizeLimit = sizeLimit;
-    }
+  public void setSizeLimit(int sizeLimit) {
+    this.sizeLimit = sizeLimit;
+  }
 
-    public int getSizeUsed() {
-        return sizeUsed;
-    }
+  public int getSizeUsed() {
+    return sizeUsed;
+  }
 
-    public void setSizeUsed(int sizeUsed) {
-        this.sizeUsed = sizeUsed;
-    }
+  public void setSizeUsed(int sizeUsed) {
+    this.sizeUsed = sizeUsed;
+  }
 }

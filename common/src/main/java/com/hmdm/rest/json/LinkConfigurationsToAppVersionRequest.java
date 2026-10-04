@@ -21,45 +21,46 @@
 
 package com.hmdm.rest.json;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 
 /**
- * <p>$</p>
+ * $
  *
  * @author isv
  */
-@ApiModel(description = "A request to setup links between the single application version and listed configurations")
+@Schema(
+    description =
+        "A request to setup links between the single application version and listed configurations")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class LinkConfigurationsToAppVersionRequest {
 
-    @ApiModelProperty("An ID of an application version to link configurations to")
-    private int applicationVersionId;
-    @ApiModelProperty("A list of configurations to link to application version")
-    private List<ApplicationVersionConfigurationLink> configurations;
+  @Schema(description = "An ID of an application version to link configurations to")
+  private int applicationVersionId;
 
-    /**
-     * <p>Constructs new <code>LinkConfigurationsToAppVersionRequest</code> instance. This implementation does nothing.</p>
-     */
-    public LinkConfigurationsToAppVersionRequest() {
-    }
+  @Schema(description = "A list of configurations to link to application version")
+  private List<ApplicationVersionConfigurationLink> configurations;
 
-    public int getApplicationVersionId() {
-        return applicationVersionId;
-    }
+  /**
+   * Constructs new <code>LinkConfigurationsToAppVersionRequest</code> instance. This implementation
+   * does nothing.
+   */
+  public LinkConfigurationsToAppVersionRequest() {}
 
-    public void setApplicationVersionId(int applicationVersionId) {
-        this.applicationVersionId = applicationVersionId;
-    }
+  public int getApplicationVersionId() {
+    return applicationVersionId;
+  }
 
-    public List<ApplicationVersionConfigurationLink> getConfigurations() {
-        return configurations;
-    }
+  public void setApplicationVersionId(int applicationVersionId) {
+    this.applicationVersionId = applicationVersionId;
+  }
 
-    public void setConfigurations(List<ApplicationVersionConfigurationLink> configurations) {
-        this.configurations = configurations;
-    }
+  public List<ApplicationVersionConfigurationLink> getConfigurations() {
+    return configurations;
+  }
+
+  public void setConfigurations(List<ApplicationVersionConfigurationLink> configurations) {
+    this.configurations = configurations;
+  }
 }

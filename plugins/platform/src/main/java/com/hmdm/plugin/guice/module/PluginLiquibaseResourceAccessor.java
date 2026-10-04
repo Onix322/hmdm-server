@@ -21,29 +21,61 @@
 
 package com.hmdm.plugin.guice.module;
 
-import com.hmdm.guice.LiquibaseJARResourceAccessor;
-import liquibase.resource.ClassLoaderResourceAccessor;
-
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
+
+import com.hmdm.guice.LiquibaseJARResourceAccessor;
+
+import liquibase.resource.ClassLoaderResourceAccessor;
+import liquibase.resource.Resource;
 
 /**
- * <p>$END$</p>
+ * $END$
  *
  * @author isv
  */
+import java.util.Collections;
+
 public class PluginLiquibaseResourceAccessor extends ClassLoaderResourceAccessor {
 
     /**
-     * <p>Constructs new <code>PluginLiquibaseResourceAccessor</code> instance. This implementation does nothing.</p>
+     * Constructs a new <code>PluginLiquibaseResourceAccessor</code> instance.
      */
     public PluginLiquibaseResourceAccessor() {
+        super();
+    }
+
+    @Override 
+    public List<Resource> search(String path, boolean recursive) throws IOException {
+        try {
+            // Delegăm către JAR resource accessor sau customizam logica de căutare
+            LiquibaseJARResourceAccessor jarAccessor = new LiquibaseJARResourceAccessor();
+            return jarAccessor.search(path, recursive);
+        } catch (Exception e) {
+            return Collections.emptyList();
+        }
     }
 
     @Override
+    public List<Resource> getAll(String path) throws IOException {
+        return search(path, false);
+    }
+
+    /** Not deleted after porting to java 21 to keep compatibility */
     public Set<InputStream> getResourcesAsStream(String path) throws IOException {
-        LiquibaseJARResourceAccessor accessor = new LiquibaseJARResourceAccessor();
-        return accessor.getResourcesAsStream(path);
+        return getAll(path).stream()
+                .map(
+                        resource -> {
+                            try {
+                                return resource.openInputStream();
+                            } catch (IOException e) {
+                                throw new RuntimeException(
+                                        "Could not open stream for resource: " + resource.getPath(), e);
+                            }
+                        })
+                .collect(Collectors.toSet());
     }
 }

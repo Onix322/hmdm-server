@@ -21,46 +21,52 @@
 
 package com.hmdm.plugins.audit.rest.filter;
 
-import javax.servlet.ServletOutputStream;
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.WriteListener;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
 /**
- * <p>A wrapper around the servlet response stream used for capturing the content of the response.</p>
+ * A wrapper around the servlet response stream used for capturing the content of the response.
  *
  * @author isv
  */
 public class ServletOutputStreamWrapper extends ServletOutputStream {
 
-    /**
-     * <p>An original servlet response stream wrapped by this wrapper.</p>
-     */
-    private OutputStream outputStream;
+  /** An original servlet response stream wrapped by this wrapper. */
+  private OutputStream outputStream;
 
-    /**
-     * <p>A copy of the response content collected while client code writes to response stream.</p>
-     */
-    private ByteArrayOutputStream copy;
+  /** A copy of the response content collected while client code writes to response stream. */
+  private ByteArrayOutputStream copy;
 
-    public ServletOutputStreamWrapper(OutputStream outputStream) {
-        this.outputStream = outputStream;
-        this.copy = new ByteArrayOutputStream(1024);
-    }
+  public ServletOutputStreamWrapper(OutputStream outputStream) {
+    this.outputStream = outputStream;
+    this.copy = new ByteArrayOutputStream(1024);
+  }
 
-    @Override
-    public void write(int b) throws IOException {
-        outputStream.write(b);
-        copy.write(b);
-    }
+  @Override
+  public void write(int b) throws IOException {
+    outputStream.write(b);
+    copy.write(b);
+  }
 
-    /**
-     * <p>Gets the content of the response.</p>
-     *
-     * @return a content of the response.
-     */
-    public byte[] getContent() {
-        return copy.toByteArray();
-    }
+  /**
+   * Gets the content of the response.
+   *
+   * @return a content of the response.
+   */
+  public byte[] getContent() {
+    return copy.toByteArray();
+  }
 
+  @Override
+  public boolean isReady() {
+    return false;
+  }
+
+  @Override
+  public void setWriteListener(WriteListener arg0) {
+    // stub
+  }
 }

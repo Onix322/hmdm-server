@@ -22,113 +22,117 @@
 package com.hmdm.plugins.deviceinfo.persistence.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import io.swagger.annotations.ApiModelProperty;
-
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.io.Serializable;
 
 /**
- * <p> A domain object representing the device parameters related to GPS.</p>
+ * A domain object representing the device parameters related to GPS.
  *
  * @author isv
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class GpsData implements Serializable {
 
-    private static final long serialVersionUID = 3701846866813916864L;
-    
-    @ApiModelProperty("An ID of GPS data record")
-    private Integer id;
+  private static final long serialVersionUID = 3701846866813916864L;
 
-    @ApiModelProperty("A connection status")
-    private String state;
+  @Schema(description = "An ID of GPS data record")
+  private Integer id;
 
-    @ApiModelProperty("A latitude coordinate")
-    private Double lat;
+  @Schema(description = "A connection status")
+  private String state;
 
-    @ApiModelProperty("A longitude coordinate")
-    private Double lon;
+  @Schema(description = "A latitude coordinate")
+  private Double lat;
 
-    @ApiModelProperty("An altitude coordinate")
-    private Double alt;
+  @Schema(description = "A longitude coordinate")
+  private Double lon;
 
-    @ApiModelProperty("A speed in km/h")
-    private Double speed;
+  @Schema(description = "An altitude coordinate")
+  private Double alt;
 
-    @ApiModelProperty("A course direction in degrees")
-    private Double course;
+  @Schema(description = "A speed in km/h")
+  private Double speed;
 
-    /**
-     * <p>Constructs new <code>GpsData</code> instance. This implementation does nothing.</p>
-     */
-    public GpsData() {
-    }
+  @Schema(description = "A course direction in degrees")
+  private Double course;
 
-    public Integer getId() {
-        return id;
-    }
+  /** Constructs new <code>GpsData</code> instance. This implementation does nothing. */
+  public GpsData() {}
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+  public Integer getId() {
+    return id;
+  }
 
-    public String getState() {
-        return state;
-    }
+  public void setId(Integer id) {
+    this.id = id;
+  }
 
-    public void setState(String state) {
-        this.state = state;
-    }
+  public String getState() {
+    return state;
+  }
 
-    public Double getLat() {
-        return lat;
-    }
+  public void setState(String state) {
+    this.state = state;
+  }
 
-    public void setLat(Double lat) {
-        this.lat = lat;
-    }
+  public Double getLat() {
+    return lat;
+  }
 
-    public Double getLon() {
-        return lon;
-    }
+  public void setLat(Double lat) {
+    this.lat = lat;
+  }
 
-    public void setLon(Double lon) {
-        this.lon = lon;
-    }
+  public Double getLon() {
+    return lon;
+  }
 
-    public Double getAlt() {
-        return alt;
-    }
+  public void setLon(Double lon) {
+    this.lon = lon;
+  }
 
-    public void setAlt(Double alt) {
-        this.alt = alt;
-    }
+  public Double getAlt() {
+    return alt;
+  }
 
-    public Double getSpeed() {
-        return speed;
-    }
+  public void setAlt(Double alt) {
+    this.alt = alt;
+  }
 
-    public void setSpeed(Double speed) {
-        this.speed = speed;
-    }
+  public Double getSpeed() {
+    return speed;
+  }
 
-    public Double getCourse() {
-        return course;
-    }
+  public void setSpeed(Double speed) {
+    this.speed = speed;
+  }
 
-    public void setCourse(Double course) {
-        this.course = course;
-    }
+  public Double getCourse() {
+    return course;
+  }
 
-    @Override
-    public String toString() {
-        return "GpsData{" +
-                "id=" + id +
-                ", state='" + state + '\'' +
-                ", lat=" + lat +
-                ", lon=" + lon +
-                ", alt=" + alt +
-                ", speed=" + speed +
-                ", course=" + course +
-                '}';
-    }
+  public void setCourse(Double course) {
+    this.course = course;
+  }
+
+  @Override
+  public String toString() {
+    return "GpsData{"
+        + "id="
+        + id
+        + ", state='"
+        + state
+        + '\''
+        + ", lat="
+        + lat
+        + ", lon="
+        + lon
+        + ", alt="
+        + alt
+        + ", speed="
+        + speed
+        + ", course="
+        + course
+        + '}';
+  }
 }

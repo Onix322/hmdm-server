@@ -27,53 +27,56 @@ import com.hmdm.persistence.ConfigurationUpdatedEventListener;
 import com.hmdm.persistence.DeviceInfoUpdatedEventListener;
 import com.hmdm.persistence.mapper.DeviceMapper;
 import com.hmdm.service.DeviceStatusService;
+import com.hmdm.util.BackgroundTaskRunnerService;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
-/**
- * <p>$</p>
- */
+/** $ */
 public class EventListenerModule {
 
-    private final EventService eventService;
-    private final DeviceMapper deviceMapper;
-    private final DeviceStatusService deviceStatusService;
+  private final EventService eventService;
+  private final DeviceMapper deviceMapper;
+  private final DeviceStatusService deviceStatusService;
 
-    private final ExecutorService executorService = Executors.newFixedThreadPool(1);
+  private final BackgroundTaskRunnerService executorService;
 
-    private static final Logger logger = LoggerFactory.getLogger(EventListenerModule.class);
+  private static final Logger logger = LoggerFactory.getLogger(EventListenerModule.class);
 
+  /** Constructs new <code>EventListenerModule</code> instance. This implementation does nothing. */
+  @Inject
+  public EventListenerModule(
+      EventService eventService,
+      DeviceMapper deviceMapper,
+      DeviceStatusService deviceStatusService,
+      BackgroundTaskRunnerService taskRunner) {
+    this.eventService = eventService;
+    this.deviceMapper = deviceMapper;
+    this.deviceStatusService = deviceStatusService;
+    this.executorService = taskRunner;
+  }
 
-    /**
-     * <p>Constructs new <code>EventListenerModule</code> instance. This implementation does nothing.</p>
-     */
-    @Inject
-    public EventListenerModule(EventService eventService, DeviceMapper deviceMapper, DeviceStatusService deviceStatusService) {
-        this.eventService = eventService;
-        this.deviceMapper = deviceMapper;
-        this.deviceStatusService = deviceStatusService;
-    }
+  public void init() {
+    this.eventService.addEventListener(new DeviceInfoUpdatedEventListener(deviceStatusService));
+    this.eventService.addEventListener(
+        new ConfigurationUpdatedEventListener(deviceMapper, deviceStatusService));
 
-    public void init() {
-        this.eventService.addEventListener(new DeviceInfoUpdatedEventListener(deviceStatusService));
-        this.eventService.addEventListener(new ConfigurationUpdatedEventListener(deviceMapper, deviceStatusService));
+    executorService.submitTask(
+        () -> {
+          List<Integer> deviceIds = deviceMapper.getAllDeviceIds();
 
-        executorService.submit(() -> {
-            List<Integer> deviceIds = this.deviceMapper.getAllDeviceIds();
-            deviceIds.forEach(deviceId -> {
-                try {
-                    this.deviceStatusService.recalcDeviceStatuses(deviceId);
-                } catch (Exception e) {
-                    logger.warn("Failed to recalculate statuses for device: {}", deviceId, e);
-                }
-            });
+          for (Integer deviceId : deviceIds) {
+            if (Thread.currentThread().isInterrupted()) {
+              return;
+            }
+
+            try {
+              deviceStatusService.recalcDeviceStatuses(deviceId);
+            } catch (Exception e) {
+              logger.error("ERROR: {}", e);
+              logger.warn("Failed to recalculate statuses for device: {}", deviceId, e);
+            }
+          }
         });
-
-        Runtime.getRuntime().addShutdownHook(new Thread(executorService::shutdown));
-    }
-
+  }
 }

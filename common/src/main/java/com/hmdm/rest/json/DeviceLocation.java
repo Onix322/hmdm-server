@@ -22,66 +22,61 @@
 package com.hmdm.rest.json;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
-
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.io.Serializable;
 
 /**
- * <p>The details on latest device location.</p>
+ * The details on latest device location.
  *
  * @author isv
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-@ApiModel(description = "The latest device location")
+@Schema(description = "The latest device location")
 public class DeviceLocation implements Serializable {
 
-    private static final long serialVersionUID = 5866031460781724004L;
-    @ApiModelProperty(value = "A latitude coordinate", required = true)
-    private Double lat;
+  private static final long serialVersionUID = 5866031460781724004L;
 
-    @ApiModelProperty(value = "A longitude coordinate", required = true)
-    private Double lon;
+  @Schema(description = "A latitude coordinate", required = true)
+  private Double lat;
 
-    @ApiModelProperty(value = "A timestamp of location recording by device (in milliseconds since epoch time)", required = true)
-    private Long ts;
+  @Schema(description = "A longitude coordinate", required = true)
+  private Double lon;
 
-    /**
-     * <p>Constructs new <code>DeviceLocation</code> instance. This implementation does nothing.</p>
-     */
-    public DeviceLocation() {
-    }
+  @Schema(
+      description =
+          "A timestamp of location recording by device (in milliseconds since epoch time)",
+      required = true)
+  private Long ts;
 
-    public Double getLat() {
-        return lat;
-    }
+  /** Constructs new <code>DeviceLocation</code> instance. This implementation does nothing. */
+  public DeviceLocation() {}
 
-    public void setLat(Double lat) {
-        this.lat = lat;
-    }
+  public Double getLat() {
+    return lat;
+  }
 
-    public Double getLon() {
-        return lon;
-    }
+  public void setLat(Double lat) {
+    this.lat = lat;
+  }
 
-    public void setLon(Double lon) {
-        this.lon = lon;
-    }
+  public Double getLon() {
+    return lon;
+  }
 
-    public Long getTs() {
-        return ts;
-    }
+  public void setLon(Double lon) {
+    this.lon = lon;
+  }
 
-    public void setTs(Long ts) {
-        this.ts = ts;
-    }
+  public Long getTs() {
+    return ts;
+  }
 
-    @Override
-    public String toString() {
-        return "DeviceLocation{" +
-                "lat=" + lat +
-                ", lon=" + lon +
-                ", ts=" + ts +
-                '}';
-    }
+  public void setTs(Long ts) {
+    this.ts = ts;
+  }
+
+  @Override
+  public String toString() {
+    return "DeviceLocation{" + "lat=" + lat + ", lon=" + lon + ", ts=" + ts + '}';
+  }
 }

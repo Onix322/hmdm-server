@@ -25,10 +25,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.hmdm.persistence.domain.ApplicationType;
 import com.hmdm.persistence.domain.Configuration;
-import com.hmdm.persistence.domain.ConfigurationFile;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
-
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,80 +33,80 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
- * <p>A wrapper around the {@link Configuration} object providing the view suitable for the <code>Device List</code>
- * view of server application.</p>
+ * A wrapper around the {@link Configuration} object providing the view suitable for the <code>
+ * Device List</code> view of server application.
  *
  * @author isv
  */
-@JsonIgnoreProperties(value = {"configuration"}, ignoreUnknown = true)
+@JsonIgnoreProperties(
+    value = {"configuration"},
+    ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@ApiModel(description = "An MDM configuration used on mobile device")
+@Schema(description = "An MDM configuration used on mobile device")
 public class ConfigurationView implements Serializable {
 
-    private static final long serialVersionUID = 3343804830704098674L;
-    
-    /**
-     * <p>A wrapped configuration object.</p>
-     */
-    private final Configuration configuration;
+  private static final long serialVersionUID = 3343804830704098674L;
 
-    /**
-     * <p>A list of wrappers around the applications set for configuration.</p>
-     */
-    private final List<ApplicationView> applications;
+  /** A wrapped configuration object. */
+  private final Configuration configuration;
 
-    private final List<ConfigurationFileView> files;
+  /** A list of wrappers around the applications set for configuration. */
+  private final List<ApplicationView> applications;
 
-    /**
-     * <p>Constructs new <code>ConfigurationView</code> instance. This implementation does nothing.</p>
-     */
-    ConfigurationView(Configuration configuration) {
-        this.configuration = configuration;
-        this.applications = Optional.ofNullable(configuration.getApplications())
-                .map(apps -> apps.stream()
-                        .filter(app -> app.getType().equals(ApplicationType.app))         // Check only real apps
+  private final List<ConfigurationFileView> files;
+
+  /** Constructs new <code>ConfigurationView</code> instance. This implementation does nothing. */
+  ConfigurationView(Configuration configuration) {
+    this.configuration = configuration;
+    this.applications =
+        Optional.ofNullable(configuration.getApplications())
+            .map(
+                apps ->
+                    apps.stream()
+                        .filter(
+                            app ->
+                                app.getType().equals(ApplicationType.app)) // Check only real apps
                         .map(ApplicationView::new)
                         .collect(Collectors.toList()))
-                .orElse(new ArrayList<>());
-        this.files = Optional.ofNullable(configuration.getFiles())
-                .map(apps -> apps.stream()
-                        .map(ConfigurationFileView::new)
-                        .collect(Collectors.toList()))
-                .orElse(new ArrayList<>());
-    }
+            .orElse(new ArrayList<>());
+    this.files =
+        Optional.ofNullable(configuration.getFiles())
+            .map(apps -> apps.stream().map(ConfigurationFileView::new).collect(Collectors.toList()))
+            .orElse(new ArrayList<>());
+  }
 
-    @ApiModelProperty("A configuration ID")
-    public Integer getId() {
-        return configuration.getId();
-    }
+  @Schema(description = "A configuration ID")
+  public Integer getId() {
+    return configuration.getId();
+  }
 
-    @ApiModelProperty("A unique name of configuration")
-    public String getName() {
-        return configuration.getName();
-    }
+  @Schema(description = "A unique name of configuration")
+  public String getName() {
+    return configuration.getName();
+  }
 
-    @ApiModelProperty("QR code to enroll the configuration")
-    public String getQrCodeKey() {
-        return configuration.getQrCodeKey();
-    }
+  @Schema(description = "QR code to enroll the configuration")
+  public String getQrCodeKey() {
+    return configuration.getQrCodeKey();
+  }
 
-    @ApiModelProperty(hidden = true)
-    public String getBaseUrl() {
-        return configuration.getBaseUrl();
-    }
+  @Schema(hidden = true)
+  public String getBaseUrl() {
+    return configuration.getBaseUrl();
+  }
 
-    @ApiModelProperty("Whether the configuration has a permissive mode")
-    public Boolean getPermissiveMode() {
-        return configuration.getPermissive();
-    }
+  @Schema(description = "Whether the configuration has a permissive mode")
+  public Boolean getPermissiveMode() {
+    return configuration.getPermissive();
+  }
 
-    @ApiModelProperty("A list of applications set and available for for configuration")
-    public List<ApplicationView> getApplications() {
-        return this.applications;
-    }
+  @Schema(description = "A list of applications set and available for for configuration")
+  public List<ApplicationView> getApplications() {
+    return this.applications;
+  }
 
-    @ApiModelProperty("A list of configrration files to be set on device")
-    public List<ConfigurationFileView> getFiles() {
-        return files;
-    }
+  @Schema(description = "A list of configrration files to be set on device")
+  public List<ConfigurationFileView> getFiles() {
+    return files;
+  }
 }

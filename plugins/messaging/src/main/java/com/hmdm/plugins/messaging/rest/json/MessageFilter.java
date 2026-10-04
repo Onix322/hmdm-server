@@ -22,214 +22,200 @@
 package com.hmdm.plugins.messaging.rest.json;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
-
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.io.Serializable;
 import java.util.Date;
 
 /**
- * <p>A DTO carrying the parameters for filtering the lists of message objects.</p>
+ * A DTO carrying the parameters for filtering the lists of message objects.
  *
  * @author seva
  */
-@ApiModel(description = "The parameters for filtering the lists of message objects")
+@Schema(description = "The parameters for filtering the lists of message objects")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class MessageFilter implements Serializable {
-    private static final long serialVersionUID = 5138600530197470696L;
+  private static final long serialVersionUID = 5138600530197470696L;
 
+  /** A number of records per single page of data to be retrieved. */
+  @Schema(description = "A number of records per single page of data to be retrieved")
+  private int pageSize = 50;
 
-    /**
-     * <p>A number of records per single page of data to be retrieved.</p>
-     */
-    @ApiModelProperty("A number of records per single page of data to be retrieved")
-    private int pageSize = 50;
+  /** A number of page of data to be retrieved. */
+  @Schema(description = "A number of page of data to be retrieved (1-based)")
+  private int pageNum = 1;
 
-    /**
-     * <p>A number of page of data to be retrieved.</p>
-     */
-    @ApiModelProperty("A number of page of data to be retrieved (1-based)")
-    private int pageNum = 1;
+  /** A filter used for filtering the data records by device. */
+  @Schema(description = "A filter used for filtering the data records by device")
+  private String deviceFilter;
 
-    /**
-     * <p>A filter used for filtering the data records by device.</p>
-     */
-    @ApiModelProperty("A filter used for filtering the data records by device")
-    private String deviceFilter;
+  /** A filter used for filtering the data records by device. */
+  @Schema(description = "A filter used for filtering the data records by message")
+  private String messageFilter;
 
-    /**
-     * <p>A filter used for filtering the data records by device.</p>
-     */
-    @ApiModelProperty("A filter used for filtering the data records by message")
-    private String messageFilter;
+  /** A timestamp for <code>FROM</code> boundary for filtering the data records by dates. */
+  @Schema(description = "A timestamp for FROM boundary for filtering the data records by dates")
+  private Date dateFrom;
 
-    /**
-     * <p>A timestamp for <code>FROM</code> boundary for filtering the data records by dates.</p>
-     */
-    @ApiModelProperty("A timestamp for FROM boundary for filtering the data records by dates")
-    private Date dateFrom;
+  /** A timestamp for <code>TO</code> boundary for filtering the data records by dates. */
+  @Schema(description = "A timestamp for TO boundary for filtering the data records by dates")
+  private Date dateTo;
 
-    /**
-     * <p>A timestamp for <code>TO</code> boundary for filtering the data records by dates.</p>
-     */
-    @ApiModelProperty("A timestamp for TO boundary for filtering the data records by dates")
-    private Date dateTo;
+  /** A severity for filtering the data records. */
+  @Schema(description = "A status for filtering the data records")
+  private Integer status;
 
-    /**
-     * <p>A severity for filtering the data records.</p>
-     */
-    @ApiModelProperty("A status for filtering the data records")
-    private Integer status;
+  /** A name of sorting column. */
+  @Schema(description = "A name of sorting column")
+  private String sortValue = "createTime";
 
-    /**
-     * <p>A name of sorting column.</p>
-     */
-    @ApiModelProperty("A name of sorting column")
-    private String sortValue = "createTime";
+  /** An ID of a customer. */
+  @Schema(hidden = true)
+  private int customerId;
 
-    /**
-     * <p>An ID of a customer.</p>
-     */
-    @ApiModelProperty(hidden = true)
-    private int customerId;
+  /** An ID of a user. */
+  @Schema(hidden = true)
+  private int userId;
 
-    /**
-     * <p>An ID of a user.</p>
-     */
-    @ApiModelProperty(hidden = true)
-    private int userId;
+  /** A flag indicating if data must be exported. */
+  @Schema(hidden = true)
+  private boolean export = false;
 
-    /**
-     * <p>A flag indicating if data must be exported.</p>
-     */
-    @ApiModelProperty(hidden = true)
-    private boolean export = false;
+  /** Constructs new <code>MessageFilter</code> instance. This implementation does nothing. */
+  public MessageFilter() {}
 
-    /**
-     * <p>Constructs new <code>MessageFilter</code> instance. This implementation does nothing.</p>
-     */
-    public MessageFilter() {
+  public int getPageSize() {
+    return pageSize;
+  }
+
+  public void setPageSize(int pageSize) {
+    this.pageSize = pageSize;
+  }
+
+  public int getPageNum() {
+    return pageNum;
+  }
+
+  public void setPageNum(int pageNum) {
+    this.pageNum = pageNum;
+  }
+
+  public Date getDateFrom() {
+    return dateFrom;
+  }
+
+  public void setDateFrom(Date dateFrom) {
+    this.dateFrom = dateFrom;
+  }
+
+  public Date getDateTo() {
+    return dateTo;
+  }
+
+  public void setDateTo(Date dateTo) {
+    this.dateTo = dateTo;
+  }
+
+  public String getSortValue() {
+    return sortValue;
+  }
+
+  public void setSortValue(String sortValue) {
+    this.sortValue = sortValue;
+  }
+
+  public String getDeviceFilter() {
+    return deviceFilter;
+  }
+
+  public void setDeviceFilter(String deviceFilter) {
+    this.deviceFilter = deviceFilter;
+  }
+
+  public String getMessageFilter() {
+    return messageFilter;
+  }
+
+  public void setMessageFilter(String messageFilter) {
+    this.messageFilter = messageFilter;
+  }
+
+  public int getCustomerId() {
+    return customerId;
+  }
+
+  public void setCustomerId(int customerId) {
+    this.customerId = customerId;
+  }
+
+  public int getUserId() {
+    return userId;
+  }
+
+  public void setUserId(int userId) {
+    this.userId = userId;
+  }
+
+  public Integer getStatus() {
+    return status;
+  }
+
+  public void setStatus(Integer status) {
+    this.status = status;
+  }
+
+  public long getDateFromMillis() {
+    if (dateFrom != null) {
+      return dateFrom.getTime();
+    } else {
+      return 0;
     }
+  }
 
-    public int getPageSize() {
-        return pageSize;
+  public long getDateToMillis() {
+    if (dateTo != null) {
+      return dateTo.getTime();
+    } else {
+      return 0;
     }
+  }
 
-    public void setPageSize(int pageSize) {
-        this.pageSize = pageSize;
-    }
+  public boolean isExport() {
+    return export;
+  }
 
-    public int getPageNum() {
-        return pageNum;
-    }
+  public void setExport(boolean export) {
+    this.export = export;
+  }
 
-    public void setPageNum(int pageNum) {
-        this.pageNum = pageNum;
-    }
-
-    public Date getDateFrom() {
-        return dateFrom;
-    }
-
-    public void setDateFrom(Date dateFrom) {
-        this.dateFrom = dateFrom;
-    }
-
-    public Date getDateTo() {
-        return dateTo;
-    }
-
-    public void setDateTo(Date dateTo) {
-        this.dateTo = dateTo;
-    }
-
-
-    public String getSortValue() {
-        return sortValue;
-    }
-
-    public void setSortValue(String sortValue) {
-        this.sortValue = sortValue;
-    }
-
-    public String getDeviceFilter() {
-        return deviceFilter;
-    }
-
-    public void setDeviceFilter(String deviceFilter) {
-        this.deviceFilter = deviceFilter;
-    }
-
-    public String getMessageFilter() {
-        return messageFilter;
-    }
-
-    public void setMessageFilter(String messageFilter) {
-        this.messageFilter = messageFilter;
-    }
-
-    public int getCustomerId() {
-        return customerId;
-    }
-
-    public void setCustomerId(int customerId) {
-        this.customerId = customerId;
-    }
-
-    public int getUserId() {
-        return userId;
-    }
-
-    public void setUserId(int userId) {
-        this.userId = userId;
-    }
-
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
-
-    public long getDateFromMillis() {
-        if (dateFrom != null) {
-            return dateFrom.getTime();
-        } else {
-            return 0;
-        }
-    }
-
-    public long getDateToMillis() {
-        if (dateTo != null) {
-            return dateTo.getTime();
-        } else {
-            return 0;
-        }
-    }
-
-    public boolean isExport() {
-        return export;
-    }
-
-    public void setExport(boolean export) {
-        this.export = export;
-    }
-
-    @Override
-    public String toString() {
-        return "MessageFilter{" +
-                "pageSize=" + pageSize +
-                ", pageNum=" + pageNum +
-                ", deviceFilter='" + deviceFilter + '\'' +
-                ", messageFilter='" + messageFilter + '\'' +
-                ", dateFrom=" + dateFrom +
-                ", dateTo=" + dateTo +
-                ", status='" + status + '\'' +
-                ", sortValue='" + sortValue + '\'' +
-                ", customerId=" + customerId +
-                ", userId=" + userId +
-                ", export=" + export +
-                '}';
-    }
+  @Override
+  public String toString() {
+    return "MessageFilter{"
+        + "pageSize="
+        + pageSize
+        + ", pageNum="
+        + pageNum
+        + ", deviceFilter='"
+        + deviceFilter
+        + '\''
+        + ", messageFilter='"
+        + messageFilter
+        + '\''
+        + ", dateFrom="
+        + dateFrom
+        + ", dateTo="
+        + dateTo
+        + ", status='"
+        + status
+        + '\''
+        + ", sortValue='"
+        + sortValue
+        + '\''
+        + ", customerId="
+        + customerId
+        + ", userId="
+        + userId
+        + ", export="
+        + export
+        + '}';
+  }
 }

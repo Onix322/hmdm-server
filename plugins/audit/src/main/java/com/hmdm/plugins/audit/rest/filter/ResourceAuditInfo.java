@@ -24,9 +24,9 @@ package com.hmdm.plugins.audit.rest.filter;
 import java.io.IOException;
 import java.util.Optional;
 import java.util.stream.Stream;
-import javax.servlet.FilterChain;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
 
 /**
  * An enumeration over the resources which are targets for audit tracking.

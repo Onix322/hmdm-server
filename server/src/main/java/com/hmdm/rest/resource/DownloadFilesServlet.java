@@ -23,165 +23,170 @@ package com.hmdm.rest.resource;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import javax.inject.Named;
+import com.hmdm.persistence.ApplicationDAO;
+import com.hmdm.rest.filter.PublicIPFilter;
+import com.hmdm.util.CryptoUtil;
+import jakarta.inject.Named;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLDecoder;
-import javax.servlet.ServletException;
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import com.hmdm.notification.rest.NotificationResource;
-import com.hmdm.persistence.ApplicationDAO;
-import com.hmdm.rest.filter.PublicIPFilter;
-import com.hmdm.rest.json.Response;
-import com.hmdm.util.CryptoUtil;
+import java.nio.charset.StandardCharsets;
 import org.apache.poi.util.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Singleton
 public class DownloadFilesServlet extends HttpServlet {
-    private final ApplicationDAO applicationDAO;
-    private final String filesDirectory;
-    private final File baseDirectory;
-    private final PublicIPFilter publicIPFilter;
+  private final ApplicationDAO applicationDAO;
+  private final String filesDirectory;
+  private final File baseDirectory;
+  private final PublicIPFilter publicIPFilter;
 
-    private boolean secureEnrollment;
-    private String hashSecret;
+  private boolean secureEnrollment;
+  private String hashSecret;
 
-    private static final String HEADER_ENROLLMENT_SIGNATURE = "X-Request-Signature";
-    private static final String CONTENT_TYPE_APK = "application/vnd.android.package-archive";
+  private static final String HEADER_ENROLLMENT_SIGNATURE = "X-Request-Signature";
+  private static final String CONTENT_TYPE_APK = "application/vnd.android.package-archive";
 
-    private static final Logger log = LoggerFactory.getLogger(DownloadFilesServlet.class);
+  private static final Logger log = LoggerFactory.getLogger(DownloadFilesServlet.class);
 
-    @Inject
-    public DownloadFilesServlet(ApplicationDAO applicationDAO,
-                                PublicIPFilter publicIPFilter,
-                                @Named("files.directory") String filesDirectory,
-                                @Named("secure.enrollment") boolean secureEnrollment,
-                                @Named("hash.secret") String hashSecret) {
-        this.applicationDAO = applicationDAO;
-        this.filesDirectory = filesDirectory;
-        this.baseDirectory = new File(filesDirectory);
-        this.publicIPFilter = publicIPFilter;
-        this.secureEnrollment = secureEnrollment;
-        this.hashSecret = hashSecret;
-        if (!this.baseDirectory.exists()) {
-            this.baseDirectory.mkdirs();
-        }
+  @Inject
+  public DownloadFilesServlet(
+      ApplicationDAO applicationDAO,
+      PublicIPFilter publicIPFilter,
+      @Named("files.directory") String filesDirectory,
+      @Named("secure.enrollment") boolean secureEnrollment,
+      @Named("hash.secret") String hashSecret) {
+    this.applicationDAO = applicationDAO;
+    this.filesDirectory = filesDirectory;
+    this.baseDirectory = new File(filesDirectory);
+    this.publicIPFilter = publicIPFilter;
+    this.secureEnrollment = secureEnrollment;
+    this.hashSecret = hashSecret;
+    if (!this.baseDirectory.exists()) {
+      this.baseDirectory.mkdirs();
+    }
+  }
 
+  protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+      throws ServletException, IOException {
+    String path = URLDecoder.decode(req.getRequestURI(), StandardCharsets.UTF_8);
+    int index = path.indexOf("/files/", 0) + "/files/".length();
+    path = path.substring(index);
+
+    if (!publicIPFilter.match(req)) {
+      log.warn("Request blocked by IP: " + req.getRemoteAddr());
+      resp.sendError(403);
+      return;
     }
 
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String path = URLDecoder.decode(req.getRequestURI(), "UTF8");
-        int index = path.indexOf("/files/", 0) + "/files/".length();
-        path = path.substring(index);
-
-        if (!publicIPFilter.match(req)) {
-            log.warn("Request blocked by IP: " + req.getRemoteAddr());
-            resp.sendError(403);
-            return;
+    if (secureEnrollment && !applicationDAO.isMainApp("%" + path)) {
+      String signature = req.getHeader(HEADER_ENROLLMENT_SIGNATURE);
+      if (signature == null) {
+        log.warn("No signature for file request " + req.getRequestURL().toString());
+        resp.sendError(403);
+        return;
+      }
+      try {
+        String goodSignature = CryptoUtil.getSHA1String(hashSecret + path);
+        if (!signature.equalsIgnoreCase(goodSignature)) {
+          log.warn(
+              "Wrong signature for file request "
+                  + path
+                  + ": "
+                  + signature
+                  + " Should be: "
+                  + goodSignature);
+          resp.sendError(403);
+          return;
         }
+      } catch (Exception e) {
+      }
+    }
 
-        if (secureEnrollment && !applicationDAO.isMainApp("%" + path)) {
-            String signature = req.getHeader(HEADER_ENROLLMENT_SIGNATURE);
-            if (signature == null) {
-                log.warn("No signature for file request " + req.getRequestURL().toString());
-                resp.sendError(403);
-                return;
-            }
-            try {
-                String goodSignature = CryptoUtil.getSHA1String(hashSecret + path);
-                if (!signature.equalsIgnoreCase(goodSignature)) {
-                    log.warn("Wrong signature for file request " + path + ": " + signature + " Should be: " + goodSignature);
-                    resp.sendError(403);
-                    return;
-                }
-            } catch (Exception e) {
-            }
-        }
+    File file = new File(String.format("%s/%s", this.filesDirectory, path));
+    if (file.exists()) {
 
-        File file = new File(String.format("%s/%s", this.filesDirectory, path));
-        if (file.exists()) {
+      long modifiedSince = req.getDateHeader("If-Modified-Since");
+      if (modifiedSince != -1 && modifiedSince > file.lastModified()) {
+        // Client can use cached images
+        resp.setStatus(304);
+        return;
+      }
 
-            long modifiedSince = req.getDateHeader("If-Modified-Since");
-            if (modifiedSince != -1 && modifiedSince > file.lastModified()) {
-                // Client can use cached images
-                resp.setStatus(304);
-                return;
-            }
+      String range = req.getHeader("Range");
+      if (range != null && range.startsWith("bytes=")) {
+        sendPartialContent(range.substring(6), file, resp);
+        return;
+      }
 
-            String range = req.getHeader("Range");
-            if (range != null && range.startsWith("bytes=")) {
-                sendPartialContent(range.substring(6), file, resp);
-                return;
-            }
-
-            // Cross XSS vulnerability fix: prevent opening a potentially malicious file having the Headwind MDM domain
-            resp.addHeader("Content-Disposition", "attachment; filename=\"" + file.getName() + "\"");
-            try (InputStream input = new FileInputStream(file);
-                 ServletOutputStream outputStream = resp.getOutputStream()) {
-                long length = file.length();
-                if (length <= 2147483647L) {
-                    resp.setContentLength((int)length);
-                } else {
-                    resp.addHeader("Content-Length", Long.toString(length));
-                }
-                if (file.getAbsolutePath().endsWith(".apk")) {
-                    resp.setContentType(CONTENT_TYPE_APK);
-                }
-
-                IOUtils.copy(input, outputStream);
-                outputStream.flush();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+      // Cross XSS vulnerability fix: prevent opening a potentially malicious file having the
+      // Headwind MDM domain
+      resp.addHeader("Content-Disposition", "attachment; filename=\"" + file.getName() + "\"");
+      try (InputStream input = new FileInputStream(file);
+          ServletOutputStream outputStream = resp.getOutputStream()) {
+        long length = file.length();
+        if (length <= 2147483647L) {
+          resp.setContentLength((int) length);
         } else {
-            System.out.println("Not found: " + file.getAbsolutePath());
-            resp.sendError(404);
+          resp.addHeader("Content-Length", Long.toString(length));
+        }
+        if (file.getAbsolutePath().endsWith(".apk")) {
+          resp.setContentType(CONTENT_TYPE_APK);
         }
 
+        IOUtils.copy(input, outputStream);
+        outputStream.flush();
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+    } else {
+      System.out.println("Not found: " + file.getAbsolutePath());
+      resp.sendError(404);
     }
+  }
 
-    private void sendPartialContent(String rangeStr, File file, HttpServletResponse resp) {
-        try {
-            String[] range = rangeStr.split("-");
-            Long start = Long.parseLong(range[0]);
-            Long end = null;
-            if (range.length > 1) {
-                end = Long.parseLong(range[1]);
-            }
-            InputStream input = new FileInputStream(file);
-            ServletOutputStream outputStream = resp.getOutputStream();
-            long length = file.length();
-            if (end == null) {
-                end = length;
-            }
+  private void sendPartialContent(String rangeStr, File file, HttpServletResponse resp) {
+    try {
+      String[] range = rangeStr.split("-");
+      Long start = Long.parseLong(range[0]);
+      Long end = null;
+      if (range.length > 1) {
+        end = Long.parseLong(range[1]);
+      }
+      InputStream input = new FileInputStream(file);
+      ServletOutputStream outputStream = resp.getOutputStream();
+      long length = file.length();
+      if (end == null) {
+        end = length;
+      }
 
-            resp.setStatus(206);
-            resp.setHeader("Content-Range", "bytes " + start + "-" + end + "/" + length);
-            long contentLength = end - start;
-            if (length <= 2147483647L) {
-                resp.setContentLength((int)contentLength);
-            } else {
-                resp.addHeader("Content-Length", Long.toString(contentLength));
-            }
-            if (file.getAbsolutePath().endsWith(".apk")) {
-                resp.setContentType(CONTENT_TYPE_APK);
-            }
+      resp.setStatus(206);
+      resp.setHeader("Content-Range", "bytes " + start + "-" + end + "/" + length);
+      long contentLength = end - start;
+      if (length <= 2147483647L) {
+        resp.setContentLength((int) contentLength);
+      } else {
+        resp.addHeader("Content-Length", Long.toString(contentLength));
+      }
+      if (file.getAbsolutePath().endsWith(".apk")) {
+        resp.setContentType(CONTENT_TYPE_APK);
+      }
 
-            input.skip(start);
+      input.skip(start);
 
-            IOUtils.copy(input, outputStream, contentLength);
-            outputStream.flush();
+      IOUtils.copy(input, outputStream, contentLength);
+      outputStream.flush();
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    } catch (Exception e) {
+      e.printStackTrace();
     }
+  }
 }

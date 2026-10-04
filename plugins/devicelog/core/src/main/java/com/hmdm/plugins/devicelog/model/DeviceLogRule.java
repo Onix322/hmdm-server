@@ -21,172 +21,184 @@
 
 package com.hmdm.plugins.devicelog.model;
 
-import com.hmdm.rest.json.LookupItem;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
+import com.hmdm.rest.json.LookupItem;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.io.Serializable;
 import java.util.List;
 
 /**
- * <p>A domain object representing a single rule for device log.</p>
+ * A domain object representing a single rule for device log.
  *
  * @author isv
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-@ApiModel(description = "A single rule for device log")
+@Schema(description = "A single rule for device log")
 public abstract class DeviceLogRule implements Serializable {
 
-    private static final long serialVersionUID = -6168623766690469626L;
-    @ApiModelProperty(value = "A name of the rule", required = true)
-    private String name;
+  private static final long serialVersionUID = -6168623766690469626L;
 
-    @ApiModelProperty(value = "A flag indicating if rule is active", required = true)
-    private boolean active;
+  @Schema(description = "A name of the rule", required = true)
+  private String name;
 
-    @ApiModelProperty(value = "An ID referencing the application", required = true)
-    private Integer applicationId;
+  @Schema(description = "A flag indicating if rule is active", required = true)
+  private boolean active;
 
-    @ApiModelProperty("A severity level")
-    private LogLevel severity;
+  @Schema(description = "An ID referencing the application", required = true)
+  private Integer applicationId;
 
-    @ApiModelProperty("A filter for log rule")
-    private String filter;
+  @Schema(description = "A severity level")
+  private LogLevel severity;
 
-    @ApiModelProperty(value = "An ID referencing the device group", required = true)
-    private Integer groupId;
+  @Schema(description = "A filter for log rule")
+  private String filter;
 
-    @ApiModelProperty(value = "An ID referencing the configuration", required = true)
-    private Integer configurationId;
+  @Schema(description = "An ID referencing the device group", required = true)
+  private Integer groupId;
 
-    @ApiModelProperty("A package ID for application")
-    private String applicationPkg;
+  @Schema(description = "An ID referencing the configuration", required = true)
+  private Integer configurationId;
 
-    @ApiModelProperty("A name of the device group")
-    private String groupName;
+  @Schema(description = "A package ID for application")
+  private String applicationPkg;
 
-    @ApiModelProperty("A name of the configuration")
-    private String configurationName;
+  @Schema(description = "A name of the device group")
+  private String groupName;
 
-    @ApiModelProperty("A list of devices related to rules")
-    private List<LookupItem> devices;
+  @Schema(description = "A name of the configuration")
+  private String configurationName;
 
-    /**
-     * <p>Constructs new <code>DeviceLogRule</code> instance. This implementation does nothing.</p>
-     */
-    public DeviceLogRule() {
-    }
+  @Schema(description = "A list of devices related to rules")
+  private List<LookupItem> devices;
 
-    public String getName() {
-        return name;
-    }
+  /** Constructs new <code>DeviceLogRule</code> instance. This implementation does nothing. */
+  public DeviceLogRule() {}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+  public String getName() {
+    return name;
+  }
 
-    public boolean isActive() {
-        return active;
-    }
+  public void setName(String name) {
+    this.name = name;
+  }
 
-    public void setActive(boolean active) {
-        this.active = active;
-    }
+  public boolean isActive() {
+    return active;
+  }
 
-    public Integer getApplicationId() {
-        return applicationId;
-    }
+  public void setActive(boolean active) {
+    this.active = active;
+  }
 
-    public void setApplicationId(Integer applicationId) {
-        this.applicationId = applicationId;
-    }
+  public Integer getApplicationId() {
+    return applicationId;
+  }
 
-    public LogLevel getSeverity() {
-        return severity;
-    }
+  public void setApplicationId(Integer applicationId) {
+    this.applicationId = applicationId;
+  }
 
-    public void setSeverity(LogLevel severity) {
-        this.severity = severity;
-    }
+  public LogLevel getSeverity() {
+    return severity;
+  }
 
-    public String getFilter() {
-        return filter;
-    }
+  public void setSeverity(LogLevel severity) {
+    this.severity = severity;
+  }
 
-    public void setFilter(String filter) {
-        this.filter = filter;
-    }
+  public String getFilter() {
+    return filter;
+  }
 
-    public Integer getGroupId() {
-        return groupId;
-    }
+  public void setFilter(String filter) {
+    this.filter = filter;
+  }
 
-    public void setGroupId(Integer groupId) {
-        this.groupId = groupId;
-    }
+  public Integer getGroupId() {
+    return groupId;
+  }
 
-    public Integer getConfigurationId() {
-        return configurationId;
-    }
+  public void setGroupId(Integer groupId) {
+    this.groupId = groupId;
+  }
 
-    public void setConfigurationId(Integer configurationId) {
-        this.configurationId = configurationId;
-    }
+  public Integer getConfigurationId() {
+    return configurationId;
+  }
 
-    public String getApplicationPkg() {
-        return applicationPkg;
-    }
+  public void setConfigurationId(Integer configurationId) {
+    this.configurationId = configurationId;
+  }
 
-    public void setApplicationPkg(String applicationPkg) {
-        this.applicationPkg = applicationPkg;
-    }
+  public String getApplicationPkg() {
+    return applicationPkg;
+  }
 
-    public String getGroupName() {
-        return groupName;
-    }
+  public void setApplicationPkg(String applicationPkg) {
+    this.applicationPkg = applicationPkg;
+  }
 
-    public void setGroupName(String groupName) {
-        this.groupName = groupName;
-    }
+  public String getGroupName() {
+    return groupName;
+  }
 
-    public String getConfigurationName() {
-        return configurationName;
-    }
+  public void setGroupName(String groupName) {
+    this.groupName = groupName;
+  }
 
-    public void setConfigurationName(String configurationName) {
-        this.configurationName = configurationName;
-    }
+  public String getConfigurationName() {
+    return configurationName;
+  }
 
-    public List<LookupItem> getDevices() {
-        return devices;
-    }
+  public void setConfigurationName(String configurationName) {
+    this.configurationName = configurationName;
+  }
 
-    public void setDevices(List<LookupItem> devices) {
-        this.devices = devices;
-    }
+  public List<LookupItem> getDevices() {
+    return devices;
+  }
 
-    /**
-     * <p>Gets the unique identifier for this record within underlying persistence layer.</p>
-     *
-     * @return an identifier for this record.
-     */
-    public abstract String getIdentifier();
+  public void setDevices(List<LookupItem> devices) {
+    this.devices = devices;
+  }
 
-    @Override
-    public String toString() {
-        return "DeviceLogRule{" +
-                "name='" + name + '\'' +
-                ", active=" + active +
-                ", applicationId=" + applicationId +
-                ", severity=" + severity +
-                ", filter='" + filter + '\'' +
-                ", groupId=" + groupId +
-                ", configurationId=" + configurationId +
-                ", applicationPkg='" + applicationPkg + '\'' +
-                ", groupName='" + groupName + '\'' +
-                ", configurationName='" + configurationName + '\'' +
-                ", devices=" + devices +
-                '}';
-    }
+  /**
+   * Gets the unique identifier for this record within underlying persistence layer.
+   *
+   * @return an identifier for this record.
+   */
+  public abstract String getIdentifier();
+
+  @Override
+  public String toString() {
+    return "DeviceLogRule{"
+        + "name='"
+        + name
+        + '\''
+        + ", active="
+        + active
+        + ", applicationId="
+        + applicationId
+        + ", severity="
+        + severity
+        + ", filter='"
+        + filter
+        + '\''
+        + ", groupId="
+        + groupId
+        + ", configurationId="
+        + configurationId
+        + ", applicationPkg='"
+        + applicationPkg
+        + '\''
+        + ", groupName='"
+        + groupName
+        + '\''
+        + ", configurationName='"
+        + configurationName
+        + '\''
+        + ", devices="
+        + devices
+        + '}';
+  }
 }

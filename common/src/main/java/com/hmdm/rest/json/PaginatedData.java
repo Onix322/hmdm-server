@@ -21,55 +21,46 @@
 
 package com.hmdm.rest.json;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
-
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 
 /**
- * <p>A DTO to carry the data for a single page for a paginated view.</p>
+ * A DTO to carry the data for a single page for a paginated view.
  *
  * @author isv
  */
-@ApiModel(description = "Paginated data")
+@Schema(description = "Paginated data")
 public class PaginatedData<T> {
 
-    /**
-     * <p>A list of collection items for a single page.</p>
-     */
-    @ApiModelProperty("A list of collection items for a single page")
-    private List<T> items;
+  /** A list of collection items for a single page. */
+  @Schema(description = "A list of collection items for a single page")
+  private List<T> items;
 
-    /**
-     * <p>A total number of items in collection.</p>
-     */
-    @ApiModelProperty("A total number of items in collection")
-    private long totalItemsCount;
+  /** A total number of items in collection. */
+  @Schema(description = "A total number of items in collection")
+  private long totalItemsCount;
 
-    /**
-     * <p>Constructs new <code>PaginatedData</code> instance. This implementation does nothing.</p>
-     */
-    public PaginatedData() {
-    }
+  /** Constructs new <code>PaginatedData</code> instance. This implementation does nothing. */
+  public PaginatedData() {}
 
-    public PaginatedData(List<T> items, long totalItemsCount) {
-        this.items = items;
-        this.totalItemsCount = totalItemsCount;
-    }
+  public PaginatedData(List<T> items, long totalItemsCount) {
+    this.items = items;
+    this.totalItemsCount = totalItemsCount;
+  }
 
-    public List<T> getItems() {
-        return items;
-    }
+  public List<T> getItems() {
+    return items;
+  }
 
-    public void setItems(List<T> items) {
-        this.items = items;
-    }
+  public void setItems(List<T> items) {
+    this.items = items;
+  }
 
-    public long getTotalItemsCount() {
-        return totalItemsCount;
-    }
+  public long getTotalItemsCount() {
+    return totalItemsCount;
+  }
 
-    public void setTotalItemsCount(long totalItemsCount) {
-        this.totalItemsCount = totalItemsCount;
-    }
+  public void setTotalItemsCount(long totalItemsCount) {
+    this.totalItemsCount = totalItemsCount;
+  }
 }

@@ -21,136 +21,124 @@
 
 package com.hmdm.plugins.audit.rest.filter;
 
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpServletResponseWrapper;
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponseWrapper;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 
 /**
- * <p>A wrapper around the {@link HttpServletResponse} object whose main purpose is to capture the status and content of
- * the response for audit logging purposes.</p>
+ * A wrapper around the {@link HttpServletResponse} object whose main purpose is to capture the
+ * status and content of the response for audit logging purposes.
  *
  * @author isv
  */
 public class ServletResponseAuditWrapper extends HttpServletResponseWrapper {
 
-    /**
-     * <p>A status set for the response.</p>
-     */
-    private int status;
+  /** A status set for the response. */
+  private int status;
 
-    /**
-     * <p>An original response output stream.</p>
-     */
-    private ServletOutputStream outputStream;
+  /** An original response output stream. */
+  private ServletOutputStream outputStream;
 
-    /**
-     * <p>An original response writer.</p>
-     */
-    private PrintWriter writer;
+  /** An original response writer. */
+  private PrintWriter writer;
 
-    /**
-     * <p>A wrapper around the response stream/writer used for captruing the content of the response.</p>
-     */
-    private ServletOutputStreamWrapper copier;
+  /** A wrapper around the response stream/writer used for captruing the content of the response. */
+  private ServletOutputStreamWrapper copier;
 
-    /**
-     * <p>Constructs new <code>ServletResponseAuditWrapper</code> instance. This implementation does nothing.</p>
-     */
-    public ServletResponseAuditWrapper(HttpServletResponse original) {
-        super(original);
+  /**
+   * Constructs new <code>ServletResponseAuditWrapper</code> instance. This implementation does
+   * nothing.
+   */
+  public ServletResponseAuditWrapper(HttpServletResponse original) {
+    super(original);
+  }
+
+  // Intercepted method.
+  @Override
+  public void sendError(int sc, String msg) throws IOException {
+    this.status = sc;
+    super.sendError(sc, msg);
+  }
+
+  // Intercepted method.
+  @Override
+  public void sendError(int sc) throws IOException {
+    this.status = sc;
+    super.sendError(sc);
+  }
+
+  // Intercepted method.
+  @Override
+  public void setStatus(int sc) {
+    this.status = sc;
+    super.setStatus(sc);
+  }
+
+  // Intercepted method.
+  @Override
+  public ServletOutputStream getOutputStream() throws IOException {
+    if (writer != null) {
+      throw new IllegalStateException("getWriter() has already been called on this response.");
     }
 
-    // Intercepted method.
-    @Override
-    public void sendError(int sc, String msg) throws IOException {
-        this.status = sc;
-        super.sendError(sc, msg);
+    if (outputStream == null) {
+      outputStream = getResponse().getOutputStream();
+      copier = new ServletOutputStreamWrapper(outputStream);
     }
 
-    // Intercepted method.
-    @Override
-    public void sendError(int sc) throws IOException {
-        this.status = sc;
-        super.sendError(sc);
+    return copier;
+  }
+
+  // Intercepted method.
+  @Override
+  public PrintWriter getWriter() throws IOException {
+    if (outputStream != null) {
+      throw new IllegalStateException(
+          "getOutputStream() has already been called on this response.");
     }
 
-    // Intercepted method.
-    @Override
-    public void setStatus(int sc) {
-        this.status = sc;
-        super.setStatus(sc);
+    if (writer == null) {
+      copier = new ServletOutputStreamWrapper(getResponse().getOutputStream());
+      writer =
+          new PrintWriter(
+              new OutputStreamWriter(copier, getResponse().getCharacterEncoding()), true);
     }
 
-    // Intercepted method.
-    @Override
-    public void setStatus(int sc, String sm) {
-        this.status = sc;
-        super.setStatus(sc, sm);
+    return writer;
+  }
+
+  // Intercepted method.
+  @Override
+  public void flushBuffer() throws IOException {
+    if (writer != null) {
+      writer.flush();
+    } else if (outputStream != null) {
+      copier.flush();
     }
+  }
 
-    // Intercepted method.
-    @Override
-    public ServletOutputStream getOutputStream() throws IOException {
-        if (writer != null) {
-            throw new IllegalStateException("getWriter() has already been called on this response.");
-        }
-
-        if (outputStream == null) {
-            outputStream = getResponse().getOutputStream();
-            copier = new ServletOutputStreamWrapper(outputStream);
-        }
-
-        return copier;
+  /**
+   * Gets the content of the response.
+   *
+   * @return a response content.
+   */
+  public byte[] getContent() {
+    if (copier != null) {
+      return copier.getContent();
+    } else {
+      return new byte[0];
     }
+  }
 
-    // Intercepted method.
-    @Override
-    public PrintWriter getWriter() throws IOException {
-        if (outputStream != null) {
-            throw new IllegalStateException("getOutputStream() has already been called on this response.");
-        }
-
-        if (writer == null) {
-            copier = new ServletOutputStreamWrapper(getResponse().getOutputStream());
-            writer = new PrintWriter(new OutputStreamWriter(copier, getResponse().getCharacterEncoding()), true);
-        }
-
-        return writer;
-    }
-
-    // Intercepted method.
-    @Override
-    public void flushBuffer() throws IOException {
-        if (writer != null) {
-            writer.flush();
-        } else if (outputStream != null) {
-            copier.flush();
-        }
-    }
-
-    /**
-     * <p>Gets the content of the response.</p>
-     *
-     * @return a response content.
-     */
-    public byte[] getContent() {
-        if (copier != null) {
-            return copier.getContent();
-        } else {
-            return new byte[0];
-        }
-    }
-
-
-    /**
-     * <p>Gets the status set for the response.</p>
-     *
-     * @return a status set for the response.
-     */
-    public int getStatus() {
-        return status;
-    }
+  /**
+   * Gets the status set for the response.
+   *
+   * @return a status set for the response.
+   */
+  public int getStatus() {
+    return status;
+  }
 }

@@ -21,225 +21,240 @@
 
 package com.hmdm.persistence.domain;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.io.Serializable;
 
-@ApiModel(description = "A specification of a single application version installed and used on mobile device")
+@Schema(
+    description =
+        "A specification of a single application version installed and used on mobile device")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ApplicationVersion implements Serializable {
 
-    private static final long serialVersionUID = 3429103100994111887L;
-    @ApiModelProperty("An application version ID")
-    private Integer id;
+  private static final long serialVersionUID = 3429103100994111887L;
 
-    @ApiModelProperty("An application ID")
-    private Integer applicationId;
+  @Schema(description = "An application version ID")
+  private Integer id;
 
-    @ApiModelProperty("A version of application")
-    private String version;
+  @Schema(description = "An application ID")
+  private Integer applicationId;
 
-    @ApiModelProperty("Version code")
-    private int versionCode;
+  @Schema(description = "A version of application")
+  private String version;
 
-    @ApiModelProperty("An URL for application package")
-    private String url;
+  @Schema(description = "Version code")
+  private int versionCode;
 
-    @ApiModelProperty("Has the APK native code, i.e. is split into two APKs")
-    private boolean split;
+  @Schema(description = "An URL for application package")
+  private String url;
 
-    @ApiModelProperty("An URL for armeabi APK")
-    private String urlArmeabi;
+  @Schema(description = "Has the APK native code, i.e. is split into two APKs")
+  private boolean split;
 
-    @ApiModelProperty("An URL for arm64 APK")
-    private String urlArm64;
+  @Schema(description = "An URL for armeabi APK")
+  private String urlArmeabi;
 
-    @ApiModelProperty(hidden = true)
-    private boolean deletionProhibited;
+  @Schema(description = "An URL for arm64 APK")
+  private String urlArm64;
 
-    @ApiModelProperty(hidden = true)
-    private boolean commonApplication;
+  @Schema(hidden = true)
+  private boolean deletionProhibited;
 
-    @ApiModelProperty(hidden = true)
-    private boolean system;
+  @Schema(hidden = true)
+  private boolean commonApplication;
 
-    @ApiModelProperty(hidden = true)
-    private ApplicationType type;
+  @Schema(hidden = true)
+  private boolean system;
 
-    @ApiModelProperty(hidden = true)
-    private String apkHash;
+  @Schema(hidden = true)
+  private ApplicationType type;
 
-    @ApiModelProperty(hidden = true)
-    private String arch;
+  @Schema(hidden = true)
+  private String apkHash;
 
-    /**
-     * <p>A path to uploaded file to link this application to when adding an application.</p>
-     */
-    @ApiModelProperty(hidden = true)
-    private String filePath;
+  @Schema(hidden = true)
+  private String arch;
 
-    /**
-     * <p>Constructs new <code>ApplicationVersion</code> instance. This implementation does nothing.</p>
-     */
-    public ApplicationVersion() {
+  /** A path to uploaded file to link this application to when adding an application. */
+  @Schema(hidden = true)
+  private String filePath;
+
+  /** Constructs new <code>ApplicationVersion</code> instance. This implementation does nothing. */
+  public ApplicationVersion() {}
+
+  /** Constructs new <code>ApplicationVersion</code> instance. This implementation does nothing. */
+  public ApplicationVersion(Application application) {
+    this.applicationId = application.getId();
+    this.version = application.getVersion();
+    this.versionCode = application.getVersionCode();
+    this.arch = application.getArch();
+    if (application.getArch() == null || application.getArch().equals("")) {
+      this.url = application.getUrl();
+    } else if (application.getArch().equals(Application.ARCH_ARMEABI)) {
+      this.split = true;
+      this.urlArmeabi = application.getUrl();
+    } else if (application.getArch().equals(Application.ARCH_ARM64)) {
+      this.split = true;
+      this.urlArm64 = application.getUrl();
     }
+  }
 
-    /**
-     * <p>Constructs new <code>ApplicationVersion</code> instance. This implementation does nothing.</p>
-     */
-    public ApplicationVersion(Application application) {
-        this.applicationId = application.getId();
-        this.version = application.getVersion();
-        this.versionCode = application.getVersionCode();
-        this.arch = application.getArch();
-        if (application.getArch() == null || application.getArch().equals("")) {
-            this.url = application.getUrl();
-        } else if (application.getArch().equals(Application.ARCH_ARMEABI)) {
-            this.split = true;
-            this.urlArmeabi = application.getUrl();
-        } else if (application.getArch().equals(Application.ARCH_ARM64)) {
-            this.split = true;
-            this.urlArm64 = application.getUrl();
-        }
-    }
+  public Integer getId() {
+    return id;
+  }
 
-    public Integer getId() {
-        return id;
-    }
+  public void setId(Integer id) {
+    this.id = id;
+  }
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+  public Integer getApplicationId() {
+    return applicationId;
+  }
 
-    public Integer getApplicationId() {
-        return applicationId;
-    }
+  public void setApplicationId(Integer applicationId) {
+    this.applicationId = applicationId;
+  }
 
-    public void setApplicationId(Integer applicationId) {
-        this.applicationId = applicationId;
-    }
+  public String getVersion() {
+    return version;
+  }
 
-    public String getVersion() {
-        return version;
-    }
+  public void setVersion(String version) {
+    this.version = version;
+  }
 
-    public void setVersion(String version) {
-        this.version = version;
-    }
+  public int getVersionCode() {
+    return versionCode;
+  }
 
-    public int getVersionCode() {
-        return versionCode;
-    }
+  public void setVersionCode(int versionCode) {
+    this.versionCode = versionCode;
+  }
 
-    public void setVersionCode(int versionCode) {
-        this.versionCode = versionCode;
-    }
+  public String getUrl() {
+    return url;
+  }
 
-    public String getUrl() {
-        return url;
-    }
+  public void setUrl(String url) {
+    this.url = url;
+  }
 
-    public void setUrl(String url) {
-        this.url = url;
-    }
+  public boolean isSplit() {
+    return split;
+  }
 
-    public boolean isSplit() {
-        return split;
-    }
+  public void setSplit(boolean split) {
+    this.split = split;
+  }
 
-    public void setSplit(boolean split) {
-        this.split = split;
-    }
+  public String getUrlArmeabi() {
+    return urlArmeabi;
+  }
 
-    public String getUrlArmeabi() {
-        return urlArmeabi;
-    }
+  public void setUrlArmeabi(String urlArmeabi) {
+    this.urlArmeabi = urlArmeabi;
+  }
 
-    public void setUrlArmeabi(String urlArmeabi) {
-        this.urlArmeabi = urlArmeabi;
-    }
+  public String getUrlArm64() {
+    return urlArm64;
+  }
 
-    public String getUrlArm64() {
-        return urlArm64;
-    }
+  public void setUrlArm64(String urlArm64) {
+    this.urlArm64 = urlArm64;
+  }
 
-    public void setUrlArm64(String urlArm64) {
-        this.urlArm64 = urlArm64;
-    }
+  public boolean isDeletionProhibited() {
+    return deletionProhibited;
+  }
 
-    public boolean isDeletionProhibited() {
-        return deletionProhibited;
-    }
+  public void setDeletionProhibited(boolean deletionProhibited) {
+    this.deletionProhibited = deletionProhibited;
+  }
 
-    public void setDeletionProhibited(boolean deletionProhibited) {
-        this.deletionProhibited = deletionProhibited;
-    }
+  public boolean isCommonApplication() {
+    return commonApplication;
+  }
 
-    public boolean isCommonApplication() {
-        return commonApplication;
-    }
+  public void setCommonApplication(boolean commonApplication) {
+    this.commonApplication = commonApplication;
+  }
 
-    public void setCommonApplication(boolean commonApplication) {
-        this.commonApplication = commonApplication;
-    }
+  public boolean isSystem() {
+    return system;
+  }
 
-    public boolean isSystem() {
-        return system;
-    }
+  public void setSystem(boolean system) {
+    this.system = system;
+  }
 
-    public void setSystem(boolean system) {
-        this.system = system;
-    }
+  public String getFilePath() {
+    return filePath;
+  }
 
-    public String getFilePath() {
-        return filePath;
-    }
+  public void setFilePath(String filePath) {
+    this.filePath = filePath;
+  }
 
-    public void setFilePath(String filePath) {
-        this.filePath = filePath;
-    }
+  public String getApkHash() {
+    return apkHash;
+  }
 
-    public String getApkHash() {
-        return apkHash;
-    }
+  public void setApkHash(String apkHash) {
+    this.apkHash = apkHash;
+  }
 
-    public void setApkHash(String apkHash) {
-        this.apkHash = apkHash;
-    }
+  public ApplicationType getType() {
+    return type;
+  }
 
-    public ApplicationType getType() {
-        return type;
-    }
+  public void setType(ApplicationType type) {
+    this.type = type;
+  }
 
-    public void setType(ApplicationType type) {
-        this.type = type;
-    }
+  public String getArch() {
+    return arch;
+  }
 
-    public String getArch() {
-        return arch;
-    }
+  public void setArch(String arch) {
+    this.arch = arch;
+  }
 
-    public void setArch(String arch) {
-        this.arch = arch;
-    }
-
-    @Override
-    public String toString() {
-        return "ApplicationVersion{" +
-                "id=" + id +
-                ", applicationId=" + applicationId +
-                ", version='" + version + '\'' +
-                ", versionCode=" + versionCode +
-                ", system='" + system + '\'' +
-                ", url='" + url + '\'' +
-                ", apkHash='" + apkHash + '\'' +
-                ", deletionProhibited='" + deletionProhibited + '\'' +
-                ", commonApplication='" + commonApplication + '\'' +
-                ", filePath='" + filePath + '\'' +
-                ", type='" + type + '\'' +
-                ", arch='" + arch + '\'' +
-                '}';
-    }
+  @Override
+  public String toString() {
+    return "ApplicationVersion{"
+        + "id="
+        + id
+        + ", applicationId="
+        + applicationId
+        + ", version='"
+        + version
+        + '\''
+        + ", versionCode="
+        + versionCode
+        + ", system='"
+        + system
+        + '\''
+        + ", url='"
+        + url
+        + '\''
+        + ", apkHash='"
+        + apkHash
+        + '\''
+        + ", deletionProhibited='"
+        + deletionProhibited
+        + '\''
+        + ", commonApplication='"
+        + commonApplication
+        + '\''
+        + ", filePath='"
+        + filePath
+        + '\''
+        + ", type='"
+        + type
+        + '\''
+        + ", arch='"
+        + arch
+        + '\''
+        + '}';
+  }
 }

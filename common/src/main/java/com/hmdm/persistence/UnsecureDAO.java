@@ -43,7 +43,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import javax.inject.Named;
+import jakarta.inject.Named;
 
 /**
  * A DAO which does not perform any security checks when accessing/updating data. It is intended for

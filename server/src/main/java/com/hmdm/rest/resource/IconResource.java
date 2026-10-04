@@ -25,107 +25,101 @@ import com.hmdm.persistence.IconDAO;
 import com.hmdm.persistence.domain.Icon;
 import com.hmdm.rest.json.Response;
 import com.hmdm.security.SecurityContext;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
+import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.MediaType;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-import java.util.List;
-
 /**
- * <p>A resource providing interface to icon management functionality.</p>
+ * A resource providing interface to icon management functionality.
  *
  * @author isv
  */
-@Api(tags = {"Icons"})
+@Tag(name = "Icons")
 @Path("/private/icons")
 @Singleton
 public class IconResource {
 
-    private static final Logger logger = LoggerFactory.getLogger(IconResource.class);
+  private static final Logger logger = LoggerFactory.getLogger(IconResource.class);
 
-    private IconDAO iconDAO;
+  private IconDAO iconDAO;
 
-    public IconResource() {
+  public IconResource() {}
+
+  /** Constructs new <code>IconResource</code> instance. This implementation does nothing. */
+  @Inject
+  public IconResource(IconDAO iconDAO) {
+    this.iconDAO = iconDAO;
+  }
+
+  // =================================================================================================================
+  /**
+   * Creates new icon record on server.
+   *
+   * @param icon the data for new icon.
+   * @return a response to client containing the created icon.
+   */
+  @PUT
+  @Produces(MediaType.APPLICATION_JSON)
+  @Consumes(MediaType.APPLICATION_JSON)
+  public Response createIcon(Icon icon) {
+    try {
+      final Icon newIcon =
+          icon.getId() == null ? iconDAO.insertIcon(icon) : iconDAO.updateIcon(icon);
+      return Response.OK(newIcon);
+    } catch (Exception e) {
+      return Response.INTERNAL_ERROR();
     }
+  }
 
-    /**
-     * <p>Constructs new <code>IconResource</code> instance. This implementation does nothing.</p>
-     */
-    @Inject
-    public IconResource(IconDAO iconDAO) {
-        this.iconDAO = iconDAO;
+  // =================================================================================================================
+  @GET
+  @Path("/search")
+  @Produces(MediaType.APPLICATION_JSON)
+  @Consumes(MediaType.APPLICATION_JSON)
+  public Response getIcons() {
+    try {
+      final List<Icon> allIcons = this.iconDAO.getAllIcons();
+      return Response.OK(allIcons);
+    } catch (Exception e) {
+      return Response.INTERNAL_ERROR();
     }
+  }
 
-    // =================================================================================================================
-    /**
-     * <p>Creates new icon record on server.</p>
-     *
-     * @param icon the data for new icon.
-     * @return a response to client containing the created icon.
-     */
-    @PUT
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response createIcon(Icon icon) {
-        try {
-            final Icon newIcon = icon.getId() == null ?
-                        iconDAO.insertIcon(icon) :
-                        iconDAO.updateIcon(icon);
-            return Response.OK(newIcon);
-        } catch (Exception e) {
-            return Response.INTERNAL_ERROR();
-        }
+  // =================================================================================================================
+  @GET
+  @Path("/search/{value}")
+  @Produces(MediaType.APPLICATION_JSON)
+  @Consumes(MediaType.APPLICATION_JSON)
+  public Response searchIcons(
+      @PathParam("value") @Parameter(description = "A filter value") String value) {
+    try {
+      final List<Icon> allIcons = this.iconDAO.getAllIconsByValue(value);
+      return Response.OK(allIcons);
+    } catch (Exception e) {
+      return Response.INTERNAL_ERROR();
     }
+  }
 
-    // =================================================================================================================
-    @GET
-    @Path("/search")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response getIcons() {
-        try {
-            final List<Icon> allIcons = this.iconDAO.getAllIcons();
-            return Response.OK(allIcons);
-        } catch (Exception e) {
-            return Response.INTERNAL_ERROR();
-        }
+  // =================================================================================================================
+  @Operation(summary = "Delete an icon", description = "Delete an existing icon")
+  @DELETE
+  @Path("/{id}")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response removeIcon(@PathParam("id") @Parameter(description = "Icon ID") Integer id) {
+    if (!SecurityContext.get().hasPermission("settings")) {
+      logger.error(
+          "Unauthorized attempt to update icons by user "
+              + SecurityContext.get().getCurrentUserName());
+      return Response.PERMISSION_DENIED();
     }
-
-    // =================================================================================================================
-    @GET
-    @Path("/search/{value}")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response searchIcons(@PathParam("value") @ApiParam("A filter value") String value) {
-        try {
-            final List<Icon> allIcons = this.iconDAO.getAllIconsByValue(value);
-            return Response.OK(allIcons);
-        } catch (Exception e) {
-            return Response.INTERNAL_ERROR();
-        }
-    }
-
-    // =================================================================================================================
-    @ApiOperation(
-            value = "Delete an icon",
-            notes = "Delete an existing icon"
-    )
-    @DELETE
-    @Path("/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response removeIcon(@PathParam("id") @ApiParam("Icon ID") Integer id) {
-        if (!SecurityContext.get().hasPermission("settings")) {
-            logger.error("Unauthorized attempt to update icons by user " +
-                    SecurityContext.get().getCurrentUserName());
-            return Response.PERMISSION_DENIED();
-        }
-        this.iconDAO.removeById(id);
-        return Response.OK();
-    }
+    this.iconDAO.removeById(id);
+    return Response.OK();
+  }
 }

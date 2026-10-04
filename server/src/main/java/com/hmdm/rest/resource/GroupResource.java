@@ -21,160 +21,164 @@
 
 package com.hmdm.rest.resource;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-
+import com.hmdm.persistence.GroupDAO;
 import com.hmdm.persistence.UserDAO;
+import com.hmdm.persistence.domain.Group;
 import com.hmdm.persistence.domain.User;
 import com.hmdm.rest.json.LookupItem;
-import com.hmdm.security.SecurityContext;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.Authorization;
-import com.hmdm.persistence.GroupDAO;
-import com.hmdm.persistence.domain.Group;
 import com.hmdm.rest.json.Response;
+import com.hmdm.security.SecurityContext;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
+import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.MediaType;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-@Api(tags = {"Device Group"}, authorizations = {@Authorization("Bearer Token")})
+@Tag(name = "Device Group")
+@SecurityRequirement(name = "Baerer Token")
 @Singleton
 @Path("/private/groups")
 public class GroupResource {
-    private GroupDAO groupDAO;
-    private UserDAO userDAO;
+  private GroupDAO groupDAO;
+  private UserDAO userDAO;
 
-    /**
-     * <p>A logger to be used for logging the events.</p>
-     */
-    private static final Logger log = LoggerFactory.getLogger(GroupResource.class);
+  /** A logger to be used for logging the events. */
+  private static final Logger log = LoggerFactory.getLogger(GroupResource.class);
 
-    /**
-     * <p>A constructor required by Swagger.</p>
-     */
-    public GroupResource() {
+  /** A constructor required by Swagger. */
+  public GroupResource() {}
+
+  @Inject
+  public GroupResource(GroupDAO groupDAO, UserDAO userDAO) {
+    this.groupDAO = groupDAO;
+    this.userDAO = userDAO;
+  }
+
+  // =================================================================================================================
+  @Operation(
+      summary = "Get all device groups",
+      description = "Gets the list of all available device groups")
+  @ApiResponses({
+    @ApiResponse(
+        responseCode = "200",
+        description = "OK",
+        content = @Content(array = @ArraySchema(schema = @Schema(implementation = Group.class))))
+  })
+  @GET
+  @Path("/search")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response getAllGroups() {
+    return Response.OK(this.groupDAO.getAllGroups());
+  }
+
+  // =================================================================================================================
+  @Operation(
+      summary = "Search device groups",
+      description = "Search device groups meeting the specified filter value")
+  @ApiResponses({
+    @ApiResponse(
+        responseCode = "200",
+        description = "OK",
+        content = @Content(array = @ArraySchema(schema = @Schema(implementation = Group.class))))
+  })
+  @GET
+  @Path("/search/{value}")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response searchGroups(
+      @PathParam("value") @Parameter(description = "A filter value") String value) {
+    return Response.OK(this.groupDAO.getAllGroupsByValue(value));
+  }
+
+  // =================================================================================================================
+  /**
+   * Gets the list of group id/names matching the specified filter for autocompletion.
+   *
+   * @param filter a filter to be used for filtering the records.
+   * @return a response with list of groups matching the specified filter.
+   */
+  @Operation(summary = "Get group ids/names for autocomplete")
+  @POST
+  @Path("/autocomplete")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response getGroupsForAutocomplete(String filter) {
+    try {
+      List<LookupItem> groups =
+          this.groupDAO.getAllGroupsByValue(filter).stream()
+              .map(group -> new LookupItem(group.getId(), group.getName()))
+              .collect(Collectors.toList());
+      return Response.OK(groups);
+    } catch (Exception e) {
+      log.error("Failed to search the groups due to unexpected error. Filter: {}", filter, e);
+      return Response.INTERNAL_ERROR();
     }
+  }
 
-    @Inject
-    public GroupResource(GroupDAO groupDAO,
-                         UserDAO userDAO) {
-        this.groupDAO = groupDAO;
-        this.userDAO = userDAO;
+  // =================================================================================================================
+  @Operation(
+      summary = "Create or update device group",
+      description =
+          "Create a new device group (if id is not provided) or update existing one otherwise.")
+  @PUT
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response updateGroup(Group group) {
+    if (!SecurityContext.get().hasPermission("settings")) {
+      log.error(
+          "Unauthorized attempt to update groups by user "
+              + SecurityContext.get().getCurrentUserName());
+      return Response.PERMISSION_DENIED();
     }
-
-    // =================================================================================================================
-    @ApiOperation(
-            value = "Get all device groups",
-            notes = "Gets the list of all available device groups",
-            response = Group.class,
-            responseContainer = "List"
-    )
-    @GET
-    @Path("/search")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getAllGroups() {
-        return Response.OK(this.groupDAO.getAllGroups());
-    }
-
-    // =================================================================================================================
-    @ApiOperation(
-            value = "Search device groups",
-            notes = "Search device groups meeting the specified filter value",
-            response = Group.class,
-            responseContainer = "List"
-    )
-    @GET
-    @Path("/search/{value}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response searchGroups(@PathParam("value") @ApiParam("A filter value") String value) {
-        return Response.OK(this.groupDAO.getAllGroupsByValue(value));
-    }
-
-
-    // =================================================================================================================
-    /**
-     * <p>Gets the list of group id/names matching the specified filter for autocompletion.</p>
-     *
-     * @param filter a filter to be used for filtering the records.
-     * @return a response with list of groups matching the specified filter.
-     */
-    @ApiOperation(value = "Get group ids/names for autocomplete")
-    @POST
-    @Path("/autocomplete")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getGroupsForAutocomplete(String filter) {
-        try {
-            List<LookupItem> groups = this.groupDAO.getAllGroupsByValue(filter)
-                    .stream()
-                    .map(group -> new LookupItem(group.getId(), group.getName()))
-                    .collect(Collectors.toList());
-            return Response.OK(groups);
-        } catch (Exception e) {
-            log.error("Failed to search the groups due to unexpected error. Filter: {}", filter, e);
-            return Response.INTERNAL_ERROR();
+    Group dbGroup = this.groupDAO.getGroupByName(group.getName());
+    if (dbGroup != null && !dbGroup.getId().equals(group.getId())) {
+      return Response.DUPLICATE_ENTITY("error.duplicate.group");
+    } else {
+      if (group.getId() == null) {
+        this.groupDAO.insertGroup(group);
+        User user = SecurityContext.get().getCurrentUser().get();
+        if (!user.isAllDevicesAvailable()) {
+          // User should get permissions to view and edit a group he created
+          user.getGroups().add(new LookupItem(group.getId(), null));
+          userDAO.updateUserMainDetails(user);
         }
-    }
+      } else {
+        this.groupDAO.updateGroup(group);
+      }
 
-    // =================================================================================================================
-    @ApiOperation(
-            value = "Create or update device group",
-            notes = "Create a new device group (if id is not provided) or update existing one otherwise."
-    )
-    @PUT
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response updateGroup(Group group) {
-        if (!SecurityContext.get().hasPermission("settings")) {
-            log.error("Unauthorized attempt to update groups by user " +
-                    SecurityContext.get().getCurrentUserName());
-            return Response.PERMISSION_DENIED();
-        }
-        Group dbGroup = this.groupDAO.getGroupByName(group.getName());
-        if (dbGroup != null && !dbGroup.getId().equals(group.getId())) {
-            return Response.DUPLICATE_ENTITY("error.duplicate.group");
-        } else {
-            if (group.getId() == null) {
-                this.groupDAO.insertGroup(group);
-                User user = SecurityContext.get().getCurrentUser().get();
-                if (!user.isAllDevicesAvailable()) {
-                    // User should get permissions to view and edit a group he created
-                    user.getGroups().add(new LookupItem(group.getId(), null));
-                    userDAO.updateUserMainDetails(user);
-                }
-            } else {
-                this.groupDAO.updateGroup(group);
-            }
-
-            return Response.OK();
-        }
+      return Response.OK();
     }
+  }
 
-    // =================================================================================================================
-    @ApiOperation(
-            value = "Delete device group",
-            notes = "Delete an existing device group"
-    )
-    @DELETE
-    @Path("/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response removeGroup(@PathParam("id") @ApiParam("Device group ID") Integer id) {
-        if (!SecurityContext.get().hasPermission("settings")) {
-            log.error("Unauthorized attempt to update groups by user " +
-                    SecurityContext.get().getCurrentUserName());
-            return Response.PERMISSION_DENIED();
-        }
-        Long count = this.groupDAO.countDevicesByGroupId(id);
-        if (count > 0) {
-            return Response.ERROR("error.notempty.group");
-        } else {
-            this.groupDAO.removeGroupById(id);
-            return Response.OK();
-        }
+  // =================================================================================================================
+  @Operation(summary = "Delete device group", description = "Delete an existing device group")
+  @DELETE
+  @Path("/{id}")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response removeGroup(
+      @PathParam("id") @Parameter(description = "Device group ID") Integer id) {
+    if (!SecurityContext.get().hasPermission("settings")) {
+      log.error(
+          "Unauthorized attempt to update groups by user "
+              + SecurityContext.get().getCurrentUserName());
+      return Response.PERMISSION_DENIED();
     }
+    Long count = this.groupDAO.countDevicesByGroupId(id);
+    if (count > 0) {
+      return Response.ERROR("error.notempty.group");
+    } else {
+      this.groupDAO.removeGroupById(id);
+      return Response.OK();
+    }
+  }
 }

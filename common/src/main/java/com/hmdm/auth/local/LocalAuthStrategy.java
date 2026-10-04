@@ -6,7 +6,7 @@ import com.hmdm.persistence.UnsecureDAO;
 import com.hmdm.persistence.domain.User;
 import com.hmdm.util.PasswordUtil;
 
-import javax.inject.Singleton;
+import jakarta.inject.Singleton;
 
 /** Authentication strategy implementation for local user and password verification. */
 @Singleton

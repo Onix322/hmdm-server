@@ -21,53 +21,50 @@
 
 package com.hmdm.persistence.domain;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.io.Serializable;
 
-@ApiModel(description = "A group of devices")
+@Schema(description = "A group of devices")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Group implements CustomerData, Serializable {
 
-    private static final long serialVersionUID = 3971700195035939411L;
+  private static final long serialVersionUID = 3971700195035939411L;
 
-    @ApiModelProperty("A group ID")
-    private Integer id;
+  @Schema(description = "A group ID")
+  private Integer id;
 
-    @ApiModelProperty("A group name")
-    private String name;
+  @Schema(description = "A group name")
+  private String name;
 
-    @ApiModelProperty(hidden = true)
-    private int customerId;
+  @Schema(hidden = true)
+  private int customerId;
 
-    public Group() {
-    }
+  public Group() {}
 
-    public Integer getId() {
-        return this.id;
-    }
+  public Integer getId() {
+    return this.id;
+  }
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+  public void setId(Integer id) {
+    this.id = id;
+  }
 
-    public String getName() {
-        return this.name;
-    }
+  public String getName() {
+    return this.name;
+  }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+  public void setName(String name) {
+    this.name = name;
+  }
 
-    @Override
-    public int getCustomerId() {
-        return customerId;
-    }
+  @Override
+  public int getCustomerId() {
+    return customerId;
+  }
 
-    @Override
-    public void setCustomerId(int customerId) {
-        this.customerId = customerId;
-    }
+  @Override
+  public void setCustomerId(int customerId) {
+    this.customerId = customerId;
+  }
 }

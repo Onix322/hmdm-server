@@ -22,185 +22,196 @@
 package com.hmdm.plugins.deviceinfo.persistence.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import io.swagger.annotations.ApiModelProperty;
-
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.io.Serializable;
 
 /**
- * <p> A domain object representing the general device parameters.</p>
+ * A domain object representing the general device parameters.
  *
  * @author isv
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class DeviceData implements Serializable {
 
-    private static final long serialVersionUID = 8593556673514494478L;
-    
-    @ApiModelProperty("An ID of device data record")
-    private Integer id;
+  private static final long serialVersionUID = 8593556673514494478L;
 
-    @ApiModelProperty(value = "A battery level in percents", allowableValues = "range[0, 100]")
-    private Integer batteryLevel;
+  @Schema(description = "An ID of device data record")
+  private Integer id;
 
-    @ApiModelProperty(value = "A battery charge type", allowableValues = "usb,ac", allowEmptyValue = true)
-    private String batteryCharging;
+  @Schema(description = "A battery level in percents", allowableValues = "range[0, 100]")
+  private Integer batteryLevel;
 
-    @ApiModelProperty(value = "A used IP-address")
-    private String ip;
+  @Schema(description = "A battery charge type", allowableValues = "usb,ac", nullable = true)
+  private String batteryCharging;
 
-    @ApiModelProperty(value = "A flag indicating if keyguard is on")
-    private Boolean keyguard;
+  @Schema(description = "A used IP-address")
+  private String ip;
 
-    @ApiModelProperty(value = "A ring volume level")
-    private Integer ringVolume;
+  @Schema(description = "A flag indicating if keyguard is on")
+  private Boolean keyguard;
 
-    @ApiModelProperty(value = "A flag indicating if Wi-FI is on")
-    private Boolean wifi;
+  @Schema(description = "A ring volume level")
+  private Integer ringVolume;
 
-    @ApiModelProperty(value = "A flag indicating if Mobile Data is on")
-    private Boolean mobileData;
+  @Schema(description = "A flag indicating if Wi-FI is on")
+  private Boolean wifi;
 
-    @ApiModelProperty(value = "A flag indicating if GPS is on")
-    private Boolean gps;
+  @Schema(description = "A flag indicating if Mobile Data is on")
+  private Boolean mobileData;
 
-    @ApiModelProperty(value = "A flag indicating if Bluetooth is on")
-    private Boolean bluetooth;
+  @Schema(description = "A flag indicating if GPS is on")
+  private Boolean gps;
 
-    @ApiModelProperty(value = "A flag indicating if USB storage is on")
-    private Boolean usbStorage;
+  @Schema(description = "A flag indicating if Bluetooth is on")
+  private Boolean bluetooth;
 
-    @ApiModelProperty(value = "Total memory in Mb")
-    private Integer memoryTotal;
+  @Schema(description = "A flag indicating if USB storage is on")
+  private Boolean usbStorage;
 
-    @ApiModelProperty(value = "Available memory in Mb")
-    private Integer memoryAvailable;
+  @Schema(description = "Total memory in Mb")
+  private Integer memoryTotal;
 
-    /**
-     * <p>Constructs new <code>DeviceData</code> instance. This implementation does nothing.</p>
-     */
-    public DeviceData() {
-    }
+  @Schema(description = "Available memory in Mb")
+  private Integer memoryAvailable;
 
-    public Integer getId() {
-        return id;
-    }
+  /** Constructs new <code>DeviceData</code> instance. This implementation does nothing. */
+  public DeviceData() {}
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+  public Integer getId() {
+    return id;
+  }
 
-    public Integer getBatteryLevel() {
-        return batteryLevel;
-    }
+  public void setId(Integer id) {
+    this.id = id;
+  }
 
-    public void setBatteryLevel(Integer batteryLevel) {
-        this.batteryLevel = batteryLevel;
-    }
+  public Integer getBatteryLevel() {
+    return batteryLevel;
+  }
 
-    public String getBatteryCharging() {
-        return batteryCharging;
-    }
+  public void setBatteryLevel(Integer batteryLevel) {
+    this.batteryLevel = batteryLevel;
+  }
 
-    public void setBatteryCharging(String batteryCharging) {
-        this.batteryCharging = batteryCharging;
-    }
+  public String getBatteryCharging() {
+    return batteryCharging;
+  }
 
-    public String getIp() {
-        return ip;
-    }
+  public void setBatteryCharging(String batteryCharging) {
+    this.batteryCharging = batteryCharging;
+  }
 
-    public void setIp(String ip) {
-        this.ip = ip;
-    }
+  public String getIp() {
+    return ip;
+  }
 
-    public Boolean getKeyguard() {
-        return keyguard;
-    }
+  public void setIp(String ip) {
+    this.ip = ip;
+  }
 
-    public void setKeyguard(Boolean keyguard) {
-        this.keyguard = keyguard;
-    }
+  public Boolean getKeyguard() {
+    return keyguard;
+  }
 
-    public Integer getRingVolume() {
-        return ringVolume;
-    }
+  public void setKeyguard(Boolean keyguard) {
+    this.keyguard = keyguard;
+  }
 
-    public void setRingVolume(Integer ringVolume) {
-        this.ringVolume = ringVolume;
-    }
+  public Integer getRingVolume() {
+    return ringVolume;
+  }
 
-    public Boolean getWifi() {
-        return wifi;
-    }
+  public void setRingVolume(Integer ringVolume) {
+    this.ringVolume = ringVolume;
+  }
 
-    public void setWifi(Boolean wifi) {
-        this.wifi = wifi;
-    }
+  public Boolean getWifi() {
+    return wifi;
+  }
 
-    public Boolean getMobileData() {
-        return mobileData;
-    }
+  public void setWifi(Boolean wifi) {
+    this.wifi = wifi;
+  }
 
-    public void setMobileData(Boolean mobileData) {
-        this.mobileData = mobileData;
-    }
+  public Boolean getMobileData() {
+    return mobileData;
+  }
 
-    public Boolean getGps() {
-        return gps;
-    }
+  public void setMobileData(Boolean mobileData) {
+    this.mobileData = mobileData;
+  }
 
-    public void setGps(Boolean gps) {
-        this.gps = gps;
-    }
+  public Boolean getGps() {
+    return gps;
+  }
 
-    public Boolean getBluetooth() {
-        return bluetooth;
-    }
+  public void setGps(Boolean gps) {
+    this.gps = gps;
+  }
 
-    public void setBluetooth(Boolean bluetooth) {
-        this.bluetooth = bluetooth;
-    }
+  public Boolean getBluetooth() {
+    return bluetooth;
+  }
 
-    public Boolean getUsbStorage() {
-        return usbStorage;
-    }
+  public void setBluetooth(Boolean bluetooth) {
+    this.bluetooth = bluetooth;
+  }
 
-    public void setUsbStorage(Boolean usbStorage) {
-        this.usbStorage = usbStorage;
-    }
+  public Boolean getUsbStorage() {
+    return usbStorage;
+  }
 
-    public Integer getMemoryTotal() {
-        return memoryTotal;
-    }
+  public void setUsbStorage(Boolean usbStorage) {
+    this.usbStorage = usbStorage;
+  }
 
-    public void setMemoryTotal(Integer memoryTotal) {
-        this.memoryTotal = memoryTotal;
-    }
+  public Integer getMemoryTotal() {
+    return memoryTotal;
+  }
 
-    public Integer getMemoryAvailable() {
-        return memoryAvailable;
-    }
+  public void setMemoryTotal(Integer memoryTotal) {
+    this.memoryTotal = memoryTotal;
+  }
 
-    public void setMemoryAvailable(Integer memoryAvailable) {
-        this.memoryAvailable = memoryAvailable;
-    }
+  public Integer getMemoryAvailable() {
+    return memoryAvailable;
+  }
 
-    @Override
-    public String toString() {
-        return "DeviceData{" +
-                "id=" + id +
-                ", batteryLevel=" + batteryLevel +
-                ", batteryCharging='" + batteryCharging + '\'' +
-                ", ip='" + ip + '\'' +
-                ", keyguard=" + keyguard +
-                ", ringVolume=" + ringVolume +
-                ", wifi=" + wifi +
-                ", mobileData=" + mobileData +
-                ", gps=" + gps +
-                ", bluetooth=" + bluetooth +
-                ", usbStorage=" + usbStorage +
-                ", memoryTotal=" + memoryTotal +
-                ", memoryAvailable=" + memoryAvailable +
-                '}';
-    }
+  public void setMemoryAvailable(Integer memoryAvailable) {
+    this.memoryAvailable = memoryAvailable;
+  }
+
+  @Override
+  public String toString() {
+    return "DeviceData{"
+        + "id="
+        + id
+        + ", batteryLevel="
+        + batteryLevel
+        + ", batteryCharging='"
+        + batteryCharging
+        + '\''
+        + ", ip='"
+        + ip
+        + '\''
+        + ", keyguard="
+        + keyguard
+        + ", ringVolume="
+        + ringVolume
+        + ", wifi="
+        + wifi
+        + ", mobileData="
+        + mobileData
+        + ", gps="
+        + gps
+        + ", bluetooth="
+        + bluetooth
+        + ", usbStorage="
+        + usbStorage
+        + ", memoryTotal="
+        + memoryTotal
+        + ", memoryAvailable="
+        + memoryAvailable
+        + '}';
+  }
 }

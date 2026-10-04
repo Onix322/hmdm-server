@@ -21,40 +21,41 @@
 
 package com.hmdm.rest.json;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 
-@ApiModel(description = "A request to setup links between the single application and listed configurations")
+@Schema(
+    description =
+        "A request to setup links between the single application and listed configurations")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class LinkConfigurationsToAppRequest {
 
-    @ApiModelProperty("An ID of an application to link configurations to")
-    private int applicationId;
-    @ApiModelProperty("A list of configurations to link to application")
-    private List<ApplicationConfigurationLink> configurations;
+  @Schema(description = "An ID of an application to link configurations to")
+  private int applicationId;
 
-    /**
-     * <p>Constructs new <code>LinkConfigurationsToAppRequest</code> instance. This implementation does nothing.</p>
-     */
-    public LinkConfigurationsToAppRequest() {
-    }
+  @Schema(description = "A list of configurations to link to application")
+  private List<ApplicationConfigurationLink> configurations;
 
-    public int getApplicationId() {
-        return applicationId;
-    }
+  /**
+   * Constructs new <code>LinkConfigurationsToAppRequest</code> instance. This implementation does
+   * nothing.
+   */
+  public LinkConfigurationsToAppRequest() {}
 
-    public void setApplicationId(int applicationId) {
-        this.applicationId = applicationId;
-    }
+  public int getApplicationId() {
+    return applicationId;
+  }
 
-    public List<ApplicationConfigurationLink> getConfigurations() {
-        return configurations;
-    }
+  public void setApplicationId(int applicationId) {
+    this.applicationId = applicationId;
+  }
 
-    public void setConfigurations(List<ApplicationConfigurationLink> configurations) {
-        this.configurations = configurations;
-    }
+  public List<ApplicationConfigurationLink> getConfigurations() {
+    return configurations;
+  }
+
+  public void setConfigurations(List<ApplicationConfigurationLink> configurations) {
+    this.configurations = configurations;
+  }
 }

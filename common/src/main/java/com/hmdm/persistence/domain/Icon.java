@@ -22,89 +22,99 @@
 package com.hmdm.persistence.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
-
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.io.Serializable;
 
 /**
- * <p>A specification of a single icon used to represent an application on mobile device</p>
+ * A specification of a single icon used to represent an application on mobile device
  *
  * @author isv
  */
-@ApiModel(description = "A specification of a single icon used to represent an application on mobile device")
+@Schema(
+    description =
+        "A specification of a single icon used to represent an application on mobile device")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Icon implements Serializable, CustomerData {
 
-    private static final long serialVersionUID = -5082987201236988017L;
-    @ApiModelProperty("An application ID")
-    private Integer id;
-    @ApiModelProperty(hidden = true)
-    private int customerId;
-    @ApiModelProperty("A name of the icon")
-    private String name;
-    @ApiModelProperty("An ID of an uploaded file storing the content of the icon")
-    private Integer fileId;
-    @ApiModelProperty("The name of an uploaded file storing the content of the icon")
-    private String fileName;
+  private static final long serialVersionUID = -5082987201236988017L;
 
-    /**
-     * <p>Constructs new <code>Icon</code> instance. This implementation does nothing.</p>
-     */
-    public Icon() {
-    }
+  @Schema(description = "An application ID")
+  private Integer id;
 
-    @Override
-    public Integer getId() {
-        return id;
-    }
+  @Schema(hidden = true)
+  private int customerId;
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+  @Schema(description = "A name of the icon")
+  private String name;
 
-    @Override
-    public int getCustomerId() {
-        return customerId;
-    }
+  @Schema(description = "An ID of an uploaded file storing the content of the icon")
+  private Integer fileId;
 
-    @Override
-    public void setCustomerId(int customerId) {
-        this.customerId = customerId;
-    }
+  @Schema(description = "The name of an uploaded file storing the content of the icon")
+  private String fileName;
 
-    public String getName() {
-        return name;
-    }
+  /** Constructs new <code>Icon</code> instance. This implementation does nothing. */
+  public Icon() {}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+  @Override
+  public Integer getId() {
+    return id;
+  }
 
-    public Integer getFileId() {
-        return fileId;
-    }
+  public void setId(Integer id) {
+    this.id = id;
+  }
 
-    public void setFileId(Integer fileId) {
-        this.fileId = fileId;
-    }
+  @Override
+  public int getCustomerId() {
+    return customerId;
+  }
 
-    public String getFileName() {
-        return fileName;
-    }
+  @Override
+  public void setCustomerId(int customerId) {
+    this.customerId = customerId;
+  }
 
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
-    }
+  public String getName() {
+    return name;
+  }
 
-    @Override
-    public String toString() {
-        return "Icon{" +
-                "id=" + id +
-                ", customerId=" + customerId +
-                ", name='" + name + '\'' +
-                ", fileId='" + fileId + '\'' +
-                ", fileName='" + fileName + '\'' +
-                '}';
-    }
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public Integer getFileId() {
+    return fileId;
+  }
+
+  public void setFileId(Integer fileId) {
+    this.fileId = fileId;
+  }
+
+  public String getFileName() {
+    return fileName;
+  }
+
+  public void setFileName(String fileName) {
+    this.fileName = fileName;
+  }
+
+  @Override
+  public String toString() {
+    return "Icon{"
+        + "id="
+        + id
+        + ", customerId="
+        + customerId
+        + ", name='"
+        + name
+        + '\''
+        + ", fileId='"
+        + fileId
+        + '\''
+        + ", fileName='"
+        + fileName
+        + '\''
+        + '}';
+  }
 }

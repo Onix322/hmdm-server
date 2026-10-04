@@ -25,87 +25,75 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.hmdm.persistence.domain.ConfigurationFile;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
-
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.io.Serializable;
 
-@ApiModel(description = "A single configuration file to be used on mobile device and used in data " +
-        "synchronization between mobile device and server application")
+@Schema(
+    description =
+        "A single configuration file to be used on mobile device and used in data "
+            + "synchronization between mobile device and server application")
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class SyncConfigurationFile implements Serializable, SyncConfigurationFileInt {
 
-    @JsonIgnore
-    private final ConfigurationFile wrapped;
+  @JsonIgnore private final ConfigurationFile wrapped;
 
-    /**
-     * <p>Constructs new <code>SyncConfigurationFile</code> instance. This implementation does nothing.</p>
-     */
-    public SyncConfigurationFile(ConfigurationFile file) {
-        this.wrapped = file;
-    }
+  /**
+   * Constructs new <code>SyncConfigurationFile</code> instance. This implementation does nothing.
+   */
+  public SyncConfigurationFile(ConfigurationFile file) {
+    this.wrapped = file;
+  }
 
-    /**
-     * <p>A description of the file.</p>
-     */
-    @Override
-    @ApiModelProperty("A description of the file")
-    public String getDescription() {
-        //return wrapped.getDescription();
-        // Not required in the mobile app
-        return null;
-    }
+  /** A description of the file. */
+  @Override
+  @Schema(description = "A description of the file")
+  public String getDescription() {
+    // return wrapped.getDescription();
+    // Not required in the mobile app
+    return null;
+  }
 
-    /**
-     * <p>A checksum for the file content.</p>
-     */
-    @Override
-    @ApiModelProperty("A checksum for the file content")
-    public String getChecksum() {
-        return wrapped.getChecksum();
-    }
+  /** A checksum for the file content. */
+  @Override
+  @Schema(description = "A checksum for the file content")
+  public String getChecksum() {
+    return wrapped.getChecksum();
+  }
 
-    /**
-     * <p>A flag indicating if file is to be removed from the device or not.</p>
-     */
-    @Override
-    @ApiModelProperty("A flag indicating if file is to be removed from the device or not")
-    public Boolean getRemove() {
-        return wrapped.isRemove() ? true : null;
-    }
+  /** A flag indicating if file is to be removed from the device or not. */
+  @Override
+  @Schema(description = "A flag indicating if file is to be removed from the device or not")
+  public Boolean getRemove() {
+    return wrapped.isRemove() ? true : null;
+  }
 
-    /**
-     * <p>A timestamp of file uploading to server (in milliseconds since epoch time).</p>
-     */
-    @Override
-    @ApiModelProperty("A timestamp of file uploading to server (in milliseconds since epoch time)")
-    public Long getLastUpdate() {
-        return wrapped.getLastUpdate();
-    }
+  /** A timestamp of file uploading to server (in milliseconds since epoch time). */
+  @Override
+  @Schema(
+      description = "A timestamp of file uploading to server (in milliseconds since epoch time)")
+  public Long getLastUpdate() {
+    return wrapped.getLastUpdate();
+  }
 
-    /**
-     * <p>A path to a file on device (including the name of the file).</p>
-     */
-    @ApiModelProperty("A path to a file on device")
-    public String getPath() {
-        return wrapped.getDevicePath();
-    }
+  /** A path to a file on device (including the name of the file). */
+  @Schema(description = "A path to a file on device")
+  public String getPath() {
+    return wrapped.getDevicePath();
+  }
 
-    /**
-     * <p>An URL referencing the content of the file.</p>
-     */
-    @ApiModelProperty("An URL referencing the content of the file")
-    public String getUrl() {
-        return wrapped.getUrl();
-    }
+  /** An URL referencing the content of the file. */
+  @Schema(description = "An URL referencing the content of the file")
+  public String getUrl() {
+    return wrapped.getUrl();
+  }
 
-    /**
-     * <p>A flag indicating if file is to be removed from the device or not.</p>
-     */
-    @Override
-    @ApiModelProperty("A flag indicating whether the file content must be updated by device-specific values")
-    public Boolean getVarContent() {
-        return wrapped.isReplaceVariables() ? true : null;
-    }
+  /** A flag indicating if file is to be removed from the device or not. */
+  @Override
+  @Schema(
+      description =
+          "A flag indicating whether the file content must be updated by device-specific values")
+  public Boolean getVarContent() {
+    return wrapped.isReplaceVariables() ? true : null;
+  }
 }

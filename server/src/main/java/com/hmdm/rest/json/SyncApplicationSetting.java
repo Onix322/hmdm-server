@@ -21,134 +21,149 @@
 
 package com.hmdm.rest.json;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.hmdm.persistence.domain.ApplicationSetting;
-import com.hmdm.persistence.domain.ApplicationSettingType;
 import com.hmdm.persistence.domain.Device;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.io.Serializable;
 
-@ApiModel(description = "A single setting for an application installed and used on mobile device and used in data " +
-        "sycnhronization between mobile device and server application")
+@Schema(
+    description =
+        "A single setting for an application installed and used on mobile device and used in data "
+            + "sycnhronization between mobile device and server application")
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class SyncApplicationSetting implements Serializable, SyncApplicationSettingInt {
 
-    private static final long serialVersionUID = -3986494672661532347L;
-    
-    @ApiModelProperty(value = "A package of the application", required = true)
-    private String packageId;
+  private static final long serialVersionUID = -3986494672661532347L;
 
-    @ApiModelProperty(value = "A name of the setting", required = true)
-    private String name;
+  @Schema(description = "A package of the application", required = true)
+  private String packageId;
 
-    @ApiModelProperty(value = "A type of the application setting. 1 - String, 2 - Integer, 3 - Boolean", required = true, allowableValues = "1,2,3")
-    private int type;
+  @Schema(description = "A name of the setting", required = true)
+  private String name;
 
-    @ApiModelProperty("A value of the setting")
-    private String value;
+  @Schema(
+      description = "A type of the application setting. 1 - String, 2 - Integer, 3 - Boolean",
+      required = true,
+      allowableValues = "1,2,3")
+  private int type;
 
-    @ApiModelProperty(value = "A flag indicating if setting can not be modified on device", required = true)
-    private Boolean readonly;
+  @Schema(description = "A value of the setting")
+  private String value;
 
-    @ApiModelProperty("A timestamp of the last update of the setting (in milliseconds since epoch time")
-    private long lastUpdate;
+  @Schema(
+      description = "A flag indicating if setting can not be modified on device",
+      required = true)
+  private Boolean readonly;
 
-    @ApiModelProperty(value = "A flag indicating if setting has variable content", required = true)
-    private Boolean variable;
+  @Schema(
+      description =
+          "A timestamp of the last update of the setting (in milliseconds since epoch time")
+  private long lastUpdate;
 
-    /**
-     * <p>Constructs new <code>SyncApplicationSetting</code> instance. This implementation does nothing.</p>
-     */
-    public SyncApplicationSetting() {
-    }
+  @Schema(description = "A flag indicating if setting has variable content", required = true)
+  private Boolean variable;
 
-    public SyncApplicationSetting(ApplicationSetting s, Device device) {
-        setPackageId(s.getApplicationPkg());
-        setName(s.getName());
-        setType(s.getType().getId());
-        setReadonly(s.isReadonly());
-        setValue(s.getValueForDevice(device));
-        setLastUpdate(s.getLastUpdate());
-        setVariable(s.isVariable());
-    }
+  /**
+   * Constructs new <code>SyncApplicationSetting</code> instance. This implementation does nothing.
+   */
+  public SyncApplicationSetting() {}
 
-    @Override
-    public String getPackageId() {
-        return packageId;
-    }
+  public SyncApplicationSetting(ApplicationSetting s, Device device) {
+    setPackageId(s.getApplicationPkg());
+    setName(s.getName());
+    setType(s.getType().getId());
+    setReadonly(s.isReadonly());
+    setValue(s.getValueForDevice(device));
+    setLastUpdate(s.getLastUpdate());
+    setVariable(s.isVariable());
+  }
 
-    public void setPackageId(String packageId) {
-        this.packageId = packageId;
-    }
+  @Override
+  public String getPackageId() {
+    return packageId;
+  }
 
-    @Override
-    public String getName() {
-        return name;
-    }
+  public void setPackageId(String packageId) {
+    this.packageId = packageId;
+  }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+  @Override
+  public String getName() {
+    return name;
+  }
 
-    @Override
-    public int getType() {
-        return type;
-    }
+  public void setName(String name) {
+    this.name = name;
+  }
 
-    public void setType(int type) {
-        this.type = type;
-    }
+  @Override
+  public int getType() {
+    return type;
+  }
 
-    @Override
-    public String getValue() {
-        return value;
-    }
+  public void setType(int type) {
+    this.type = type;
+  }
 
-    public void setValue(String value) {
-        this.value = value;
-    }
+  @Override
+  public String getValue() {
+    return value;
+  }
 
-    @Override
-    public Boolean isReadonly() {
-        return readonly != null && readonly ? true : null;
-    }
+  public void setValue(String value) {
+    this.value = value;
+  }
 
-    public void setReadonly(boolean readonly) {
-        this.readonly = readonly;
-    }
+  @Override
+  public Boolean isReadonly() {
+    return readonly != null && readonly ? true : null;
+  }
 
-    @Override
-    public long getLastUpdate() {
-        return lastUpdate;
-    }
+  public void setReadonly(boolean readonly) {
+    this.readonly = readonly;
+  }
 
-    public void setLastUpdate(long lastUpdate) {
-        this.lastUpdate = lastUpdate;
-    }
+  @Override
+  public long getLastUpdate() {
+    return lastUpdate;
+  }
 
-    @Override
-    public Boolean isVariable() {
-        return variable != null && variable ? true : null;
-    }
+  public void setLastUpdate(long lastUpdate) {
+    this.lastUpdate = lastUpdate;
+  }
 
-    public void setVariable(boolean variable) {
-        this.variable = variable;
-    }
+  @Override
+  public Boolean isVariable() {
+    return variable != null && variable ? true : null;
+  }
 
-    @Override
-    public String toString() {
-        return "SyncApplicationSetting{" +
-                "packageId='" + packageId + '\'' +
-                ", name='" + name + '\'' +
-                ", type=" + type +
-                ", value='" + value + '\'' +
-                ", readonly=" + readonly +
-                ", lastUpdate=" + lastUpdate +
-                ", variable=" + variable +
-                '}';
-    }
+  public void setVariable(boolean variable) {
+    this.variable = variable;
+  }
+
+  @Override
+  public String toString() {
+    return "SyncApplicationSetting{"
+        + "packageId='"
+        + packageId
+        + '\''
+        + ", name='"
+        + name
+        + '\''
+        + ", type="
+        + type
+        + ", value='"
+        + value
+        + '\''
+        + ", readonly="
+        + readonly
+        + ", lastUpdate="
+        + lastUpdate
+        + ", variable="
+        + variable
+        + '}';
+  }
 }
