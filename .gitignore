@@ -10,7 +10,8 @@
 .jdtls
 # Created by https://www.toptal.com/developers/gitignore/api/eclipse,maven,angular,java,intellij+all
 # Edit at https://www.toptal.com/developers/gitignore?templates=eclipse,maven,angular,java,intellij+all
-
+### Swagger ### 
+server/src/main/java/com/hmdm/rest/resource/SwaggerResource.java
 ### Angular ###
 ## Angular ##
 # compiled output
