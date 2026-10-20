@@ -50,7 +50,5 @@
             <version>2.21.0</version>
         </dependency>
 
-        <!-- The formatting of this line must be kept as is - a single line -->
-
-    </dependencies>
+      </dependencies>
 </project>

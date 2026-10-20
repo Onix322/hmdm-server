@@ -31,10 +31,13 @@ import com.hmdm.rest.json.view.user.UserView;
 import com.hmdm.service.EmailService;
 import com.hmdm.service.RsaKeyService;
 import com.hmdm.util.AuthHelper;
-
-import java.security.PublicKey;
-import java.util.Base64;
-
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.inject.Singleton;
@@ -43,120 +46,177 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
+import java.security.PublicKey;
+import java.util.Base64;
 
 /**
  * A resource for authenticating the users based on provided login/password credentials.
  *
  * @author isv
  */
+@Tag(name = "Login")
 @Singleton
 @Path("/public/auth")
 public class LocalAuthResource {
 
-    private AuthHelper authHelper;
-    private boolean customerSignup;
-    private EmailService emailService;
-    private RsaKeyService rsaKeyService;
-    private boolean transmitPassword;
-    private AuthStrategy<LocalAuthCredentials> authEngine;
+  private AuthHelper authHelper;
+  private boolean customerSignup;
+  private EmailService emailService;
+  private RsaKeyService rsaKeyService;
+  private boolean transmitPassword;
+  private AuthStrategy<LocalAuthCredentials> authEngine;
 
-    /** A constructor required by Swagger. */
-    public LocalAuthResource() {}
+  /** A constructor required by Swagger. */
+  public LocalAuthResource() {}
 
-    /** Constructs new <code>AuthResource</code> instance. */
-    @Inject
-    public LocalAuthResource(
-            AuthHelper authHelper,
-            EmailService emailService,
-            RsaKeyService rsaKeyService,
-            @Named("customer.signup") boolean customerSignup,
-            @Named("transmit.password") boolean transmitPassword,
-            // Used for changing the class responsible with authentification
-            AuthStrategy<LocalAuthCredentials> authEngine) {
-        this.authHelper = authHelper;
-        this.emailService = emailService;
-        this.rsaKeyService = rsaKeyService;
-        this.customerSignup = customerSignup;
-        this.transmitPassword = transmitPassword;
-        this.authEngine = authEngine;
+  /** Constructs new <code>AuthResource</code> instance. */
+  @Inject
+  public LocalAuthResource(
+      AuthHelper authHelper,
+      EmailService emailService,
+      RsaKeyService rsaKeyService,
+      @Named("customer.signup") boolean customerSignup,
+      @Named("transmit.password") boolean transmitPassword,
+      // Used for changing the class responsible with authentification
+      AuthStrategy<LocalAuthCredentials> authEngine) {
+    this.authHelper = authHelper;
+    this.emailService = emailService;
+    this.rsaKeyService = rsaKeyService;
+    this.customerSignup = customerSignup;
+    this.transmitPassword = transmitPassword;
+    this.authEngine = authEngine;
+  }
+
+  /**
+   * Authenticates the user based on provided credentials and responds with the user account details
+   * in case of successful authentication.
+   *
+   * @param credentials the credentials to be used for authenticating the user to application.
+   * @param req an incoming request.
+   * @return a response containing the details for authenticated user.
+   */
+  @Operation(
+      summary = "Local Login endpoint",
+      description = "Local auth login endpoint",
+      parameters = {
+        @Parameter(
+            name = "credentials",
+            required = true,
+            description = "Takes username and password"),
+        @Parameter(
+            name = "req",
+            in = ParameterIn.HEADER,
+            required = true,
+            description = "The incoming request")
+      },
+      responses = {
+        @ApiResponse(
+            description = "Successful operation",
+            responseCode = "200",
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON,
+                    schema = @Schema(implementation = UserView.class))),
+        @ApiResponse(
+            description = "Invalid credentials",
+            responseCode = "200",
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON,
+                    schema = @Schema(implementation = Response.class)))
+      })
+  public Response loginLocal(
+      @Parameter(description = "Takes username and password") UserCredentials credentials,
+      @Context HttpServletRequest req)
+      throws InterruptedException {
+    if (credentials.getLogin() == null || credentials.getPassword() == null) {
+      return Response.ERROR();
     }
 
-    /**
-     * Authenticates the user based on provided credentials and responds with the user account
-     * details in case of successful authentication.
-     *
-     * @param credentials the credentials to be used for authenticating the user to application.
-     * @param req an incoming request.
-     * @return a response containing the details for authenticated user.
-     */
-    @POST
-    @Path("/login")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response loginLocal(UserCredentials credentials, @Context HttpServletRequest req)
-            throws InterruptedException {
-        if (credentials.getLogin() == null || credentials.getPassword() == null) {
-            return Response.ERROR();
-        }
+    User user = authEngine.findUser(credentials.getLogin());
 
-        User user = authEngine.findUser(credentials.getLogin());
-
-        if (user == null) {
-            Thread.sleep(1000);
-            return Response.ERROR();
-        }
-        if (user.getLastLoginFail() > System.currentTimeMillis() - 1000) {
-            // No delay to avoid server overload while there's a brute force attack
-            Thread.sleep(1000);
-            return Response.ERROR();
-        }
-
-        String password = null;
-        if (transmitPassword) {
-            byte[] passEnc = Base64.getDecoder().decode(credentials.getPassword());
-            password = rsaKeyService.decrypt(passEnc);
-        } else {
-            password = credentials.getPassword();
-        }
-
-        LocalAuthCredentials localAuthCredentials = new LocalAuthCredentials(user, password);
-        // Web app sends MD5 hash, we need to re-hash it to compare with the DB value
-        if (!authEngine.authenticate(localAuthCredentials)) {
-            Thread.sleep(1000);
-            return Response.ERROR();
-        }
-
-        UserView userView = this.authHelper.createUserView(user, req);
-        return Response.OK(userView);
+    if (user == null) {
+      Thread.sleep(1000);
+      return Response.ERROR();
+    }
+    if (user.getLastLoginFail() > System.currentTimeMillis() - 1000) {
+      // No delay to avoid server overload while there's a brute force attack
+      Thread.sleep(1000);
+      return Response.ERROR();
     }
 
-    /**
-     * Logs the current user out by invalidating the current session.
-     *
-     * @param req an incoming request.
-     */
-    @POST
-    @Path("/logout")
-    public void logout(@Context HttpServletRequest req) {
-        HttpSession session = req.getSession(false);
-        if (session != null) {
-            session.invalidate();
-        }
+    String password = null;
+    if (transmitPassword) {
+      byte[] passEnc = Base64.getDecoder().decode(credentials.getPassword());
+      password = rsaKeyService.decrypt(passEnc);
+    } else {
+      password = credentials.getPassword();
     }
 
-    /** Returns the login options */
-    @GET
-    @Path("/options")
-    public Response options() {
-        AuthOptionsResponse response = new AuthOptionsResponse();
-        response.setSignup(emailService.isConfigured() && customerSignup);
-        response.setRecover(emailService.isConfigured());
-        if (transmitPassword) {
-            PublicKey publicKey = rsaKeyService.getPublicKey();
-            byte[] keyBytes = publicKey.getEncoded();
-            String encoded = Base64.getEncoder().encodeToString(keyBytes);
-            response.setPublicKey(encoded);
-        }
-        return Response.OK(response);
+    LocalAuthCredentials localAuthCredentials = new LocalAuthCredentials(user, password);
+    // Web app sends MD5 hash, we need to re-hash it to compare with the DB value
+    if (!authEngine.authenticate(localAuthCredentials)) {
+      Thread.sleep(1000);
+      return Response.ERROR();
     }
+
+    UserView userView = this.authHelper.createUserView(user, req);
+    return Response.OK(userView);
+  }
+
+  /**
+   * Logs the current user out by invalidating the current session.
+   *
+   * @param req an incoming request.
+   */
+  @Operation(
+      summary = "Local auth Logout endpoint",
+      description = "Local auth logout endpoint",
+      responses = {
+        @ApiResponse(description = "Successful operation", responseCode = "200"),
+        @ApiResponse(
+            description = "Invalid credentials",
+            responseCode = "401",
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON,
+                    schema = @Schema(implementation = Response.class)))
+      })
+  @POST
+  @Path("/logout")
+  public void logout(@Context HttpServletRequest req) {
+    HttpSession session = req.getSession(false);
+    if (session != null) {
+      session.invalidate();
+    }
+  }
+
+  /** Returns the login options */
+  @Operation(
+      summary = "Local Login Options endpoint",
+      description = "Local Login Options endpoint",
+      responses = {
+        @ApiResponse(description = "Successful operation", responseCode = "200"),
+        @ApiResponse(
+            description = "Not allowed",
+            responseCode = "405",
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON,
+                    schema = @Schema(implementation = Response.class)))
+      })
+  @GET
+  @Path("/options")
+  public Response options() {
+    AuthOptionsResponse response = new AuthOptionsResponse();
+    response.setSignup(emailService.isConfigured() && customerSignup);
+    response.setRecover(emailService.isConfigured());
+    if (transmitPassword) {
+      PublicKey publicKey = rsaKeyService.getPublicKey();
+      byte[] keyBytes = publicKey.getEncoded();
+      String encoded = Base64.getEncoder().encodeToString(keyBytes);
+      response.setPublicKey(encoded);
+    }
+    return Response.OK(response);
+  }
 }
